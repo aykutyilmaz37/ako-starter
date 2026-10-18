@@ -10,3 +10,8 @@ trim_trailing_whitespace = true
 
 [*.{cs,csproj,sln,slnx}]
 indent_size = 4
+
+# Bir özelliğin tüm dosyaları tek namespace'te durur (Ako.Api.Features.<Özellik>);
+# Actions/, Contracts/ ve Data/ klasörleri yalnızca düzen içindir, using kalabalığı olmasın diye.
+[apps/api/src/Ako.Api/Features/**.cs]
+dotnet_diagnostic.IDE0130.severity = none

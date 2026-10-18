@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "api",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "apps/api/src/Ako.Api", "--launch-profile", "http"],
+      "port": 5165
+    }
+  ]
+}

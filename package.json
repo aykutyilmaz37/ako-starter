@@ -13,7 +13,9 @@
     "test": "turbo run test",
     "generate": "turbo run generate",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:up": "docker compose up -d --wait postgres",
+    "db:down": "docker compose down"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
