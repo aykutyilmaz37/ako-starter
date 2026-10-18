@@ -10,13 +10,14 @@ export default defineConfig({
     output: {
       mode: 'tags-split',
       target: 'src/generated/endpoints',
-      schemas: 'src/generated/model',
+      // Üretilen dosyalar göreli yol (../../model) yerine paket adıyla import eder.
+      schemas: { path: 'src/generated/model', importPath: '@ako/api-client/model' },
       client: 'react-query',
       httpClient: 'fetch',
       clean: true,
       override: {
-        // Tüm istekler client.ts'teki apiFetch'ten geçer (adres, dil, token, hata).
-        mutator: { path: 'src/client.ts', name: 'apiFetch' },
+        // Tüm istekler client.ts'teki apiFetch'ten geçer (adres, dil, token, hata). Paketin kendi adıyla import edilir.
+        mutator: { path: '@ako/api-client/client', name: 'apiFetch' },
         // Fonksiyonlar doğrudan veriyi döner; hata durumunda ApiError fırlatılır.
         fetch: { includeHttpResponseReturnType: false },
         query: { signal: true },

@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./client": "./src/client.ts",
     "./model": "./src/generated/model/index.ts",
     "./zod/*": "./src/generated/zod/*/*.ts",
     "./*": "./src/generated/endpoints/*/*.ts"

@@ -4,25 +4,6 @@
  * Ako.Api | v1
  * OpenAPI spec version: 1.0.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
-import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  MutationFunction,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
-  UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
-
 import type {
   AccessTokenResponse,
   ChangeEmailRequest,
@@ -45,10 +26,29 @@ import type {
   SendConfirmationCodeRequest,
   TwoFactorRequest,
   TwoFactorResponse
-} from '../../model';
+} from '@ako/api-client/model';
 
-import { apiFetch } from '../../../client';
-import type { ErrorType , BodyType } from '../../../client';
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
+import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
+} from '@tanstack/react-query';
+
+import { apiFetch } from '@ako/api-client/client';
+import type { ErrorType , BodyType } from '@ako/api-client/client';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 

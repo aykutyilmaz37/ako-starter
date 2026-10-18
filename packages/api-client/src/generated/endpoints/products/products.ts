@@ -4,6 +4,16 @@
  * Ako.Api | v1
  * OpenAPI spec version: 1.0.0
  */
+import type {
+  CreateProductRequest,
+  HttpValidationProblemDetails,
+  ListProductsParams,
+  PagedResponseOfProductResponse,
+  ProblemDetails,
+  ProductResponse,
+  UpdateProductRequest
+} from '@ako/api-client/model';
+
 import {
   useMutation,
   useQuery
@@ -23,18 +33,8 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
-import type {
-  CreateProductRequest,
-  HttpValidationProblemDetails,
-  ListProductsParams,
-  PagedResponseOfProductResponse,
-  ProblemDetails,
-  ProductResponse,
-  UpdateProductRequest
-} from '../../model';
-
-import { apiFetch } from '../../../client';
-import type { ErrorType , BodyType } from '../../../client';
+import { apiFetch } from '@ako/api-client/client';
+import type { ErrorType , BodyType } from '@ako/api-client/client';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
