@@ -1,0 +1,19 @@
+node_modules/
+.turbo/
+dist/
+build/
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+
+# .NET
+bin/
+obj/
+*.user
+
+# Expo
+.expo/
+ios/
+android/

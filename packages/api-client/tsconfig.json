@@ -1,0 +1,4 @@
+{
+  "extends": "@ako/tsconfig/base.json",
+  "include": ["src"]
+}
