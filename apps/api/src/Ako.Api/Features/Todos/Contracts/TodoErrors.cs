@@ -2,7 +2,7 @@ using Ako.Api.Common;
 
 namespace Ako.Api.Features.Todos;
 
-// Metni Resources/Messages*.resx'te
+// Metni Resources/Localization/Messages*.resx'te
 
 internal static class TodoErrors
 {

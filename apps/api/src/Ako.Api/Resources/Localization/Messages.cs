@@ -4,7 +4,7 @@ using System.Resources;
 // Messages.resx Türkçedir; dil eşleşmediğinde buna düşülür.
 [assembly: NeutralResourcesLanguage("tr")]
 
-namespace Ako.Api.Resources;
+namespace Ako.Api.Resources.Localization;
 
 /// <summary>
 /// Messages.resx (tr, varsayılan) ve Messages.en.resx'e erişim. Dil, RequestLocalization
@@ -14,7 +14,7 @@ namespace Ako.Api.Resources;
 /// </summary>
 public static class Messages
 {
-    private static readonly ResourceManager Resources = new("Ako.Api.Resources.Messages", typeof(Messages).Assembly);
+    private static readonly ResourceManager Resources = new("Ako.Api.Resources.Localization.Messages", typeof(Messages).Assembly);
 
     /// <summary>Anahtarın çevirisini döner; yoksa anahtarın kendisini (eksik çeviri görünür kalsın diye).</summary>
     public static string Get(string key, params object?[] args)

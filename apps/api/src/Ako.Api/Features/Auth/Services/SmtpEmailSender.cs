@@ -1,5 +1,5 @@
-using System.Net;
-using Ako.Api.Resources;
+using Ako.Api.Infrastructure.Email;
+using Ako.Api.Resources.Localization;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -27,7 +27,8 @@ public sealed class EmailOptions
 
 /// <summary>
 /// E-posta kodlarını SMTP ile gönderir (MailKit). Her SMTP sağlayıcısıyla çalışır: Gmail/Workspace,
-/// Office 365, Amazon SES, Mailgun, Resend, Brevo… Konu ve metin isteğin dilinde, Resources/Messages*.resx'ten gelir.
+/// Office 365, Amazon SES, Mailgun, Resend, Brevo… HTML Resources/EmailTemplates'ten, metinler isteğin dilinde
+/// Resources/Localization/Messages*.resx'ten gelir.
 /// </summary>
 internal sealed class SmtpEmailSender(Microsoft.Extensions.Options.IOptions<EmailOptions> options, ILogger<SmtpEmailSender> logger)
     : IAppEmailSender
@@ -36,8 +37,15 @@ internal sealed class SmtpEmailSender(Microsoft.Extensions.Options.IOptions<Emai
     {
         var settings = options.Value;
         var subject = Messages.Get($"email.{purpose}.subject");
-        var intro = Messages.Get($"email.{purpose}.intro");
-        var footer = Messages.Get("email.footer");
+        var values = new Dictionary<string, string>
+        {
+            ["appName"] = settings.FromName,
+            ["subject"] = subject,
+            ["intro"] = Messages.Get($"email.{purpose}.intro"),
+            ["code"] = code,
+            ["note"] = Messages.Get("email.code.note"),
+            ["footer"] = Messages.Get("email.footer"),
+        };
 
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(settings.FromName, settings.FromAddress));
@@ -45,14 +53,9 @@ internal sealed class SmtpEmailSender(Microsoft.Extensions.Options.IOptions<Emai
         message.Subject = subject;
         message.Body = new BodyBuilder
         {
-            TextBody = $"{intro}\n\n{code}\n\n{footer}",
-            HtmlBody = $"""
-                <div style="font-family:system-ui,sans-serif;max-width:480px;margin:auto;padding:24px;color:#111">
-                  <p>{WebUtility.HtmlEncode(intro)}</p>
-                  <p style="font-size:32px;font-weight:700;letter-spacing:8px;margin:24px 0">{code}</p>
-                  <p style="color:#666;font-size:13px">{WebUtility.HtmlEncode(footer)}</p>
-                </div>
-                """,
+            HtmlBody = EmailTemplates.Render("Code", values),
+            // HTML göstermeyen istemciler için düz metin sürümü.
+            TextBody = $"{values["intro"]}\n\n{code}\n\n{values["note"]}",
         }.ToMessageBody();
 
         using var client = new SmtpClient();

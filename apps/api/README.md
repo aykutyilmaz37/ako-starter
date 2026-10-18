@@ -24,7 +24,9 @@ src/Ako.Api/
   Program.cs              servis kaydı + endpoint eşlemesi
   Common/                 Result/Error, sayfalama, validasyon filtresi, ProblemDetails çevirisi
   Infrastructure/         DbContext, migration'lar, DI ve localization kurulumu
-  Resources/              Messages.resx (tr, varsayılan) + Messages.en.resx
+  Resources/
+    Localization/         Messages.resx (tr, varsayılan) + Messages.en.resx
+    EmailTemplates/       e-posta HTML şablonları
   Features/
     Auth/                        kullanıcılar, roller, giriş (yerel + sosyal)
     Todos/                       ÖRNEK: kullanıcıya özel veri
@@ -74,6 +76,11 @@ Her use case dosyası aynı sırayla `#region`'lara ayrılır:
   log'a yazılır. Geliştirmede Mailpit'e gider (`localhost:1025`), hiçbir mail dışarı çıkmaz.
   Production'da herhangi bir SMTP sağlayıcısı (SES, Mailgun, Resend, Brevo, Office 365…) ayarla bağlanır;
   şifre user-secrets / ortam değişkeniyle verilir: `Email__Smtp__Password`.
+- **E-posta şablonları:** `Resources/EmailTemplates/`. `_Layout.html` ortak çerçevedir (logo, renk, alt bilgi);
+  her mail türü bir içerik dosyasıdır (`Code.html`) ve layout'taki `{{{content}}}` yerine konur.
+  `{{alan}}` kaçışlanarak, `{{{alan}}}` olduğu gibi yazılır. Metinler yine resx'ten gelir, şablonda dil yoktur.
+  Şablonlar uygulamaya gömülüdür; değişiklik için yeniden derlemek gerekir. Yeni mail türü için yeni bir
+  `.html` ekleyip `EmailTemplates.Render("Ad", değerler)` çağrılır.
 
 ### E-posta kodları (6 hane)
 

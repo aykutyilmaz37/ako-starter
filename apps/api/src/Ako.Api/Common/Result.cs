@@ -14,7 +14,7 @@ public enum ErrorType
 /// <summary>
 /// Beklenen iş hatası. Handler'lar exception atmak yerine bunu döner; endpoint ProblemDetails'e çevirir.
 /// Code makine tarafından okunur (ör. "products.sku_taken"), istemci buna göre davranabilir.
-/// Metin taşımaz: Code aynı zamanda Resources/Messages*.resx anahtarıdır, Args ise mesajdaki {0}, {1}…
+/// Metin taşımaz: Code aynı zamanda Resources/Localization/Messages*.resx anahtarıdır, Args ise mesajdaki {0}, {1}…
 /// yerlerine konur. Çeviri isteğin diline göre <see cref="ProblemDetailsLocalization"/>'da yapılır.
 /// </summary>
 public sealed record Error(string Code, ErrorType Type, object?[] Args)

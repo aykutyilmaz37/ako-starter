@@ -2,7 +2,7 @@ using Ako.Api.Common;
 
 namespace Ako.Api.Features.Products;
 
-// Kod istemciye "code" alanında gider; metni Resources/Messages*.resx'te
+// Kod istemciye "code" alanında gider; metni Resources/Localization/Messages*.resx'te
 
 internal static class ProductErrors
 {

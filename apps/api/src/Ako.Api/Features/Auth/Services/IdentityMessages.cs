@@ -1,11 +1,11 @@
-using Ako.Api.Resources;
+using Ako.Api.Resources.Localization;
 using Microsoft.AspNetCore.Identity;
 
 namespace Ako.Api.Features.Auth;
 
 /// <summary>
 /// Identity'nin hata mesajlarını (şifre kuralları, e-posta kullanımda…) isteğin diline çevirir.
-/// Metinler Resources/Messages*.resx'te "identity.&lt;Kod&gt;" anahtarlarıyla durur.
+/// Metinler Resources/Localization/Messages*.resx'te "identity.&lt;Kod&gt;" anahtarlarıyla durur.
 /// </summary>
 internal sealed class LocalizedIdentityErrorDescriber : IdentityErrorDescriber
 {

@@ -1,4 +1,4 @@
-using Ako.Api.Resources;
+using Ako.Api.Resources.Localization;
 
 namespace Ako.Api.Common;
 

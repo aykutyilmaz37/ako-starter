@@ -2,7 +2,7 @@ using Ako.Api.Common;
 
 namespace Ako.Api.Features.Auth;
 
-// Kod istemciye "code" alanında gider; metni Resources/Messages*.resx'te.
+// Kod istemciye "code" alanında gider; metni Resources/Localization/Messages*.resx'te.
 // Tarayıcı akışında (redirect) aynı kodlar returnUrl'e ?error=<kod> olarak eklenir.
 internal static class AuthErrors
 {

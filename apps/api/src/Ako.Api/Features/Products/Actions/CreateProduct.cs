@@ -1,6 +1,6 @@
 using Ako.Api.Common;
 using Ako.Api.Infrastructure.Data;
-using Ako.Api.Resources;
+using Ako.Api.Resources.Localization;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;

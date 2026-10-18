@@ -1,5 +1,5 @@
 using Ako.Api.Common;
-using Ako.Api.Resources;
+using Ako.Api.Resources.Localization;
 using FluentValidation;
 using Microsoft.AspNetCore.Localization;
 
