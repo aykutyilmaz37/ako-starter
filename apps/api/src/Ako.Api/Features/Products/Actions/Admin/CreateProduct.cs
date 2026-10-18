@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ako.Api.Features.Products;
 
-// POST /products → yeni ürün, 201 + oluşan ürün. SKU doluysa 409.
+// POST /admin/products → yeni ürün, 201 + oluşan ürün. SKU doluysa 409. (Yalnızca iç ağ + Admin)
 
 #region İstek — gönderilen JSON gövdesi
 
@@ -62,8 +62,7 @@ public sealed class CreateProductHandler(AppDbContext db)
 internal static class CreateProduct
 {
     public static void Map(RouteGroupBuilder group) =>
-        group.MapPost("/", Handle).WithName("CreateProduct")
-            .RequireAuthorization()
+        group.MapPost("/", Handle).WithName("AdminCreateProduct")
             .WithValidation<CreateProductRequest>()
             .ProducesProblem(StatusCodes.Status409Conflict);
 
@@ -72,7 +71,7 @@ internal static class CreateProduct
     {
         var result = await handler.HandleAsync(request, ct);
         return result.IsSuccess
-            ? TypedResults.Created($"/products/{result.Value.Id}", result.Value)
+            ? TypedResults.Created($"/admin/products/{result.Value.Id}", result.Value)
             : result.Error.ToProblem();
     }
 }

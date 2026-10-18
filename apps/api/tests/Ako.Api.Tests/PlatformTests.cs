@@ -25,20 +25,17 @@ public sealed class PlatformTests(ApiFactory factory)
     [Fact]
     public async Task Denetim_alanlari_otomatik_dolar()
     {
-        var user = await factory.CreateUserClientAsync();
-        var me = await user.GetFromJsonAsync<Ako.Api.Features.Auth.MeResponse>("/auth/me");
-        var create = await user.PostAsJsonAsync("/products", new CreateProductRequest($"A-{Guid.NewGuid():N}"[..20], "A", null, 1m, 1));
-        var created = (await create.Content.ReadFromJsonAsync<ProductResponse>())!;
-
         var admin = await factory.CreateAdminClientAsync();
-        await admin.PutAsJsonAsync($"/products/{created.Id}", new UpdateProductRequest("B", null, 2m, 2));
+        var me = await admin.GetFromJsonAsync<Ako.Api.Features.Auth.MeResponse>("/auth/me");
+        var create = await admin.PostAsJsonAsync("/admin/products", new CreateProductRequest($"A-{Guid.NewGuid():N}"[..20], "A", null, 1m, 1));
+        var created = (await create.Content.ReadFromJsonAsync<ProductResponse>())!;
+        await admin.PutAsJsonAsync($"/admin/products/{created.Id}", new UpdateProductRequest("B", null, 2m, 2));
 
         using var scope = factory.Services.CreateScope();
         var product = await scope.ServiceProvider.GetRequiredService<AppDbContext>().Products.AsNoTracking().SingleAsync(p => p.Id == created.Id);
-        var adminMe = await admin.GetFromJsonAsync<Ako.Api.Features.Auth.MeResponse>("/auth/me");
 
         Assert.Equal(me!.Id, product.CreatedBy);
-        Assert.Equal(adminMe!.Id, product.UpdatedBy);
+        Assert.Equal(me.Id, product.UpdatedBy);
         Assert.True(product.UpdatedAt > product.CreatedAt);
     }
 

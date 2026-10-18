@@ -22,7 +22,7 @@ public sealed class ProductsTests(ApiFactory factory)
     {
         var sku = NewSku();
 
-        var create = await _client.PostAsJsonAsync("/products", new CreateProductRequest(sku, "Kalem", null, 12.50m, 3));
+        var create = await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(sku, "Kalem", null, 12.50m, 3));
         Assert.Equal(HttpStatusCode.Created, create.StatusCode);
         var created = (await create.Content.ReadFromJsonAsync<ProductResponse>())!;
         Assert.Equal(sku.ToUpperInvariant(), created.Sku);
@@ -30,11 +30,11 @@ public sealed class ProductsTests(ApiFactory factory)
         var get = await _client.GetFromJsonAsync<ProductResponse>($"/products/{created.Id}");
         Assert.Equal("Kalem", get!.Name);
 
-        var update = await _client.PutAsJsonAsync($"/products/{created.Id}", new UpdateProductRequest("Kurşun kalem", "HB", 15m, 10));
+        var update = await _client.PutAsJsonAsync($"/admin/products/{created.Id}", new UpdateProductRequest("Kurşun kalem", "HB", 15m, 10));
         Assert.Equal(HttpStatusCode.OK, update.StatusCode);
         Assert.Equal(15m, (await update.Content.ReadFromJsonAsync<ProductResponse>())!.Price);
 
-        var delete = await _client.DeleteAsync($"/products/{created.Id}");
+        var delete = await _client.DeleteAsync($"/admin/products/{created.Id}");
         Assert.Equal(HttpStatusCode.NoContent, delete.StatusCode);
 
         var afterDelete = await _client.GetAsync($"/products/{created.Id}");
@@ -45,9 +45,9 @@ public sealed class ProductsTests(ApiFactory factory)
     public async Task Ayni_sku_ikinci_kez_eklenirse_409_ve_hata_kodu_doner()
     {
         var sku = NewSku();
-        await _client.PostAsJsonAsync("/products", new CreateProductRequest(sku, "A", null, 1m, 0));
+        await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(sku, "A", null, 1m, 0));
 
-        var response = await _client.PostAsJsonAsync("/products", new CreateProductRequest(sku.ToLowerInvariant(), "B", null, 1m, 0));
+        var response = await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(sku.ToLowerInvariant(), "B", null, 1m, 0));
 
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
@@ -69,7 +69,7 @@ public sealed class ProductsTests(ApiFactory factory)
 
         async Task<HttpValidationProblemDetails> Send(CreateProductRequest request, string language)
         {
-            using var message = new HttpRequestMessage(HttpMethod.Post, "/products") { Content = JsonContent.Create(request) };
+            using var message = new HttpRequestMessage(HttpMethod.Post, "/admin/products") { Content = JsonContent.Create(request) };
             message.Headers.AcceptLanguage.ParseAdd(language);
             var response = await _client.SendAsync(message);
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -83,7 +83,7 @@ public sealed class ProductsTests(ApiFactory factory)
         var tag = Guid.NewGuid().ToString("N")[..8];
         foreach (var i in Enumerable.Range(1, 3))
         {
-            await _client.PostAsJsonAsync("/products", new CreateProductRequest(NewSku(), $"Defter {tag} {i}", null, 5m, 1));
+            await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(NewSku(), $"Defter {tag} {i}", null, 5m, 1));
         }
 
         var page = await _client.GetFromJsonAsync<PagedResponse<ProductResponse>>($"/products?search={tag}&pageSize=2&page=2");
@@ -94,25 +94,24 @@ public sealed class ProductsTests(ApiFactory factory)
     }
 
     [Fact]
-    public async Task Listeleme_herkese_acik_ekleme_giris_ister()
+    public async Task Okuma_herkese_acik_yonetim_yalnizca_Admin_e_acik()
     {
         var anonymous = factory.CreateClient();
+        var user = await factory.CreateUserClientAsync();
+        var body = new CreateProductRequest(NewSku(), "A", null, 1m, 0);
 
         Assert.Equal(HttpStatusCode.OK, (await anonymous.GetAsync("/products")).StatusCode);
-        var create = await anonymous.PostAsJsonAsync("/products", new CreateProductRequest(NewSku(), "A", null, 1m, 0));
-        Assert.Equal(HttpStatusCode.Unauthorized, create.StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await anonymous.PostAsJsonAsync("/admin/products", body)).StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, (await user.PostAsJsonAsync("/admin/products", body)).StatusCode);
+        Assert.Equal(HttpStatusCode.Created, (await _client.PostAsJsonAsync("/admin/products", body)).StatusCode);
     }
 
     [Fact]
-    public async Task Silme_yalnizca_Admin_e_aciktir()
+    public async Task Herkese_acik_adreste_yazma_islemi_yoktur()
     {
-        var user = await factory.CreateUserClientAsync();
-        var create = await user.PostAsJsonAsync("/products", new CreateProductRequest(NewSku(), "A", null, 1m, 0));
-        Assert.Equal(HttpStatusCode.Created, create.StatusCode);
-        var product = (await create.Content.ReadFromJsonAsync<ProductResponse>())!;
-
-        Assert.Equal(HttpStatusCode.Forbidden, (await user.DeleteAsync($"/products/{product.Id}")).StatusCode);
-        Assert.Equal(HttpStatusCode.NoContent, (await _client.DeleteAsync($"/products/{product.Id}")).StatusCode);
+        // Yönetim yalnızca /admin altında; internete açık deploy'da bu grup hiç oluşmaz.
+        var response = await _client.PostAsJsonAsync("/products", new CreateProductRequest(NewSku(), "A", null, 1m, 0));
+        Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
     }
 
     [Fact]

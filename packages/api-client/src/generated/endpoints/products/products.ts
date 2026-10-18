@@ -5,36 +5,30 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  CreateProductRequest,
   HttpValidationProblemDetails,
   ListProductsParams,
   PagedResponseOfProductResponse,
   ProblemDetails,
-  ProductResponse,
-  UpdateProductRequest
+  ProductResponse
 } from '@ako/api-client/model';
 
 import {
-  useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
-  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
 
 import { apiFetch } from '@ako/api-client/client';
-import type { ErrorType , BodyType } from '@ako/api-client/client';
+import type { ErrorType } from '@ako/api-client/client';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
@@ -161,88 +155,7 @@ export function useListProducts<TData = Awaited<ReturnType<typeof listProducts>>
 
 
 
-export const getCreateProductUrl = () => {
-
-
-
-
-  return `/products`
-}
-
-export const createProduct = async (createProductRequest: CreateProductRequest, options?: Parameters<typeof apiFetch>[1]): Promise<ProductResponse> => {
-
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return apiFetch<ProductResponse>(getCreateProductUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(createProductRequest)
-  }
-);}
-
-
-
-
-
-export const getCreateProductMutationKey = () => ['createProduct'] as const;
-
-export const getCreateProductMutationOptions = <TError = ErrorType<HttpValidationProblemDetails | void | ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProduct>>, TError,CreateProductMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof createProduct>>, TError,CreateProductMutationVariables, TContext> => {
-
-const mutationKey = getCreateProductMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createProduct>>, CreateProductMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  createProduct(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateProductMutationResult = NonNullable<Awaited<ReturnType<typeof createProduct>>>
-    export type CreateProductMutationBody = BodyType<CreateProductRequest>
-    export type CreateProductMutationError = ErrorType<HttpValidationProblemDetails | void | ProblemDetails>
-    export type CreateProductMutationVariables = {data: BodyType<CreateProductRequest>}
-
-    export const useCreateProduct = <TError = ErrorType<HttpValidationProblemDetails | void | ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProduct>>, TError,CreateProductMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createProduct>>,
-        TError,
-        CreateProductMutationVariables,
-        TContext
-      > => {
-      return useMutation(getCreateProductMutationOptions(options), queryClient);
-    }
-    export const getGetProductUrl = (id: string,) => {
+export const getGetProductUrl = (id: string,) => {
 
 
 
@@ -336,152 +249,3 @@ export function useGetProduct<TData = Awaited<ReturnType<typeof getProduct>>, TE
 
 
 
-export const getUpdateProductUrl = (id: string,) => {
-
-
-
-
-  return `/products/${id}`
-}
-
-export const updateProduct = async (id: string,
-    updateProductRequest: UpdateProductRequest, options?: Parameters<typeof apiFetch>[1]): Promise<ProductResponse> => {
-
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return apiFetch<ProductResponse>(getUpdateProductUrl(id),
-  {
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(updateProductRequest)
-  }
-);}
-
-
-
-
-
-export const getUpdateProductMutationKey = () => ['updateProduct'] as const;
-
-export const getUpdateProductMutationOptions = <TError = ErrorType<HttpValidationProblemDetails | void | ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProduct>>, TError,UpdateProductMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof updateProduct>>, TError,UpdateProductMutationVariables, TContext> => {
-
-const mutationKey = getUpdateProductMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateProduct>>, UpdateProductMutationVariables> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  updateProduct(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdateProductMutationResult = NonNullable<Awaited<ReturnType<typeof updateProduct>>>
-    export type UpdateProductMutationBody = BodyType<UpdateProductRequest>
-    export type UpdateProductMutationError = ErrorType<HttpValidationProblemDetails | void | ProblemDetails>
-    export type UpdateProductMutationVariables = {id: string;data: BodyType<UpdateProductRequest>}
-
-    export const useUpdateProduct = <TError = ErrorType<HttpValidationProblemDetails | void | ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProduct>>, TError,UpdateProductMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof updateProduct>>,
-        TError,
-        UpdateProductMutationVariables,
-        TContext
-      > => {
-      return useMutation(getUpdateProductMutationOptions(options), queryClient);
-    }
-    export const getDeleteProductUrl = (id: string,) => {
-
-
-
-
-  return `/products/${id}`
-}
-
-export const deleteProduct = async (id: string, options?: Parameters<typeof apiFetch>[1]): Promise<void> => {
-
-  return apiFetch<void>(getDeleteProductUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
-
-
-  }
-);}
-
-
-
-
-
-export const getDeleteProductMutationKey = () => ['deleteProduct'] as const;
-
-export const getDeleteProductMutationOptions = <TError = ErrorType<void | ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProduct>>, TError,DeleteProductMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteProduct>>, TError,DeleteProductMutationVariables, TContext> => {
-
-const mutationKey = getDeleteProductMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProduct>>, DeleteProductMutationVariables> = (props) => {
-          const {id} = props ?? {};
-
-          return  deleteProduct(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteProductMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProduct>>>
-
-    export type DeleteProductMutationError = ErrorType<void | ProblemDetails>
-    export type DeleteProductMutationVariables = {id: string}
-
-    export const useDeleteProduct = <TError = ErrorType<void | ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProduct>>, TError,DeleteProductMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteProduct>>,
-        TError,
-        DeleteProductMutationVariables,
-        TContext
-      > => {
-      return useMutation(getDeleteProductMutationOptions(options), queryClient);
-    }

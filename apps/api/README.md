@@ -35,7 +35,7 @@ src/Ako.Api/
   Features/
     Auth/                        kullanıcılar, roller, giriş (yerel + sosyal)
     Todos/                       ÖRNEK: kullanıcıya özel veri
-    Products/                    ÖRNEK: CRUD + sayfalama + rol bazlı yetki
+    Products/                    ÖRNEK: herkese açık okuma + /admin altında yönetim (CRUD)
       Actions/                   bir use case = bir dosya
         CreateProduct.cs
         ListProducts.cs …
@@ -65,10 +65,10 @@ Her use case dosyası aynı sırayla `#region`'lara ayrılır:
 `Todos` ve `Products` yalnızca desenleri göstermek için var; gerçek projede genelde silinirler
 (klasörü, `AppDbContext`'teki `DbSet`'i ve `Program.cs`'teki `Map…()` satırını silip yeni bir migration alın).
 
-|          | Gösterdiği                                                                                |
-| -------- | ----------------------------------------------------------------------------------------- |
-| Todos    | Tüm adresler giriş ister; her kullanıcı yalnızca kendi kayıtlarını görür (`ICurrentUser`) |
-| Products | Listeleme/detay herkese açık, ekleme/güncelleme giriş ister, silme yalnızca Admin         |
+|          | Gösterdiği                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------------- |
+| Todos    | Tüm adresler giriş ister; her kullanıcı yalnızca kendi kayıtlarını görür (`ICurrentUser`)                      |
+| Products | Listeleme/detay herkese açık (`/products`); ekleme/güncelleme/silme yalnızca `/admin/products` (iç ağ + Admin) |
 
 ## Kimlik doğrulama (`Features/Auth`)
 

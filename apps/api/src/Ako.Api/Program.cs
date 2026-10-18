@@ -60,7 +60,11 @@ app.MapProducts();
 // Backoffice adresleri: yalnızca Api:EnableAdminEndpoints=true olan (iç ağdaki) örnekte oluşur.
 if (AdminEndpoints.IsEnabled(app.Configuration))
 {
-    app.MapAdmin(admin => admin.MapAuthAdmin()); // ako:auth
+    app.MapAdmin(admin =>
+    {
+        admin.MapAuthAdmin(); // ako:auth
+        admin.MapProductsAdmin();
+    });
 }
 
 app.Run();

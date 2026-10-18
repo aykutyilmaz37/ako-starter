@@ -10,9 +10,10 @@ interface ProductsTableProps {
   products: PagedResponseOfProductResponse | undefined;
   loading: boolean;
   onPageChange: (page: number) => void;
+  onEdit: (product: ProductResponse) => void;
 }
 
-export function ProductsTable({ products, loading, onPageChange }: ProductsTableProps) {
+export function ProductsTable({ products, loading, onPageChange, onEdit }: ProductsTableProps) {
   const remove = useRemoveProduct();
 
   const columns: ColumnDef<ProductResponse>[] = [
@@ -30,18 +31,23 @@ export function ProductsTable({ products, loading, onPageChange }: ProductsTable
       columnName: 'id',
       align: 'end',
       render: (_, product) => (
-        <Popconfirm
-          title="Ürün silinsin mi?"
-          description={product.name}
-          okText="Sil"
-          cancelText="Vazgeç"
-          color="error"
-          onConfirm={() => remove.mutate({ id: product.id })}
-        >
-          <Button size="sm" variant="ghost" color="error">
-            Sil
+        <div className="flex justify-end gap-1">
+          <Button size="sm" variant="ghost" onClick={() => onEdit(product)}>
+            Düzenle
           </Button>
-        </Popconfirm>
+          <Popconfirm
+            title="Ürün silinsin mi?"
+            description={product.name}
+            okText="Sil"
+            cancelText="Vazgeç"
+            color="error"
+            onConfirm={() => remove.mutate({ id: product.id })}
+          >
+            <Button size="sm" variant="ghost" color="error">
+              Sil
+            </Button>
+          </Popconfirm>
+        </div>
       ),
     },
   ];

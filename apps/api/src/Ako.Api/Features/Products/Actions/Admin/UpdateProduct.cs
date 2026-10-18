@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ako.Api.Features.Products;
 
-// PUT /products/{id} → ürünü günceller, 200 + güncel ürün. Yoksa 404.
+// PUT /admin/products/{id} → ürünü günceller, 200 + güncel ürün. Yoksa 404.
 
 #region İstek — SKU yok, çünkü SKU değiştirilemez
 
@@ -55,8 +55,7 @@ public sealed class UpdateProductHandler(AppDbContext db)
 internal static class UpdateProduct
 {
     public static void Map(RouteGroupBuilder group) =>
-        group.MapPut("/{id:guid}", Handle).WithName("UpdateProduct")
-            .RequireAuthorization()
+        group.MapPut("/{id:guid}", Handle).WithName("AdminUpdateProduct")
             .WithValidation<UpdateProductRequest>()
             .ProducesProblem(StatusCodes.Status404NotFound);
 

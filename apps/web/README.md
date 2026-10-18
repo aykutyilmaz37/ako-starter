@@ -3,10 +3,10 @@
 Her web ürünü ayrı bir uygulamadır (ayrı build, ayrı domain, ayrı deploy). Hepsi aynı yapıyı kullanır:
 **React Router 8** (framework modu, SSR) + **Hono** sunucusu (BFF) + **mari-ui** + **TanStack Query**.
 
-| Uygulama      | Port | Kimler girer   | Not                                                                |
-| ------------- | ---- | -------------- | ------------------------------------------------------------------ |
-| `site/`       | 5173 | herkes         | herkese açık ürünler (SSR + CDN önbelleği), giriş, kayıt, görevler |
-| `backoffice/` | 5174 | yalnızca Admin | kullanıcılar (rol atama), ürünler (silme); iç ağda çalışır         |
+| Uygulama      | Port | Kimler girer   | Not                                                                   |
+| ------------- | ---- | -------------- | --------------------------------------------------------------------- |
+| `site/`       | 5173 | herkes         | herkese açık ürünler (SSR + CDN önbelleği), giriş, kayıt, görevler    |
+| `backoffice/` | 5174 | yalnızca Admin | kullanıcılar (rol atama), ürünler (ekle/düzenle/sil); iç ağda çalışır |
 
 Yeni bir ürün (ör. `investment`): `backoffice` ya da `site` klasörünü kopyalayın, `package.json` adını, portu
 (`vite.config.ts`, `env.server.ts`) ve `cookieName`'i (`app/server.ts`) değiştirin.

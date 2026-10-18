@@ -9,7 +9,7 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - Yapı:
   ```text
   apps/api              .NET 10 (tek API)
-  apps/web/<ürün>       her web ürünü ayrı uygulama: React Router v7 + Hono (ör. backoffice, investment, deposit)
+  apps/web/<ürün>       her web ürünü ayrı uygulama: React Router 8 + Hono (ör. backoffice, investment, deposit)
   apps/mobile           Expo
   packages/api-client   OpenAPI'den üretilen kod
   packages/ui           web uygulamalarının ortak bileşenleri (mari-ui üstüne)
@@ -17,7 +17,7 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
   packages/shared       ortak TS yardımcıları
   ```
 - **Birden fazla web ürünü / backoffice:** aynı monorepoda `apps/web/` altında ayrı uygulamalar; ayrı build, ayrı domain, ayrı deploy. Tek uygulamada sayfa grupları olarak tutulmaz (müşteri paketine admin kodu girmez, biri diğerini yeniden yayınlatmaz). Ayrı repo yalnızca ayrı ekip/takvim ya da zorunlu ağ ayrımı varsa.
-- **Backoffice güvenliği:** aynı API kodu, iki deploy. İnternete açık örnekte admin endpoint'leri kapalı (`Api:EnableAdminEndpoints=false`, adresler hiç oluşmaz), iç ağdaki/VPN'deki örnekte açık. Rol kontrolü (`AppPolicies.Admin`) ikinci katman olarak kalır. Admin endpoint'leri her özelliğin içinde `Actions/Admin/` altında, `/admin/...` adresinde durur. Build sırasında üretilen `openapi.json` admin adreslerini her zaman içerir (api-client'ta hook'lar olsun diye).
+- **Backoffice güvenliği:** aynı API kodu, iki deploy. İnternete açık örnekte admin endpoint'leri kapalı (`Api:EnableAdminEndpoints=false`, adresler hiç oluşmaz), iç ağdaki/VPN'deki örnekte açık. Rol kontrolü (`AppPolicies.Admin`) ikinci katman olarak kalır. Admin endpoint'leri her özelliğin içinde `Actions/Admin/` altında, `/admin/...` adresinde durur; yönetim işlemleri (ör. ürün ekleme/güncelleme/silme) public adreslerde hiç bulunmaz. Ayrı bir .NET projesi açılmadı: ortak kod (kurallar, veritabanı) tek projede kalsın diye. Build sırasında üretilen `openapi.json` admin adreslerini her zaman içerir (api-client'ta hook'lar olsun diye).
 - **Kural:** her uygulama tek başına silinebilir. Uygulamalar birbirini import etmez, ortak olan her şey `packages/` altında durur.
 
 ## Backend: `apps/api`

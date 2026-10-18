@@ -33,25 +33,6 @@ export const ListProductsResponse = zod.object({
   "totalPages": zod.int().optional()
 })
 
-export const CreateProductBody = zod.object({
-  "sku": zod.string(),
-  "name": zod.string(),
-  "description": zod.string().nullable(),
-  "price": zod.number(),
-  "stock": zod.int()
-})
-
-export const CreateProductResponse = zod.object({
-  "id": zod.uuid(),
-  "sku": zod.string(),
-  "name": zod.string(),
-  "description": zod.string().nullable(),
-  "price": zod.number(),
-  "stock": zod.int(),
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "updatedAt": zod.iso.datetime({"offset":true})
-})
-
 export const GetProductParams = zod.object({
   "id": zod.uuid()
 })
@@ -66,32 +47,4 @@ export const GetProductResponse = zod.object({
   "createdAt": zod.iso.datetime({"offset":true}),
   "updatedAt": zod.iso.datetime({"offset":true})
 })
-
-export const UpdateProductParams = zod.object({
-  "id": zod.uuid()
-})
-
-export const UpdateProductBody = zod.object({
-  "name": zod.string(),
-  "description": zod.string().nullable(),
-  "price": zod.number(),
-  "stock": zod.int()
-})
-
-export const UpdateProductResponse = zod.object({
-  "id": zod.uuid(),
-  "sku": zod.string(),
-  "name": zod.string(),
-  "description": zod.string().nullable(),
-  "price": zod.number(),
-  "stock": zod.int(),
-  "createdAt": zod.iso.datetime({"offset":true}),
-  "updatedAt": zod.iso.datetime({"offset":true})
-})
-
-export const DeleteProductParams = zod.object({
-  "id": zod.uuid()
-})
-
-export const DeleteProductResponse = zod.void()
 
