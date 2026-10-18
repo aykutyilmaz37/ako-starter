@@ -63,6 +63,7 @@ internal static class CreateProduct
 {
     public static void Map(RouteGroupBuilder group) =>
         group.MapPost("/", Handle).WithName("CreateProduct")
+            .RequireAuthorization()
             .WithValidation<CreateProductRequest>()
             .ProducesProblem(StatusCodes.Status409Conflict);
 

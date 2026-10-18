@@ -2,6 +2,7 @@ using Ako.Api.Common;
 
 namespace Ako.Api.Features.Products;
 
+// ÖRNEK ÖZELLİK: CRUD, sayfalama, arama ve rol bazlı yetkiyi gösterir. Projede gerekmiyorsa silin.
 // Veritabanındaki "products" tablosunun C# karşılığı
 
 public sealed class Product : IEntity

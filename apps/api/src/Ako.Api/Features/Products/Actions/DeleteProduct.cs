@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ako.Api.Features.Products;
 
-// DELETE /products/{id} → 204 (gövdesiz). Yoksa 404.
+// DELETE /products/{id} → 204 (gövdesiz). Yoksa 404. Yalnızca Admin.
 
 #region İş mantığı
 
@@ -26,7 +26,9 @@ public sealed class DeleteProductHandler(AppDbContext db)
 internal static class DeleteProduct
 {
     public static void Map(RouteGroupBuilder group) =>
-        group.MapDelete("/{id:guid}", Handle).WithName("DeleteProduct").ProducesProblem(StatusCodes.Status404NotFound);
+        group.MapDelete("/{id:guid}", Handle).WithName("DeleteProduct")
+            .RequireAuthorization(AppPolicies.Admin)
+            .ProducesProblem(StatusCodes.Status404NotFound);
 
     private static async Task<Results<NoContent, ProblemHttpResult>> Handle(
         Guid id, DeleteProductHandler handler, CancellationToken ct)

@@ -11,7 +11,8 @@ namespace Ako.Api.Tests;
 [Collection(ApiCollection.Name)]
 public sealed class ProductsTests(ApiFactory factory)
 {
-    private readonly HttpClient _client = factory.CreateClient();
+    // Listeleme/detay herkese açık; ekleme/güncelleme kullanıcı, silme Admin ister.
+    private readonly HttpClient _client = factory.CreateAdminClientAsync().GetAwaiter().GetResult();
 
     // Testler aynı veritabanını paylaştığı için her test kendi benzersiz SKU'sunu kullanır.
     private static string NewSku() => $"T-{Guid.NewGuid():N}"[..20];
@@ -90,6 +91,28 @@ public sealed class ProductsTests(ApiFactory factory)
         Assert.Equal(3, page!.TotalCount);
         Assert.Equal(2, page.TotalPages);
         Assert.Equal($"Defter {tag} 3", page.Items.Single().Name);
+    }
+
+    [Fact]
+    public async Task Listeleme_herkese_acik_ekleme_giris_ister()
+    {
+        var anonymous = factory.CreateClient();
+
+        Assert.Equal(HttpStatusCode.OK, (await anonymous.GetAsync("/products")).StatusCode);
+        var create = await anonymous.PostAsJsonAsync("/products", new CreateProductRequest(NewSku(), "A", null, 1m, 0));
+        Assert.Equal(HttpStatusCode.Unauthorized, create.StatusCode);
+    }
+
+    [Fact]
+    public async Task Silme_yalnizca_Admin_e_aciktir()
+    {
+        var user = await factory.CreateUserClientAsync();
+        var create = await user.PostAsJsonAsync("/products", new CreateProductRequest(NewSku(), "A", null, 1m, 0));
+        Assert.Equal(HttpStatusCode.Created, create.StatusCode);
+        var product = (await create.Content.ReadFromJsonAsync<ProductResponse>())!;
+
+        Assert.Equal(HttpStatusCode.Forbidden, (await user.DeleteAsync($"/products/{product.Id}")).StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, (await _client.DeleteAsync($"/products/{product.Id}")).StatusCode);
     }
 
     [Fact]

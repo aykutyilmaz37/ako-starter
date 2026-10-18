@@ -9,12 +9,12 @@ namespace Ako.Api.Features.Todos;
 
 #region İş mantığı
 
-public sealed class GetTodoHandler(AppDbContext db)
+public sealed class GetTodoHandler(AppDbContext db, ICurrentUser currentUser)
 {
     /// <summary>Görevi id ile bulur; yoksa "todos.not_found" hatası döner.</summary>
     public async Task<Result<TodoResponse>> HandleAsync(Guid id, CancellationToken ct)
     {
-        var todo = await db.Todos.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id, ct);
+        var todo = await db.Todos.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id && t.UserId == currentUser.Id, ct);
         return todo is null ? TodoErrors.NotFound(id) : TodoResponse.From(todo);
     }
 }

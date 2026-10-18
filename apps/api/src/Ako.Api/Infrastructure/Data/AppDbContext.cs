@@ -1,16 +1,25 @@
+using Ako.Api.Features.Auth;
 using Ako.Api.Features.Products;
 using Ako.Api.Features.Todos;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ako.Api.Infrastructure.Data;
 
 // Handler'lar DbContext'i doğrudan kullanır; ayrı bir repository katmanı yoktur.
-public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+// IdentityDbContext kullanıcı, rol ve giriş tablolarını ekler (bkz. Features/Auth).
+public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
+    : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>(options)
 {
     public DbSet<Todo> Todos => Set<Todo>();
     public DbSet<Product> Products => Set<Product>();
 
-    // Her özellik kendi IEntityTypeConfiguration sınıfını taşır; burada toplu olarak uygulanır.
-    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder); // Identity tabloları önce kurulur
+
+        // Her özellik kendi IEntityTypeConfiguration sınıfını taşır; burada toplu olarak uygulanır.
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+    }
 }

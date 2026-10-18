@@ -1,3 +1,4 @@
+using Ako.Api.Common;
 using Ako.Api.Infrastructure.Data;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,8 @@ public static class ServiceCollectionExtensions
         }
 
         services.AddSingleton(TimeProvider.System);
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         return services;
     }

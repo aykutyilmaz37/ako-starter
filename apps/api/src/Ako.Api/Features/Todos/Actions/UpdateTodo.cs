@@ -26,12 +26,12 @@ internal sealed class UpdateTodoRequestValidator : AbstractValidator<UpdateTodoR
 
 #region İş mantığı
 
-public sealed class UpdateTodoHandler(AppDbContext db)
+public sealed class UpdateTodoHandler(AppDbContext db, ICurrentUser currentUser)
 {
     /// <summary>Görevi bulup günceller; yoksa "todos.not_found" hatası döner.</summary>
     public async Task<Result<TodoResponse>> HandleAsync(Guid id, UpdateTodoRequest request, CancellationToken ct)
     {
-        var todo = await db.Todos.FirstOrDefaultAsync(t => t.Id == id, ct);
+        var todo = await db.Todos.FirstOrDefaultAsync(t => t.Id == id && t.UserId == currentUser.Id, ct);
         if (todo is null)
         {
             return TodoErrors.NotFound(id);

@@ -9,12 +9,12 @@ namespace Ako.Api.Features.Todos;
 
 #region İş mantığı
 
-public sealed class DeleteTodoHandler(AppDbContext db)
+public sealed class DeleteTodoHandler(AppDbContext db, ICurrentUser currentUser)
 {
     /// <summary>Görevi tek sorguyla siler; silinecek kayıt yoksa "todos.not_found".</summary>
     public async Task<Result> HandleAsync(Guid id, CancellationToken ct)
     {
-        var deleted = await db.Todos.Where(t => t.Id == id).ExecuteDeleteAsync(ct);
+        var deleted = await db.Todos.Where(t => t.Id == id && t.UserId == currentUser.Id).ExecuteDeleteAsync(ct);
         return deleted == 0 ? TodoErrors.NotFound(id) : Result.Success();
     }
 }

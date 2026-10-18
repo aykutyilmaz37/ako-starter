@@ -56,6 +56,7 @@ internal static class UpdateProduct
 {
     public static void Map(RouteGroupBuilder group) =>
         group.MapPut("/{id:guid}", Handle).WithName("UpdateProduct")
+            .RequireAuthorization()
             .WithValidation<UpdateProductRequest>()
             .ProducesProblem(StatusCodes.Status404NotFound);
 

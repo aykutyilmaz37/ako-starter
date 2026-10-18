@@ -2,6 +2,10 @@ namespace Ako.Api.Features.Products;
 
 // Tüm /products adreslerini tek yerden kaydeder (Program.cs bunu çağırır)
 
+// ÖRNEK ÖZELLİK — yetkiler:
+//   listeleme ve detay → herkese açık
+//   ekleme ve güncelleme → giriş yapmış kullanıcı
+//   silme → yalnızca Admin
 public static class ProductEndpoints
 {
     // WithName değerleri OpenAPI operationId olur; Orval hook adlarını buradan üretir

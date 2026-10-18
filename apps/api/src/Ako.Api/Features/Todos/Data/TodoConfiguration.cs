@@ -11,6 +11,6 @@ internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
     {
         builder.Property(t => t.Id).ValueGeneratedNever();
         builder.Property(t => t.Title).HasMaxLength(Todo.TitleMaxLength);
-        builder.HasIndex(t => t.CreatedAt);
+        builder.HasIndex(t => new { t.UserId, t.CreatedAt });
     }
 }

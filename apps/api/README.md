@@ -9,6 +9,9 @@ pnpm db:up                 # kökten: Postgres'i Docker'da başlatır
 pnpm --filter @ako/api dev # http://localhost:5165
 ```
 
+Development'ta açılışta bekleyen migration'lar otomatik uygulanır ve bir Admin hesabı oluşturulur
+(`admin@ako.local` / `Admin123!`, bkz. `appsettings.Development.json`).
+
 - API dokümantasyonu ve deneme arayüzü: <http://localhost:5165/swagger>
 - Canlı OpenAPI şeması: <http://localhost:5165/openapi/v1.json>
 - `openapi.json` (bu klasörde): build sırasında üretilir, commit edilir, `packages/api-client` bunu okur.
@@ -22,7 +25,9 @@ src/Ako.Api/
   Infrastructure/         DbContext, migration'lar, DI ve localization kurulumu
   Resources/              Messages.resx (tr, varsayılan) + Messages.en.resx
   Features/
-    Products/
+    Auth/                        kullanıcılar, roller, giriş (yerel + sosyal)
+    Todos/                       ÖRNEK: kullanıcıya özel veri
+    Products/                    ÖRNEK: CRUD + sayfalama + rol bazlı yetki
       Actions/                   bir use case = bir dosya
         CreateProduct.cs
         ListProducts.cs …
@@ -47,9 +52,60 @@ Her use case dosyası aynı sırayla `#region`'lara ayrılır:
 | İş mantığı | `XxxHandler.HandleAsync`, veritabanıyla konuşan kısım | — |
 | Endpoint | URL + HTTP metodu, handler'ı çağırır, sonucu HTTP'ye çevirir | Orval hook'u (`useCreateProduct`) |
 
+## Örnek özellikler
+
+`Todos` ve `Products` yalnızca desenleri göstermek için var; gerçek projede genelde silinirler
+(klasörü, `AppDbContext`'teki `DbSet`'i ve `Program.cs`'teki `Map…()` satırını silip yeni bir migration alın).
+
+| | Gösterdiği |
+| --- | --- |
+| Todos | Tüm adresler giriş ister; her kullanıcı yalnızca kendi kayıtlarını görür (`ICurrentUser`) |
+| Products | Listeleme/detay herkese açık, ekleme/güncelleme giriş ister, silme yalnızca Admin |
+
+## Kimlik doğrulama (`Features/Auth`)
+
+- **Yerel hesap:** Identity'nin hazır endpoint'leri: `/auth/register`, `/auth/login`, `/auth/refresh`,
+  `/auth/confirmEmail`, `/auth/forgotPassword`, `/auth/resetPassword`, `/auth/manage/*`.
+  Giriş, `accessToken` + `refreshToken` döner; istekler `Authorization: Bearer <accessToken>` ile yapılır.
+- **Roller:** `Admin` ve `User`. Kayıt olan herkes `User` olur. Endpoint'te `RequireAuthorization()` (giriş yeterli)
+  ya da `RequireAuthorization(AppPolicies.Admin)` kullanılır.
+- **Kullanıcı bilgisi:** `GET /auth/me`. Handler'larda kullanıcı kimliği `ICurrentUser.Id` ile okunur.
+- **E-postalar:** Şimdilik log'a yazılır (`LoggingEmailSender`); gerçek gönderim için değiştirilmeli.
+
+### Sosyal giriş
+
+Google, Apple, Facebook, GitHub, X ve LinkedIn hazır. Bir sağlayıcı yalnızca ayarı doluysa etkinleşir;
+`GET /auth/providers` istemciye hangi butonları göstereceğini söyler.
+
+```text
+1) istemci tarayıcıda açar:  GET /auth/external/github?returnUrl=http://localhost:5173/auth/callback
+2) kullanıcı GitHub'da giriş yapar → API kullanıcıyı bulur ya da oluşturur
+3) tarayıcı döner:           http://localhost:5173/auth/callback?code=…   (hata varsa ?error=<kod>)
+4) istemci:                  POST /auth/exchange { code } → accessToken + refreshToken
+```
+
+- Web ve mobil aynı akışı kullanır (mobilde `ako://auth/callback` gibi bir deep link ile).
+- `returnUrl`, `Auth:AllowedReturnUrls` listesindeki bir adresle başlamalıdır.
+- **Mobilde native giriş (Google, Apple):** cihazdaki SDK'nın verdiği id token → `POST /auth/native/google { idToken }`.
+  `Auth:Providers:<Ad>:NativeClientIds` doluysa açılır (Google için iOS/Android client id'leri, Apple için bundle id).
+- Aynı e-postalı mevcut hesaba otomatik bağlanma yalnızca e-postayı doğrulayan sağlayıcılarda (Google, Apple) yapılır;
+  diğerlerinde `auth.email_in_use` döner.
+
+Sağlayıcı anahtarları **repoya yazılmaz**, user-secrets ile girilir:
+
+```bash
+cd apps/api/src/Ako.Api
+dotnet user-secrets set "Auth:Providers:GitHub:ClientId" "<client-id>"
+dotnet user-secrets set "Auth:Providers:GitHub:ClientSecret" "<client-secret>"
+```
+
+Callback adresleri (sağlayıcı panelinde tanımlanır): `/signin-google`, `/signin-facebook`, `/signin-github`,
+`/signin-twitter`, `/signin-linkedin`, `/signin-apple`. Apple callback'i form POST olduğu için HTTPS gerektirir.
+
 ## Hatalar
 
 - **Doğrulama:** 400, `{ errors: { price: ["'Fiyat' değeri '0' değerinden büyük olmalı."] } }`
+- **Yetki:** 401 (giriş yok) / 403 (rol yetmiyor).
 - **İş hatası:** 404/409, `{ code: "products.sku_taken", detail: "…" }`. İstemci `code`'a göre karar verir, `detail`'i gösterir.
 - Mesajların dili `Accept-Language` başlığına göre seçilir (`tr` varsayılan, `en`). Metinler `Resources/*.resx` dosyalarında durur; kodda metin yoktur.
 

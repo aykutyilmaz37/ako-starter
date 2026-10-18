@@ -1,19 +1,21 @@
+using Ako.Api.Common;
 using Ako.Api.Infrastructure.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ako.Api.Features.Todos;
 
-// GET /todos → tüm görevler, en yeni önce
+// GET /todos → giriş yapan kullanıcının görevleri, en yeni önce
 
 #region İş mantığı
 
-public sealed class ListTodosHandler(AppDbContext db)
+public sealed class ListTodosHandler(AppDbContext db, ICurrentUser currentUser)
 {
-    /// <summary>Tüm görevleri oluşturulma tarihine göre yeniden eskiye döner.</summary>
+    /// <summary>Kullanıcının görevlerini oluşturulma tarihine göre yeniden eskiye döner.</summary>
     public Task<TodoResponse[]> HandleAsync(CancellationToken ct) =>
         db.Todos
             .AsNoTracking()
+            .Where(t => t.UserId == currentUser.Id)
             .OrderByDescending(t => t.CreatedAt)
             .Select(t => new TodoResponse(t.Id, t.Title, t.IsDone, t.CreatedAt))
             .ToArrayAsync(ct);

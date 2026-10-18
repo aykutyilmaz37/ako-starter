@@ -30,7 +30,13 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - **Localization:** `Accept-Language` ile tr (varsayılan) / en. Validasyon mesajları, alan adları ve hata açıklamaları `Resources/Messages*.resx` dosyalarında; kodda metin yok.
 - API dokümantasyonu: **Swagger UI** (`/swagger`, yalnızca Development). Şemayı .NET'in yerleşik OpenAPI desteği üretir; Swashbuckle yalnızca arayüz için kullanılır.
 - Validasyon: **FluentValidation** (şirket standardı). Kurallar OpenAPI'ye kendiliğinden yansımadığı için istemcideki zod şemaları yalnızca tip ve zorunluluk bilgisini taşır; asıl kural kontrolü sunucuda yapılır, hatalar ProblemDetails ile döner.
-- Auth: **ASP.NET Core Identity** + sosyal girişler (Google, Apple, Facebook…). Başka bir sosyal giriş varsa iOS'ta Apple girişi zorunludur.
+- Auth: **ASP.NET Core Identity** + Identity'nin hazır endpoint'leri (`MapIdentityApi`), bearer token (access + refresh). Roller: Admin / User.
+  - Sosyal giriş: Google, Apple, Facebook, GitHub, X, LinkedIn. Hepsi **tek akış**: OAuth API'de yürür, istemciye tek kullanımlık kod döner, kod `/auth/exchange` ile token'a çevrilir. Web ve mobil aynı akışı kullanır. (GitHub ve LinkedIn'de kod→token değişimi client secret ister; secret mobil uygulamaya konamayacağı için akış sunucuda olmak zorunda.)
+  - Mobilde Google ve Apple için ek olarak native giriş: cihazdaki id token `/auth/native/{provider}` ile doğrulanır.
+  - Sağlayıcı yalnızca ayarı (ClientId) doluysa etkinleşir; secret'lar user-secrets / ortam değişkenlerinde durur.
+  - Başka bir sosyal giriş varsa iOS'ta Apple girişi zorunludur (App Store kuralı).
+  - create-ako-app "auth olsun mu, hangi sağlayıcılar?" diye sorar. Auth kodu tek klasörde (`Features/Auth`), Program.cs'teki satırları `// ako:auth` ile işaretli.
+- `Todos` ve `Products` **örnek özelliklerdir**: kullanıcıya özel veri, herkese açık okuma ve rol bazlı yetkiyi gösterirler; gerçek projede silinirler.
 
 ## Contract: `packages/api-client`
 - .NET, build sırasında `openapi.json` üretir.
@@ -50,7 +56,7 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 ## Mobil: `apps/mobile`
 - Expo + `@mari-ui/native`.
 - .NET'e doğrudan bağlanır, bearer token SecureStore'da tutulur.
-- Sosyal giriş cihazda yapılır, alınan id token .NET'e gönderilir; .NET doğrulayıp kendi token'ını verir.
+- Sosyal giriş: tarayıcı akışı (`AuthSession` + `ako://` deep link) tüm sağlayıcılar için; Google ve Apple'da ek olarak native SDK ile id token gönderilebilir.
 
 ## Altyapı ve güvenlik
 - Docker Compose: Postgres + api + web.
