@@ -36,7 +36,7 @@ internal sealed class CreateProductRequestValidator : AbstractValidator<CreatePr
 
 #region İş mantığı
 
-public sealed class CreateProductHandler(AppDbContext db, TimeProvider time)
+public sealed class CreateProductHandler(AppDbContext db)
 {
     /// <summary>SKU boştaysa ürünü kaydeder; doluysa "products.sku_taken" hatası döner.</summary>
     public async Task<Result<ProductResponse>> HandleAsync(CreateProductRequest request, CancellationToken ct)
@@ -48,7 +48,7 @@ public sealed class CreateProductHandler(AppDbContext db, TimeProvider time)
             return ProductErrors.SkuTaken(sku);
         }
 
-        var product = Product.Create(sku, request.Name, request.Description, request.Price, request.Stock, time.GetUtcNow());
+        var product = Product.Create(sku, request.Name, request.Description, request.Price, request.Stock);
         db.Products.Add(product);
         await db.SaveChangesAsync(ct);
         return ProductResponse.From(product);

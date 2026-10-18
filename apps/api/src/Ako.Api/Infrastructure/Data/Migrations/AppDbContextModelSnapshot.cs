@@ -117,6 +117,10 @@ namespace Ako.Api.Infrastructure.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
                     b.Property<string>("Description")
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)")
@@ -147,6 +151,10 @@ namespace Ako.Api.Infrastructure.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
+
                     b.HasKey("Id")
                         .HasName("pk_products");
 
@@ -170,6 +178,10 @@ namespace Ako.Api.Infrastructure.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
                     b.Property<bool>("IsDone")
                         .HasColumnType("boolean")
                         .HasColumnName("is_done");
@@ -179,6 +191,14 @@ namespace Ako.Api.Infrastructure.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("title");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
@@ -191,6 +211,29 @@ namespace Ako.Api.Infrastructure.Data.Migrations
                         .HasDatabaseName("ix_todos_user_id_created_at");
 
                     b.ToTable("todos", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FriendlyName")
+                        .HasColumnType("text")
+                        .HasColumnName("friendly_name");
+
+                    b.Property<string>("Xml")
+                        .HasColumnType("text")
+                        .HasColumnName("xml");
+
+                    b.HasKey("Id")
+                        .HasName("pk_data_protection_keys");
+
+                    b.ToTable("data_protection_keys", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>

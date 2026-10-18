@@ -5,7 +5,7 @@ namespace Ako.Api.Features.Todos;
 // ÖRNEK ÖZELLİK: auth ile kullanıcıya özel veri nasıl tutulur, onu gösterir. Projede gerekmiyorsa silin.
 // Veritabanındaki "todos" tablosunun C# karşılığı
 
-public sealed class Todo : IEntity
+public sealed class Todo : IEntity, IAuditable
 {
     public const int TitleMaxLength = 200;
 
@@ -17,15 +17,19 @@ public sealed class Todo : IEntity
     public Guid UserId { get; private set; }
     public string Title { get; private set; } = null!;
     public bool IsDone { get; private set; }
+
+    // Denetim alanları (IAuditable): kayıt sırasında otomatik dolar, elle atanmaz.
     public DateTimeOffset CreatedAt { get; private set; }
+    public Guid? CreatedBy { get; private set; }
+    public DateTimeOffset UpdatedAt { get; private set; }
+    public Guid? UpdatedBy { get; private set; }
 
     /// <summary>Yeni görev oluşturur; başlangıçta tamamlanmamıştır.</summary>
-    public static Todo Create(Guid userId, string title, DateTimeOffset now) => new()
+    public static Todo Create(Guid userId, string title) => new()
     {
-        Id = Guid.CreateVersion7(now),
+        Id = Guid.CreateVersion7(),
         UserId = userId,
         Title = title.Trim(),
-        CreatedAt = now,
     };
 
     /// <summary>Başlığı ve tamamlanma durumunu günceller.</summary>

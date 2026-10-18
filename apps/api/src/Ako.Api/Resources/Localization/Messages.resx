@@ -62,4 +62,5 @@
   <data name="email.ChangeEmail.intro" xml:space="preserve"><value>Yeni e-posta adresinizi onaylamak için aşağıdaki kodu girin:</value></data>
   <data name="email.footer" xml:space="preserve"><value>Bu e-posta otomatik olarak gönderilmiştir, lütfen yanıtlamayın.</value></data>
   <data name="email.code.note" xml:space="preserve"><value>Kod 10 dakika geçerlidir. Bu isteği siz yapmadıysanız bu e-postayı yok sayabilirsiniz.</value></data>
+  <data name="rate_limited" xml:space="preserve"><value>Çok fazla istek gönderildi. Lütfen biraz bekleyip tekrar deneyin.</value></data>
 </root>

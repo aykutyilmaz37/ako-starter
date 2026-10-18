@@ -31,7 +31,7 @@ internal sealed class UpdateProductRequestValidator : AbstractValidator<UpdatePr
 
 #region İş mantığı
 
-public sealed class UpdateProductHandler(AppDbContext db, TimeProvider time)
+public sealed class UpdateProductHandler(AppDbContext db)
 {
     /// <summary>Ürünü bulup alanlarını günceller; yoksa "products.not_found" hatası döner.</summary>
     public async Task<Result<ProductResponse>> HandleAsync(Guid id, UpdateProductRequest request, CancellationToken ct)
@@ -42,7 +42,7 @@ public sealed class UpdateProductHandler(AppDbContext db, TimeProvider time)
             return ProductErrors.NotFound(id);
         }
 
-        product.Update(request.Name, request.Description, request.Price, request.Stock, time.GetUtcNow());
+        product.Update(request.Name, request.Description, request.Price, request.Stock);
         await db.SaveChangesAsync(ct);
         return ProductResponse.From(product);
     }

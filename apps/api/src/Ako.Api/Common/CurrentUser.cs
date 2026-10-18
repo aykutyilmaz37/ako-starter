@@ -22,12 +22,15 @@ public static class AppPolicies
 public interface ICurrentUser
 {
     Guid Id { get; }
+
+    /// <summary>Giriş yapılmamışsa null; kimliğin zorunlu olmadığı yerler (ör. denetim alanları) için.</summary>
+    Guid? IdOrNull { get; }
 }
 
 internal sealed class CurrentUser(IHttpContextAccessor accessor) : ICurrentUser
 {
-    public Guid Id =>
-        Guid.TryParse(accessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier), out var id)
-            ? id
-            : throw new InvalidOperationException("Kimliği doğrulanmamış istekte ICurrentUser kullanıldı.");
+    public Guid Id => IdOrNull ?? throw new InvalidOperationException("Kimliği doğrulanmamış istekte ICurrentUser.Id kullanıldı.");
+
+    public Guid? IdOrNull =>
+        Guid.TryParse(accessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : null;
 }

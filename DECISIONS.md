@@ -7,12 +7,16 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - **create-ako-app** (zorunlu): `npm create ako-app` komutuyla çalışan, web/mobil/ikisi seçtiren oluşturucu. Seçilmeyen uygulamaları siler.
 - Yapı:
   ```text
-  apps/api        .NET 10
-  apps/web        React Router v7 + Hono
-  apps/mobile     Expo
+  apps/api              .NET 10 (tek API)
+  apps/web/<ürün>       her web ürünü ayrı uygulama: React Router v7 + Hono (ör. backoffice, investment, deposit)
+  apps/mobile           Expo
   packages/api-client   OpenAPI'den üretilen kod
+  packages/ui           web uygulamalarının ortak bileşenleri (mari-ui üstüne)
+  packages/web-core     ortak BFF (Hono) kurulumu: session cookie, auth, API'ye token ekleme
   packages/shared       ortak TS yardımcıları
   ```
+- **Birden fazla web ürünü / backoffice:** aynı monorepoda `apps/web/` altında ayrı uygulamalar; ayrı build, ayrı domain, ayrı deploy. Tek uygulamada sayfa grupları olarak tutulmaz (müşteri paketine admin kodu girmez, biri diğerini yeniden yayınlatmaz). Ayrı repo yalnızca ayrı ekip/takvim ya da zorunlu ağ ayrımı varsa.
+- **Backoffice güvenliği:** aynı API kodu, iki deploy. İnternete açık örnekte admin endpoint'leri kapalı (`Api:EnableAdminEndpoints=false`, adresler hiç oluşmaz), iç ağdaki/VPN'deki örnekte açık. Rol kontrolü (`AppPolicies.Admin`) ikinci katman olarak kalır. Admin endpoint'leri her özelliğin içinde `Actions/Admin/` altında, `/admin/...` adresinde durur. (Ayar ilk admin özelliğiyle eklenecek.)
 - **Kural:** her uygulama tek başına silinebilir. Uygulamalar birbirini import etmez, ortak olan her şey `packages/` altında durur.
 
 ## Backend: `apps/api`
@@ -62,7 +66,11 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - Sosyal giriş: tarayıcı akışı (`AuthSession` + `ako://` deep link) tüm sağlayıcılar için; Google ve Apple'da ek olarak native SDK ile id token gönderilebilir.
 
 ## Altyapı ve güvenlik
-- Docker Compose: Postgres + Mailpit (yerel SMTP, `localhost:8025`) + api + web.
+- Docker Compose: Postgres + Mailpit (yerel SMTP, `localhost:8025`) + Aspire Dashboard (`localhost:18888`) + api (`--profile app`) + web.
+- API Dockerfile: çok aşamalı, root olmayan kullanıcı, 8080. Sağlık kontrolü ortamda: `/health/live`, `/health/ready`.
+- Loglama: **Serilog** (dev'de konsol, diğer ortamlarda JSON). İzleme: **OpenTelemetry**, OTLP ile dışa aktarım; hedef araç projeye göre.
+- Rate limiting: .NET yerleşik; `/auth` POST'ları IP başına dakikada 10.
+- Denetim alanları (`IAuditable`) EF interceptor ile otomatik. DataProtection anahtarları veritabanında.
 - E-posta: SMTP (MailKit). Sağlayıcıya bağlı değil; ayardan değişir.
 - Renovate/Dependabot. CI'da `pnpm audit` ve `dotnet list package --vulnerable` çalışır.
 - `@mari-ui/modules` adapter deseni: modüllerin arayüzleri `api-client` ile doldurulur.
@@ -71,6 +79,5 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - ~~Form yönetimi~~ → **react-hook-form + Orval'ın ürettiği zod şemaları** (karar verildi).
 - ~~Testler~~ → **xUnit + Testcontainers** (.NET), **Vitest + Playwright** (web) (karar verildi).
 - i18n gerekecek mi?
-- Loglama ve izleme: Serilog, OpenTelemetry.
 - Deploy hedefi: VPS + Docker mı, bulut servisi mi?
 - create-ako-app'te hangi seçenekler olacak (auth sağlayıcıları, i18n…)?

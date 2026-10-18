@@ -1,4 +1,5 @@
 using Ako.Api.Common;
+using Ako.Api.Infrastructure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -49,7 +50,7 @@ public static class AuthEndpoints
     /// </summary>
     public static IEndpointRouteBuilder MapAuth(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/auth").WithTags("Auth");
+        var group = app.MapGroup("/auth").WithTags("Auth").RequireRateLimiting(AppRateLimits.Auth);
 
         var identity = group.MapIdentityApi<AppUser>();
         identity.Add(DisableLinkEndpoints);

@@ -25,12 +25,12 @@ internal sealed class CreateTodoRequestValidator : AbstractValidator<CreateTodoR
 
 #region İş mantığı
 
-public sealed class CreateTodoHandler(AppDbContext db, ICurrentUser currentUser, TimeProvider time)
+public sealed class CreateTodoHandler(AppDbContext db, ICurrentUser currentUser)
 {
     /// <summary>Görevi kaydeder ve kaydedilmiş hâlini döner.</summary>
     public async Task<TodoResponse> HandleAsync(CreateTodoRequest request, CancellationToken ct)
     {
-        var todo = Todo.Create(currentUser.Id, request.Title, time.GetUtcNow());
+        var todo = Todo.Create(currentUser.Id, request.Title);
         db.Todos.Add(todo);
         await db.SaveChangesAsync(ct);
         return TodoResponse.From(todo);

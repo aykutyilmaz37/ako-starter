@@ -62,4 +62,5 @@
   <data name="email.ChangeEmail.intro" xml:space="preserve"><value>Enter the code below to confirm your new email address:</value></data>
   <data name="email.footer" xml:space="preserve"><value>This is an automated email, please do not reply.</value></data>
   <data name="email.code.note" xml:space="preserve"><value>The code is valid for 10 minutes. If you didn't request this, you can ignore this email.</value></data>
+  <data name="rate_limited" xml:space="preserve"><value>Too many requests. Please wait a moment and try again.</value></data>
 </root>

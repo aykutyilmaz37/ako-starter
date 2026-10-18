@@ -5,7 +5,7 @@
 ## Çalıştırma
 
 ```bash
-pnpm db:up                 # kökten: Postgres + Mailpit'i Docker'da başlatır
+pnpm db:up                 # kökten: Postgres + Mailpit + Aspire Dashboard'u Docker'da başlatır
 pnpm --filter @ako/api dev # http://localhost:5165
 ```
 
@@ -14,6 +14,10 @@ Development'ta açılışta bekleyen migration'lar otomatik uygulanır ve bir Ad
 
 - API dokümantasyonu ve deneme arayüzü: <http://localhost:5165/swagger>
 - Gönderilen e-postalar (Mailpit gelen kutusu): <http://localhost:8025>
+- Loglar, trace'ler, metrikler (Aspire Dashboard): <http://localhost:18888>
+- Sağlık: <http://localhost:5165/health/live>, <http://localhost:5165/health/ready>
+
+API'yi container olarak çalıştırmak için (kökten): `docker compose --profile app up -d` → <http://localhost:8080>
 - Canlı OpenAPI şeması: <http://localhost:5165/openapi/v1.json>
 - `openapi.json` (bu klasörde): build sırasında üretilir, commit edilir, `packages/api-client` bunu okur.
 
@@ -129,10 +133,33 @@ dotnet user-secrets set "Auth:Providers:GitHub:ClientSecret" "<client-secret>"
 Callback adresleri (sağlayıcı panelinde tanımlanır): `/signin-google`, `/signin-facebook`, `/signin-github`,
 `/signin-twitter`, `/signin-linkedin`, `/signin-apple`. Apple callback'i form POST olduğu için HTTPS gerektirir.
 
+## Platform
+
+| | Ne yapar | Ayar |
+| --- | --- | --- |
+| **Denetim alanları** | `IAuditable` uygulayan entity'lerde `CreatedAt/By`, `UpdatedAt/By` kayıt sırasında otomatik dolar (`AuditInterceptor`). `ExecuteUpdate/Delete` bu alanları güncellemez. | — |
+| **Health check** | `/health/live`: süreç ayakta mı. `/health/ready`: veritabanı ve (ayarlıysa) SMTP erişilebilir mi; SMTP yoksa `Degraded`. | — |
+| **Rate limiting** | `/auth` altındaki POST'lar IP başına dakikada 10; aşılırsa 429 + `Retry-After` + `code: "rate_limited"`. Başka endpoint'e `RequireRateLimiting(AppRateLimits.Auth)` ile eklenir. | `RateLimiting:Auth:PermitLimit` |
+| **Loglama** | Serilog. Geliştirmede okunaklı konsol, diğer ortamlarda tek satır JSON. Her istek için bir özet satırı. | `Serilog` bölümü |
+| **İzleme** | OpenTelemetry: istekler, SQL, giden HTTP, runtime metrikleri. Loglar dahil OTLP'ye gönderilir. | `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_SERVICE_NAME` |
+| **Oturum anahtarları** | Token'ları şifreleyen DataProtection anahtarları veritabanında; yeniden başlatma ya da çok sayıda örnek oturumları düşürmez. | — |
+
+**Reverse proxy arkasında:** Rate limiting istemci IP'sine bakar. Nginx, Traefik ya da bir load balancer arkasında
+gerçek IP için `ForwardedHeaders` yapılandırılmalıdır; aksi hâlde tüm istekler proxy'nin IP'sinden geliyor görünür.
+
+### Docker
+
+`apps/api/Dockerfile` çok aşamalı derleme yapar; çalışma imajı root olmayan kullanıcıyla 8080'de dinler.
+Ayarlar ortam değişkeniyle verilir (`ConnectionStrings__Default`, `Email__Smtp__Host`, `OTEL_EXPORTER_OTLP_ENDPOINT`…).
+Sağlık kontrolü imajda değil, çalıştıran ortamda tanımlanır (`/health/live`, `/health/ready`).
+Production'da migration'lar açılışta otomatik uygulanmaz; deploy adımında `dotnet ef database update`
+ya da `dotnet ef migrations bundle` ile çalıştırılır.
+
 ## Hatalar
 
 - **Doğrulama:** 400, `{ errors: { price: ["'Fiyat' değeri '0' değerinden büyük olmalı."] } }`
 - **Yetki:** 401 (giriş yok) / 403 (rol yetmiyor).
+- **Çok fazla istek:** 429, `code` alanında `rate_limited`, `auth.code_throttled` ya da `auth.too_many_attempts`.
 - **İş hatası:** 404/409, `{ code: "products.sku_taken", detail: "…" }`. İstemci `code`'a göre karar verir, `detail`'i gösterir.
 - Mesajların dili `Accept-Language` başlığına göre seçilir (`tr` varsayılan, `en`). Metinler `Resources/*.resx` dosyalarında durur; kodda metin yoktur.
 

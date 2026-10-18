@@ -2,14 +2,19 @@ using Ako.Api.Features.Auth;
 using Ako.Api.Features.Products;
 using Ako.Api.Features.Todos;
 using Ako.Api.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddObservability(); // Serilog + OpenTelemetry
 
 builder.Services.AddAppOpenApi();
 builder.Services.AddAppLocalization(); // ProblemDetails dahil
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddFeatures();
 builder.Services.AddAuth(builder.Configuration); // ako:auth
+builder.Services.AddAppRateLimiting(builder.Configuration);
+builder.Services.AddAppHealthChecks(builder.Configuration);
 
 if (builder.Environment.IsDevelopment())
 {
@@ -18,7 +23,10 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
-// İlk sırada: sonraki her şey (hata yanıtları dahil) isteğin dilinde üretilir.
+// Her istek için tek satırlık özet log (yöntem, adres, durum kodu, süre).
+app.UseSerilogRequestLogging();
+
+// Sonraki her şey (hata yanıtları dahil) isteğin dilinde üretilir.
 app.UseRequestLocalization();
 
 // Yakalanmayan hatalar ve boş 4xx/5xx yanıtlar ProblemDetails olarak döner.
@@ -26,6 +34,7 @@ app.UseExceptionHandler();
 app.UseStatusCodePages();
 
 app.UseAuth(); // ako:auth — kimlik doğrulama + yetkilendirme
+app.UseRateLimiter();
 
 if (app.Environment.IsDevelopment())
 {
@@ -39,7 +48,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.MapGet("/health", () => TypedResults.Ok()).ExcludeFromDescription();
+app.MapAppHealthChecks(); // /health/live, /health/ready
 app.MapAuth(); // ako:auth
 app.MapTodos();
 app.MapProducts();
