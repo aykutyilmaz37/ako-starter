@@ -16,9 +16,19 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - **Kural:** her uygulama tek başına silinebilir. Uygulamalar birbirini import etmez, ortak olan her şey `packages/` altında durur.
 
 ## Backend: `apps/api`
-- .NET 10 Minimal API, özellik bazlı klasörler (`Features/<Özellik>/`).
-- PostgreSQL + EF Core (Npgsql), code-first migration'lar.
+- .NET 10 Minimal API, **tek proje + vertical slice**. Domain/Application/Infrastructure diye ayrı projeler yok; bir özellik tek klasörde açılır, tek klasörde silinir.
+  - `Actions/<UseCase>.cs`: her use case tek dosya, `#region` sırası İstek → Doğrulama → İş mantığı → Endpoint.
+  - `Contracts/`: istemcinin gördüğü şeyler (response, hata kodları).
+  - `Data/`: entity ve EF ayarı.
+  - `<Özellik>Endpoints.cs`: özelliğin tüm adreslerini kaydeder.
+  - Bir özelliğin tüm dosyaları tek namespace'te durur; klasörler yalnızca düzen içindir.
+  - Sınırları ArchTests korur: entity'ler EF/HTTP'ye bağımlı olamaz, özellikler birbirini kullanamaz.
+  - Repository ve MediatR yok; handler'lar `AppDbContext`'i doğrudan kullanır ve DI'dan alınır.
+- PostgreSQL + EF Core (Npgsql), code-first migration'lar, snake_case tablo/kolon adları. Yerelde Postgres Docker Compose ile (Colima) çalışır.
 - Hatalar her zaman **ProblemDetails** (RFC 9457) formatında döner. Alan hataları mari-ui `Field` bileşenine bağlanır.
+- İş hataları exception yerine `Result`/`Error` ile döner; istemci `code` alanına göre davranır (ör. `products.sku_taken`).
+- **Localization:** `Accept-Language` ile tr (varsayılan) / en. Validasyon mesajları, alan adları ve hata açıklamaları `Resources/Messages*.resx` dosyalarında; kodda metin yok.
+- API dokümantasyonu: **Swagger UI** (`/swagger`, yalnızca Development). Şemayı .NET'in yerleşik OpenAPI desteği üretir; Swashbuckle yalnızca arayüz için kullanılır.
 - Validasyon: **FluentValidation** (şirket standardı). Kurallar OpenAPI'ye kendiliğinden yansımadığı için istemcideki zod şemaları yalnızca tip ve zorunluluk bilgisini taşır; asıl kural kontrolü sunucuda yapılır, hatalar ProblemDetails ile döner.
 - Auth: **ASP.NET Core Identity** + sosyal girişler (Google, Apple, Facebook…). Başka bir sosyal giriş varsa iOS'ta Apple girişi zorunludur.
 

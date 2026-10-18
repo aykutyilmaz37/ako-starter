@@ -1,0 +1,11 @@
+{
+  "name": "@ako/api",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "dotnet build Ako.slnx -c Release",
+    "dev": "dotnet watch --project src/Ako.Api run --launch-profile http",
+    "test": "dotnet test Ako.slnx -c Release --no-build",
+    "lint": "dotnet format Ako.slnx --verify-no-changes"
+  }
+}

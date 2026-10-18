@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="problem.validation" xml:space="preserve"><value>One or more validation errors occurred.</value></data>
+  <data name="problem.400" xml:space="preserve"><value>Bad request.</value></data>
+  <data name="problem.401" xml:space="preserve"><value>Authentication required.</value></data>
+  <data name="problem.403" xml:space="preserve"><value>You are not allowed to do this.</value></data>
+  <data name="problem.404" xml:space="preserve"><value>Resource not found.</value></data>
+  <data name="problem.409" xml:space="preserve"><value>Conflict.</value></data>
+  <data name="problem.500" xml:space="preserve"><value>An unexpected error occurred.</value></data>
+  <data name="todos.not_found" xml:space="preserve"><value>Todo '{0}' was not found.</value></data>
+  <data name="products.not_found" xml:space="preserve"><value>Product '{0}' was not found.</value></data>
+  <data name="products.sku_taken" xml:space="preserve"><value>SKU '{0}' is already used by another product.</value></data>
+  <data name="products.sku_format" xml:space="preserve"><value>SKU may only contain letters, digits and hyphens.</value></data>
+  <data name="field.title" xml:space="preserve"><value>Title</value></data>
+  <data name="field.isDone" xml:space="preserve"><value>Done</value></data>
+  <data name="field.sku" xml:space="preserve"><value>SKU</value></data>
+  <data name="field.name" xml:space="preserve"><value>Name</value></data>
+  <data name="field.description" xml:space="preserve"><value>Description</value></data>
+  <data name="field.price" xml:space="preserve"><value>Price</value></data>
+  <data name="field.stock" xml:space="preserve"><value>Stock</value></data>
+  <data name="field.page" xml:space="preserve"><value>Page</value></data>
+  <data name="field.pageSize" xml:space="preserve"><value>Page size</value></data>
+  <data name="field.search" xml:space="preserve"><value>Search</value></data>
+</root>

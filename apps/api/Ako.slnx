@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Ako.Api/Ako.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ako.Api.Tests/Ako.Api.Tests.csproj" />
+    <Project Path="tests/Ako.ArchTests/Ako.ArchTests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="problem.validation" xml:space="preserve"><value>Bir veya daha fazla doğrulama hatası oluştu.</value></data>
+  <data name="problem.400" xml:space="preserve"><value>Geçersiz istek.</value></data>
+  <data name="problem.401" xml:space="preserve"><value>Kimlik doğrulaması gerekli.</value></data>
+  <data name="problem.403" xml:space="preserve"><value>Bu işlem için yetkiniz yok.</value></data>
+  <data name="problem.404" xml:space="preserve"><value>Kaynak bulunamadı.</value></data>
+  <data name="problem.409" xml:space="preserve"><value>Çakışma.</value></data>
+  <data name="problem.500" xml:space="preserve"><value>Beklenmeyen bir hata oluştu.</value></data>
+  <data name="todos.not_found" xml:space="preserve"><value>'{0}' kimlikli görev bulunamadı.</value></data>
+  <data name="products.not_found" xml:space="preserve"><value>'{0}' kimlikli ürün bulunamadı.</value></data>
+  <data name="products.sku_taken" xml:space="preserve"><value>'{0}' SKU'su başka bir üründe kullanılıyor.</value></data>
+  <data name="products.sku_format" xml:space="preserve"><value>SKU yalnızca harf, rakam ve tire içerebilir.</value></data>
+  <data name="field.title" xml:space="preserve"><value>Başlık</value></data>
+  <data name="field.isDone" xml:space="preserve"><value>Tamamlandı</value></data>
+  <data name="field.sku" xml:space="preserve"><value>SKU</value></data>
+  <data name="field.name" xml:space="preserve"><value>Ad</value></data>
+  <data name="field.description" xml:space="preserve"><value>Açıklama</value></data>
+  <data name="field.price" xml:space="preserve"><value>Fiyat</value></data>
+  <data name="field.stock" xml:space="preserve"><value>Stok</value></data>
+  <data name="field.page" xml:space="preserve"><value>Sayfa</value></data>
+  <data name="field.pageSize" xml:space="preserve"><value>Sayfa boyutu</value></data>
+  <data name="field.search" xml:space="preserve"><value>Arama</value></data>
+</root>
