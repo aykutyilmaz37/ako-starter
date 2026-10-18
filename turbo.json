@@ -7,6 +7,7 @@
     },
     "generate": {
       "dependsOn": ["^build"],
+      "inputs": ["orval.config.ts", "src/client.ts"],
       "outputs": ["src/generated/**"]
     },
     "typecheck": {
@@ -19,6 +20,10 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "generate:check": {
+      "dependsOn": ["^build"],
+      "cache": false
     }
   }
 }

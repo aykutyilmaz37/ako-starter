@@ -1,3 +1,7 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
+
+# Kurulum script'i çalıştırmasına izin verilen paketler (pnpm varsayılan olarak hepsini engeller).
+allowBuilds:
+  esbuild: true # Orval config dosyasını yüklerken kullanır

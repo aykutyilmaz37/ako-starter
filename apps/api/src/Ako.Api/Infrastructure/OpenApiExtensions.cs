@@ -43,5 +43,19 @@ public static class OpenApiExtensions
                 }
                 return Task.CompletedTask;
             });
+
+            // [AsParameters] kayıtlarının sorgu parametreleri (Page, PageSize…) camelCase yazılır; bağlama zaten
+            // büyük/küçük harfe duyarsızdır. api-client'ta { page: 1, pageSize: 20 } olarak görünür.
+            options.AddOperationTransformer((operation, _, _) =>
+            {
+                foreach (var parameter in operation.Parameters?.OfType<OpenApiParameter>() ?? [])
+                {
+                    if (parameter.In == ParameterLocation.Query && parameter.Name is { Length: > 0 } name)
+                    {
+                        parameter.Name = char.ToLowerInvariant(name[0]) + name[1..];
+                    }
+                }
+                return Task.CompletedTask;
+            });
         });
 }

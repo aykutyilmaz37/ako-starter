@@ -3,6 +3,7 @@
 Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç şablonu. İçinde mari-ui kullanılır. Kararlar 2026-10-18'de, `_POC/nx-hono-dotnet-poc` incelenerek verildi.
 
 ## Repo ve araçlar
+
 - **pnpm workspaces + Turborepo**. Nx kullanılmıyor.
 - **create-ako-app** (zorunlu): `npm create ako-app` komutuyla çalışan, web/mobil/ikisi seçtiren oluşturucu. Seçilmeyen uygulamaları siler.
 - Yapı:
@@ -20,6 +21,7 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - **Kural:** her uygulama tek başına silinebilir. Uygulamalar birbirini import etmez, ortak olan her şey `packages/` altında durur.
 
 ## Backend: `apps/api`
+
 - .NET 10 Minimal API, **tek proje + vertical slice**. Domain/Application/Infrastructure diye ayrı projeler yok; bir özellik tek klasörde açılır, tek klasörde silinir.
   - `Actions/<UseCase>.cs`: her use case tek dosya, `#region` sırası İstek → Doğrulama → İş mantığı → Endpoint.
   - `Contracts/`: istemcinin gördüğü şeyler (response, hata kodları).
@@ -46,12 +48,18 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - `Todos` ve `Products` **örnek özelliklerdir**: kullanıcıya özel veri, herkese açık okuma ve rol bazlı yetkiyi gösterirler; gerçek projede silinirler.
 
 ## Contract: `packages/api-client`
+
 - .NET, build sırasında `openapi.json` üretir.
 - **Orval** bu dosyadan fetch fonksiyonlarını ve **TanStack Query** hook'larını üretir.
 - Turbo sırası: `api build → generate → web/mobile`.
 - Üretilen kod commit'tekinden farklıysa CI kırılır. Elle contract yazılmaz.
+- Çıktı etiket bazlı (`tags-split`): `@ako/api-client/<etiket>` (hook'lar), `/model` (tipler), `/zod/<etiket>`.
+- Tek fetch katmanı (`client.ts`): `configureApiClient` ile adres, dil (`Accept-Language`) ve token deposu verilir. Web BFF'te token yok (cookie), mobilde `TokenStore` + 401'de otomatik refresh (tek uçuş).
+- Hatalar `ApiError` (`status`, `code`, `fieldErrors`); `applyFieldErrors` react-hook-form'a bağlar.
+- API'de JSON sayıları katı (`NumberHandling.Strict`) ve sorgu parametreleri camelCase; aksi hâlde üretilen tipler `number | string` ve `Page` olurdu. Identity endpoint'lerine ad verildi (`useLogin`, `useRegister`…).
 
 ## Web: `apps/web`
+
 - **React Router v7** framework modu: Vite, SSR, loader/action.
 - **Hono** BFF rolünde: httpOnly session cookie'yi tutar ve .NET'e token'ı sunucudan ekler. Tarayıcı .NET'e hiç erişmez, CORS gerekmez.
 - Node 22 LTS. Bun daha sonra düşünülebilir; Hono'da bu yalnızca adaptör değişikliğidir.
@@ -61,11 +69,13 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - Next.js'in seçilmeme sebebi: sık çıkan güvenlik açıkları (RSC, Server Actions, middleware) ve düşük RPS.
 
 ## Mobil: `apps/mobile`
+
 - Expo + `@mari-ui/native`.
 - .NET'e doğrudan bağlanır, bearer token SecureStore'da tutulur.
 - Sosyal giriş: tarayıcı akışı (`AuthSession` + `ako://` deep link) tüm sağlayıcılar için; Google ve Apple'da ek olarak native SDK ile id token gönderilebilir.
 
 ## Altyapı ve güvenlik
+
 - Docker Compose: Postgres + Mailpit (yerel SMTP, `localhost:8025`) + Aspire Dashboard (`localhost:18888`) + api (`--profile app`) + web.
 - API Dockerfile: çok aşamalı, root olmayan kullanıcı, 8080. Sağlık kontrolü ortamda: `/health/live`, `/health/ready`.
 - Loglama: **Serilog** (dev'de konsol, diğer ortamlarda JSON). İzleme: **OpenTelemetry**, OTLP ile dışa aktarım; hedef araç projeye göre.
@@ -76,6 +86,7 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - `@mari-ui/modules` adapter deseni: modüllerin arayüzleri `api-client` ile doldurulur.
 
 ## Kurulum sırasında konuşulacaklar
+
 - ~~Form yönetimi~~ → **react-hook-form + Orval'ın ürettiği zod şemaları** (karar verildi).
 - ~~Testler~~ → **xUnit + Testcontainers** (.NET), **Vitest + Playwright** (web) (karar verildi).
 - i18n gerekecek mi?

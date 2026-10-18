@@ -4,12 +4,30 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./model": "./src/generated/model/index.ts",
+    "./zod/*": "./src/generated/zod/*/*.ts",
+    "./*": "./src/generated/endpoints/*/*.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "generate": "orval",
+    "generate:check": "orval && git diff --exit-code -- src/generated",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "devDependencies": {
-    "@ako/tsconfig": "workspace:*"
+    "@ako/api": "workspace:*",
+    "@ako/tsconfig": "workspace:*",
+    "@tanstack/react-query": "^5.104.4",
+    "@types/react": "^19.3.0",
+    "orval": "^8.43.0",
+    "react": "^19.3.1",
+    "vitest": "^5.0.5",
+    "zod": "^4.6.7"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5",
+    "react": ">=18",
+    "zod": "^4"
   }
 }

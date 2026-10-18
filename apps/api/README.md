@@ -18,6 +18,7 @@ Development'ta açılışta bekleyen migration'lar otomatik uygulanır ve bir Ad
 - Sağlık: <http://localhost:5165/health/live>, <http://localhost:5165/health/ready>
 
 API'yi container olarak çalıştırmak için (kökten): `docker compose --profile app up -d` → <http://localhost:8080>
+
 - Canlı OpenAPI şeması: <http://localhost:5165/openapi/v1.json>
 - `openapi.json` (bu klasörde): build sırasında üretilir, commit edilir, `packages/api-client` bunu okur.
 
@@ -52,22 +53,22 @@ tests/
 
 Her use case dosyası aynı sırayla `#region`'lara ayrılır:
 
-| Region | Ne yapar | Frontend karşılığı |
-| --- | --- | --- |
-| İstek | Gelen JSON / query string'in tipi | `api-client`'taki request tipi |
-| Doğrulama | FluentValidation kuralları; hata → 400 + `errors.<alan>` | form alan hataları (`Field`) |
-| İş mantığı | `XxxHandler.HandleAsync`, veritabanıyla konuşan kısım | — |
-| Endpoint | URL + HTTP metodu, handler'ı çağırır, sonucu HTTP'ye çevirir | Orval hook'u (`useCreateProduct`) |
+| Region     | Ne yapar                                                     | Frontend karşılığı                |
+| ---------- | ------------------------------------------------------------ | --------------------------------- |
+| İstek      | Gelen JSON / query string'in tipi                            | `api-client`'taki request tipi    |
+| Doğrulama  | FluentValidation kuralları; hata → 400 + `errors.<alan>`     | form alan hataları (`Field`)      |
+| İş mantığı | `XxxHandler.HandleAsync`, veritabanıyla konuşan kısım        | —                                 |
+| Endpoint   | URL + HTTP metodu, handler'ı çağırır, sonucu HTTP'ye çevirir | Orval hook'u (`useCreateProduct`) |
 
 ## Örnek özellikler
 
 `Todos` ve `Products` yalnızca desenleri göstermek için var; gerçek projede genelde silinirler
 (klasörü, `AppDbContext`'teki `DbSet`'i ve `Program.cs`'teki `Map…()` satırını silip yeni bir migration alın).
 
-| | Gösterdiği |
-| --- | --- |
-| Todos | Tüm adresler giriş ister; her kullanıcı yalnızca kendi kayıtlarını görür (`ICurrentUser`) |
-| Products | Listeleme/detay herkese açık, ekleme/güncelleme giriş ister, silme yalnızca Admin |
+|          | Gösterdiği                                                                                |
+| -------- | ----------------------------------------------------------------------------------------- |
+| Todos    | Tüm adresler giriş ister; her kullanıcı yalnızca kendi kayıtlarını görür (`ICurrentUser`) |
+| Products | Listeleme/detay herkese açık, ekleme/güncelleme giriş ister, silme yalnızca Admin         |
 
 ## Kimlik doğrulama (`Features/Auth`)
 
@@ -90,11 +91,11 @@ Her use case dosyası aynı sırayla `#region`'lara ayrılır:
 
 Link gönderilmez; üç işlem de aynı akışı kullanır: **kod gönder → kodu doğrula**.
 
-| İşlem | Kod gönder | Doğrula |
-| --- | --- | --- |
-| E-posta doğrulama | kayıtta otomatik, tekrar için `POST /auth/email/confirm/send { email }` | `POST /auth/email/confirm { email, code }` |
-| Şifre sıfırlama | `POST /auth/password/forgot { email }` | `POST /auth/password/reset { email, code, newPassword }` |
-| E-posta değiştirme (giriş gerekir) | `POST /auth/email/change { newEmail }` | `POST /auth/email/change/confirm { newEmail, code }` |
+| İşlem                              | Kod gönder                                                              | Doğrula                                                  |
+| ---------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------- |
+| E-posta doğrulama                  | kayıtta otomatik, tekrar için `POST /auth/email/confirm/send { email }` | `POST /auth/email/confirm { email, code }`               |
+| Şifre sıfırlama                    | `POST /auth/password/forgot { email }`                                  | `POST /auth/password/reset { email, code, newPassword }` |
+| E-posta değiştirme (giriş gerekir) | `POST /auth/email/change { newEmail }`                                  | `POST /auth/email/change/confirm { newEmail, code }`     |
 
 - Kod ~10 dakika geçerli. Aynı kişiye dakikada en fazla 1 kod gider (`auth.code_throttled`, 429).
 - 5 yanlış denemeden sonra yeni kod istenmeden doğrulama yapılmaz (`auth.too_many_attempts`, 429).
@@ -135,14 +136,14 @@ Callback adresleri (sağlayıcı panelinde tanımlanır): `/signin-google`, `/si
 
 ## Platform
 
-| | Ne yapar | Ayar |
-| --- | --- | --- |
-| **Denetim alanları** | `IAuditable` uygulayan entity'lerde `CreatedAt/By`, `UpdatedAt/By` kayıt sırasında otomatik dolar (`AuditInterceptor`). `ExecuteUpdate/Delete` bu alanları güncellemez. | — |
-| **Health check** | `/health/live`: süreç ayakta mı. `/health/ready`: veritabanı ve (ayarlıysa) SMTP erişilebilir mi; SMTP yoksa `Degraded`. | — |
-| **Rate limiting** | `/auth` altındaki POST'lar IP başına dakikada 10; aşılırsa 429 + `Retry-After` + `code: "rate_limited"`. Başka endpoint'e `RequireRateLimiting(AppRateLimits.Auth)` ile eklenir. | `RateLimiting:Auth:PermitLimit` |
-| **Loglama** | Serilog. Geliştirmede okunaklı konsol, diğer ortamlarda tek satır JSON. Her istek için bir özet satırı. | `Serilog` bölümü |
-| **İzleme** | OpenTelemetry: istekler, SQL, giden HTTP, runtime metrikleri. Loglar dahil OTLP'ye gönderilir. | `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_SERVICE_NAME` |
-| **Oturum anahtarları** | Token'ları şifreleyen DataProtection anahtarları veritabanında; yeniden başlatma ya da çok sayıda örnek oturumları düşürmez. | — |
+|                        | Ne yapar                                                                                                                                                                         | Ayar                                               |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| **Denetim alanları**   | `IAuditable` uygulayan entity'lerde `CreatedAt/By`, `UpdatedAt/By` kayıt sırasında otomatik dolar (`AuditInterceptor`). `ExecuteUpdate/Delete` bu alanları güncellemez.          | —                                                  |
+| **Health check**       | `/health/live`: süreç ayakta mı. `/health/ready`: veritabanı ve (ayarlıysa) SMTP erişilebilir mi; SMTP yoksa `Degraded`.                                                         | —                                                  |
+| **Rate limiting**      | `/auth` altındaki POST'lar IP başına dakikada 10; aşılırsa 429 + `Retry-After` + `code: "rate_limited"`. Başka endpoint'e `RequireRateLimiting(AppRateLimits.Auth)` ile eklenir. | `RateLimiting:Auth:PermitLimit`                    |
+| **Loglama**            | Serilog. Geliştirmede okunaklı konsol, diğer ortamlarda tek satır JSON. Her istek için bir özet satırı.                                                                          | `Serilog` bölümü                                   |
+| **İzleme**             | OpenTelemetry: istekler, SQL, giden HTTP, runtime metrikleri. Loglar dahil OTLP'ye gönderilir.                                                                                   | `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_SERVICE_NAME` |
+| **Oturum anahtarları** | Token'ları şifreleyen DataProtection anahtarları veritabanında; yeniden başlatma ya da çok sayıda örnek oturumları düşürmez.                                                     | —                                                  |
 
 **Reverse proxy arkasında:** Rate limiting istemci IP'sine bakar. Nginx, Traefik ya da bir load balancer arkasında
 gerçek IP için `ForwardedHeaders` yapılandırılmalıdır; aksi hâlde tüm istekler proxy'nin IP'sinden geliyor görünür.

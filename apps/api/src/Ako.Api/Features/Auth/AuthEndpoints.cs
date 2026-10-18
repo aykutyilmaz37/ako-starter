@@ -42,6 +42,20 @@ public static class AuthEndpoints
         ["/confirmEmail", "/resendConfirmationEmail", "/forgotPassword", "/resetPassword"];
 
     /// <summary>
+    /// Identity'nin hazır endpoint'lerinin adı yoktur; OpenAPI operationId ve dolayısıyla
+    /// api-client hook adları (useLogin, useRegister…) buradan gelir.
+    /// </summary>
+    private static readonly Dictionary<(string Method, string Path), string> IdentityEndpointNames = new()
+    {
+        [("POST", "/register")] = "Register",
+        [("POST", "/login")] = "Login",
+        [("POST", "/refresh")] = "RefreshToken",
+        [("GET", "/manage/info")] = "GetAccountInfo",
+        [("POST", "/manage/info")] = "UpdateAccountInfo",
+        [("POST", "/manage/2fa")] = "ManageTwoFactor",
+    };
+
+    /// <summary>
     /// /auth altındaki tüm adresler:
     /// - Identity'nin hazır endpoint'leri: /register, /login, /refresh, /manage/info, /manage/2fa
     /// - E-posta kodları: /email/confirm(/send), /password/forgot, /password/reset, /email/change(/confirm)
@@ -54,6 +68,7 @@ public static class AuthEndpoints
 
         var identity = group.MapIdentityApi<AppUser>();
         identity.Add(DisableLinkEndpoints);
+        identity.Add(NameIdentityEndpoints);
         identity.AddEndpointFilter(AfterRegister);
         identity.AddEndpointFilter(BlockEmailChangeViaManageInfo);
 
@@ -67,6 +82,21 @@ public static class AuthEndpoints
         NativeLogin.Map(group);
 
         return app;
+    }
+
+    private static void NameIdentityEndpoints(EndpointBuilder endpoint)
+    {
+        if (endpoint is not RouteEndpointBuilder route || route.Metadata.OfType<HttpMethodMetadata>().FirstOrDefault() is not { } methods)
+        {
+            return;
+        }
+
+        var name = IdentityEndpointNames.FirstOrDefault(n =>
+            methods.HttpMethods.Contains(n.Key.Method) && route.RoutePattern.RawText?.EndsWith(n.Key.Path, StringComparison.Ordinal) == true).Value;
+        if (name is not null)
+        {
+            endpoint.Metadata.Add(new EndpointNameMetadata(name));
+        }
     }
 
     private static void DisableLinkEndpoints(EndpointBuilder endpoint)

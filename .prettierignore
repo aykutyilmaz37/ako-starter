@@ -4,3 +4,8 @@ pnpm-lock.yaml
 **/obj/**
 **/dist/**
 **/build/**
+# Araçların ürettiği dosyalar
+apps/api/openapi.json
+apps/api/dotnet-tools.json
+# E-posta HTML'i e-posta istemcileri için elle düzenlenir; otomatik biçimlendirme yapıyı bozabilir.
+**/EmailTemplates/**

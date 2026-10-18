@@ -15,7 +15,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "db:up": "docker compose up -d --wait",
-    "db:down": "docker compose down"
+    "db:down": "docker compose down",
+    "generate:check": "turbo run generate:check"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

@@ -9,11 +9,11 @@ services:
       POSTGRES_USER: ako
       POSTGRES_PASSWORD: ako
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ako -d ako"]
+      test: ['CMD-SHELL', 'pg_isready -U ako -d ako']
       interval: 5s
       timeout: 3s
       retries: 10
@@ -23,8 +23,8 @@ services:
   mailpit:
     image: axllent/mailpit:v1.27
     ports:
-      - "1025:1025" # SMTP
-      - "8025:8025" # web arayüzü
+      - '1025:1025' # SMTP
+      - '8025:8025' # web arayüzü
 
   # Loglar, trace'ler ve metrikler için yerel arayüz (OpenTelemetry/OTLP alıcısı).
   # Arayüz: http://localhost:18888 — API'nin OTLP adresi: http://localhost:4317
@@ -33,8 +33,8 @@ services:
     environment:
       DASHBOARD__FRONTEND__AUTHMODE: Unsecured # yalnızca yerel geliştirme için
     ports:
-      - "18888:18888" # arayüz
-      - "4317:18889"  # OTLP (gRPC)
+      - '18888:18888' # arayüz
+      - '4317:18889' # OTLP (gRPC)
 
   # API'nin container sürümü. Yalnızca "--profile app" ile başlar; günlük geliştirmede "dotnet run" kullanılır.
   api:
@@ -44,10 +44,10 @@ services:
       ASPNETCORE_ENVIRONMENT: Development # migration + admin hesabı + Swagger
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=ako;Username=ako;Password=ako
       Email__Smtp__Host: mailpit
-      Email__Smtp__Port: "1025"
+      Email__Smtp__Port: '1025'
       OTEL_EXPORTER_OTLP_ENDPOINT: http://aspire-dashboard:18889
     ports:
-      - "8080:8080"
+      - '8080:8080'
     depends_on:
       postgres:
         condition: service_healthy
