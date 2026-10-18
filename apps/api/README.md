@@ -64,13 +64,30 @@ Her use case dosyası aynı sırayla `#region`'lara ayrılır:
 
 ## Kimlik doğrulama (`Features/Auth`)
 
-- **Yerel hesap:** Identity'nin hazır endpoint'leri: `/auth/register`, `/auth/login`, `/auth/refresh`,
-  `/auth/confirmEmail`, `/auth/forgotPassword`, `/auth/resetPassword`, `/auth/manage/*`.
+- **Yerel hesap:** Identity'nin hazır endpoint'leri: `/auth/register`, `/auth/login`, `/auth/refresh`, `/auth/manage/*`.
   Giriş, `accessToken` + `refreshToken` döner; istekler `Authorization: Bearer <accessToken>` ile yapılır.
 - **Roller:** `Admin` ve `User`. Kayıt olan herkes `User` olur. Endpoint'te `RequireAuthorization()` (giriş yeterli)
   ya da `RequireAuthorization(AppPolicies.Admin)` kullanılır.
 - **Kullanıcı bilgisi:** `GET /auth/me`. Handler'larda kullanıcı kimliği `ICurrentUser.Id` ile okunur.
-- **E-postalar:** Şimdilik log'a yazılır (`LoggingEmailSender`); gerçek gönderim için değiştirilmeli.
+- **E-postalar:** Şimdilik log'a yazılır (`LoggingEmailSender`, konsolda görünür); gerçek gönderim için
+  `IAppEmailSender`'ı uygulayan bir sınıf yazılmalı.
+
+### E-posta kodları (6 hane)
+
+Link gönderilmez; üç işlem de aynı akışı kullanır: **kod gönder → kodu doğrula**.
+
+| İşlem | Kod gönder | Doğrula |
+| --- | --- | --- |
+| E-posta doğrulama | kayıtta otomatik, tekrar için `POST /auth/email/confirm/send { email }` | `POST /auth/email/confirm { email, code }` |
+| Şifre sıfırlama | `POST /auth/password/forgot { email }` | `POST /auth/password/reset { email, code, newPassword }` |
+| E-posta değiştirme (giriş gerekir) | `POST /auth/email/change { newEmail }` | `POST /auth/email/change/confirm { newEmail, code }` |
+
+- Kod ~10 dakika geçerli. Aynı kişiye dakikada en fazla 1 kod gider (`auth.code_throttled`, 429).
+- 5 yanlış denemeden sonra yeni kod istenmeden doğrulama yapılmaz (`auth.too_many_attempts`, 429).
+- Gönderim adresleri, e-posta kayıtlı olmasa da 204 döner (kayıtlı adresler dışarıdan anlaşılmasın).
+- `Auth:RequireConfirmedEmail` (varsayılan `true`): e-postası doğrulanmamış kullanıcı **e-posta + şifreyle** giriş yapamaz.
+  Sosyal girişle açılan hesaplar doğrulanmış sayılır, kod istemez.
+- Identity'nin link tabanlı adresleri (`/confirmEmail`, `/forgotPassword`, `/resetPassword`, `/resendConfirmationEmail`) kapalıdır.
 
 ### Sosyal giriş
 

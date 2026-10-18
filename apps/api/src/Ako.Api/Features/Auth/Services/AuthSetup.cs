@@ -14,7 +14,14 @@ public static class AuthSetup
             {
                 options.Password.RequiredLength = 8;
                 options.User.RequireUniqueEmail = false; // e-postasız sosyal hesaplar (X) için; tekillik kullanıcı adıyla sağlanır
-                options.SignIn.RequireConfirmedAccount = false; // e-posta doğrulaması zorunlu olsun isterseniz true yapın
+                // true: e-postasını 6 haneli kodla doğrulamayan kullanıcı e-posta + şifreyle giriş yapamaz.
+                // Sosyal girişi etkilemez (kimliği sağlayıcı doğrular; X e-posta bile vermez).
+                options.SignIn.RequireConfirmedEmail = configuration.GetValue<bool>("Auth:RequireConfirmedEmail");
+
+                // E-posta doğrulama, şifre sıfırlama ve e-posta değişikliği aynı 6 haneli kod üreticisini kullanır.
+                options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
+                options.Tokens.ChangeEmailTokenProvider = TokenOptions.DefaultEmailProvider;
             })
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<Infrastructure.Data.AppDbContext>()
@@ -34,7 +41,9 @@ public static class AuthSetup
         services.AddSingleton<LoginCodeStore>();
         services.AddSingleton<IdTokenValidator>();
         services.AddScoped<ExternalUserResolver>();
-        services.AddTransient<IEmailSender<AppUser>, LoggingEmailSender>();
+        services.AddScoped<EmailCodes>();
+        services.AddTransient<IAppEmailSender, LoggingEmailSender>();
+        services.AddTransient<IEmailSender<AppUser>, NoLinkEmailSender>();
 
         return services;
     }

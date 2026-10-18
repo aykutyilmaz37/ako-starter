@@ -33,6 +33,9 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - Auth: **ASP.NET Core Identity** + Identity'nin hazır endpoint'leri (`MapIdentityApi`), bearer token (access + refresh). Roller: Admin / User.
   - Sosyal giriş: Google, Apple, Facebook, GitHub, X, LinkedIn. Hepsi **tek akış**: OAuth API'de yürür, istemciye tek kullanımlık kod döner, kod `/auth/exchange` ile token'a çevrilir. Web ve mobil aynı akışı kullanır. (GitHub ve LinkedIn'de kod→token değişimi client secret ister; secret mobil uygulamaya konamayacağı için akış sunucuda olmak zorunda.)
   - Mobilde Google ve Apple için ek olarak native giriş: cihazdaki id token `/auth/native/{provider}` ile doğrulanır.
+  - E-posta doğrulama, şifre sıfırlama ve e-posta değişikliği **6 haneli kodla** yapılır (link yok); üçü de aynı akış. Gönderim dakikada 1, 5 hatalı denemede kod geçersiz.
+  - Doğrulanmamış e-postayla şifreli giriş varsayılan olarak kapalı (`Auth:RequireConfirmedEmail`); sosyal giriş kod istemez.
+  - Çok sekme/cihaz senkronu için socket gerekmez: istemci odaklanınca `/auth/me`'yi yeniden çeker (TanStack Query varsayılanı).
   - Sağlayıcı yalnızca ayarı (ClientId) doluysa etkinleşir; secret'lar user-secrets / ortam değişkenlerinde durur.
   - Başka bir sosyal giriş varsa iOS'ta Apple girişi zorunludur (App Store kuralı).
   - create-ako-app "auth olsun mu, hangi sağlayıcılar?" diye sorar. Auth kodu tek klasörde (`Features/Auth`), Program.cs'teki satırları `// ako:auth` ile işaretli.

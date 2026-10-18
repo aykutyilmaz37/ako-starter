@@ -26,25 +26,3 @@ internal sealed class LocalizedIdentityErrorDescriber : IdentityErrorDescriber
     public override IdentityError PasswordRequiresUniqueChars(int uniqueChars) => E(nameof(PasswordRequiresUniqueChars), uniqueChars);
     public override IdentityError LoginAlreadyAssociated() => E(nameof(LoginAlreadyAssociated));
 }
-
-/// <summary>
-/// Doğrulama ve şifre sıfırlama e-postaları. Şimdilik yalnızca log'a yazar (bağlantılar konsolda görünür).
-/// Gerçek gönderim için bu sınıfı SMTP ya da bir e-posta servisiyle değiştirin.
-/// </summary>
-internal sealed class LoggingEmailSender(ILogger<LoggingEmailSender> logger) : IEmailSender<AppUser>
-{
-    public Task SendConfirmationLinkAsync(AppUser user, string email, string confirmationLink) =>
-        Log(email, "doğrulama bağlantısı", confirmationLink);
-
-    public Task SendPasswordResetLinkAsync(AppUser user, string email, string resetLink) =>
-        Log(email, "şifre sıfırlama bağlantısı", resetLink);
-
-    public Task SendPasswordResetCodeAsync(AppUser user, string email, string resetCode) =>
-        Log(email, "şifre sıfırlama kodu", resetCode);
-
-    private Task Log(string email, string kind, string value)
-    {
-        logger.LogInformation("E-posta ({Kind}) → {Email}: {Value}", kind, email, value);
-        return Task.CompletedTask;
-    }
-}

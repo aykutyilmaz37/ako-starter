@@ -8,6 +8,7 @@ public enum ErrorType
     Failure,
     NotFound,
     Conflict,
+    TooManyRequests,
 }
 
 /// <summary>
@@ -21,6 +22,7 @@ public sealed record Error(string Code, ErrorType Type, object?[] Args)
     public static Error NotFound(string code, params object?[] args) => new(code, ErrorType.NotFound, args);
     public static Error Conflict(string code, params object?[] args) => new(code, ErrorType.Conflict, args);
     public static Error Failure(string code, params object?[] args) => new(code, ErrorType.Failure, args);
+    public static Error TooManyRequests(string code, params object?[] args) => new(code, ErrorType.TooManyRequests, args);
 
     /// <summary>RFC 9457 ProblemDetails; hata kodu "code" alanında taşınır.</summary>
     public ProblemHttpResult ToProblem() => TypedResults.Problem(
@@ -28,6 +30,7 @@ public sealed record Error(string Code, ErrorType Type, object?[] Args)
         {
             ErrorType.NotFound => StatusCodes.Status404NotFound,
             ErrorType.Conflict => StatusCodes.Status409Conflict,
+            ErrorType.TooManyRequests => StatusCodes.Status429TooManyRequests,
             _ => StatusCodes.Status400BadRequest,
         },
         extensions: new Dictionary<string, object?>

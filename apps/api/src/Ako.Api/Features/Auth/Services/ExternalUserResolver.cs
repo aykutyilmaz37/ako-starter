@@ -40,7 +40,8 @@ public sealed class ExternalUserResolver(UserManager<AppUser> users)
         {
             UserName = identity.Email ?? $"{identity.Provider.Slug}-{identity.ProviderKey}",
             Email = identity.Email,
-            EmailConfirmed = identity.Email is not null && identity.Provider.TrustsEmail,
+            // Sosyal girişle açılan hesap e-posta kodu istemez; e-postayı sağlayıcı verdi.
+            EmailConfirmed = identity.Email is not null,
         };
 
         var created = await users.CreateAsync(user);

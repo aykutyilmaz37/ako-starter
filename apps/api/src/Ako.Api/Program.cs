@@ -25,8 +25,7 @@ app.UseRequestLocalization();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuth(); // ako:auth — kimlik doğrulama + yetkilendirme
 
 if (app.Environment.IsDevelopment())
 {

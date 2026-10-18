@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
@@ -29,7 +30,11 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         // "Testing": appsettings.Development (yerel DB, dev admin, otomatik migration) yüklenmez.
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:Default", _postgres.GetConnectionString());
+        builder.ConfigureTestServices(services => services.AddSingleton<IAppEmailSender>(Emails));
     }
+
+    /// <summary>Gönderilen e-posta kodlarını yakalar; testler kodu buradan okur.</summary>
+    public CapturingEmailSender Emails { get; } = new();
 
     public async Task InitializeAsync()
     {
@@ -49,6 +54,8 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         email ??= $"user-{Guid.NewGuid():N}@test.local";
         var client = CreateClient();
         (await client.PostAsJsonAsync("/auth/register", new { email, password = Password })).EnsureSuccessStatusCode();
+        var code = Emails.LastCode(email, EmailCodePurpose.ConfirmEmail);
+        (await client.PostAsJsonAsync("/auth/email/confirm", new { email, code })).EnsureSuccessStatusCode();
         return await LoginAsync(client, email);
     }
 
@@ -68,6 +75,21 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         await _postgres.DisposeAsync();
         await base.DisposeAsync();
     }
+}
+
+public sealed class CapturingEmailSender : IAppEmailSender
+{
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<(string, EmailCodePurpose), string> _codes = new();
+
+    public Task SendCodeAsync(string email, EmailCodePurpose purpose, string code, CancellationToken ct)
+    {
+        _codes[(email.ToLowerInvariant(), purpose)] = code;
+        return Task.CompletedTask;
+    }
+
+    public string LastCode(string email, EmailCodePurpose purpose) => _codes[(email.ToLowerInvariant(), purpose)];
+
+    public bool HasCode(string email, EmailCodePurpose purpose) => _codes.ContainsKey((email.ToLowerInvariant(), purpose));
 }
 
 [CollectionDefinition(Name)]
