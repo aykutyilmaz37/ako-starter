@@ -31,6 +31,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:Default", _postgres.GetConnectionString());
         builder.UseSetting("RateLimiting:Auth:PermitLimit", "10000"); // testler aynı "IP"den çok sayıda kayıt yapar
+        builder.UseSetting("Api:EnableAdminEndpoints", "true");
         builder.ConfigureTestServices(services => services.AddSingleton<IAppEmailSender>(Emails));
     }
 

@@ -1,0 +1,26 @@
+{
+  "name": "@ako/web-core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@ako/tsconfig": "workspace:*",
+    "@types/node": "^26.6.5",
+    "react-router": "^8.4.0",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.5",
+    "hono": "^4.13.13"
+  },
+  "peerDependencies": {
+    "react-router": "^8"
+  }
+}

@@ -1,5 +1,6 @@
 packages:
   - 'apps/*'
+  - 'apps/web/*'
   - 'packages/*'
 
 # Kurulum script'i çalıştırmasına izin verilen paketler (pnpm varsayılan olarak hepsini engeller).

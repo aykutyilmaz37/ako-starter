@@ -1,0 +1,44 @@
+{
+  "name": "@ako/web-site",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "react-router dev",
+    "build": "react-router build",
+    "start": "node ./build/server/index.js",
+    "typecheck": "react-router typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@ako/api-client": "workspace:*",
+    "@ako/ui": "workspace:*",
+    "@ako/web-core": "workspace:*",
+    "@hookform/resolvers": "^5.9.2",
+    "@mari-ui/components": "^0.2.0",
+    "@mari-ui/core": "^0.2.0",
+    "@mari-ui/tokens": "^0.2.0",
+    "@react-router/node": "^8.4.0",
+    "@tanstack/react-query": "^5.104.4",
+    "embla-carousel-autoplay": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
+    "hono": "^4.13.13",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-hook-form": "^7.90.0",
+    "react-router": "^8.4.0",
+    "react-router-hono-server": "^4.1.4",
+    "zod": "^4.6.7",
+    "isbot": "^5"
+  },
+  "devDependencies": {
+    "@ako/tsconfig": "workspace:*",
+    "@react-router/dev": "^8.4.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4"
+  }
+}

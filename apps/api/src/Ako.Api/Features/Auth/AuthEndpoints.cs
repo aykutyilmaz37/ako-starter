@@ -84,6 +84,15 @@ public static class AuthEndpoints
         return app;
     }
 
+    /// <summary>Backoffice adresleri (/admin/users…). Yalnızca admin grubu açıksa çağrılır (bkz. AdminEndpoints).</summary>
+    public static RouteGroupBuilder MapAuthAdmin(this RouteGroupBuilder admin)
+    {
+        var users = admin.MapGroup("").WithTags("Admin: Users");
+        ListUsers.Map(users);
+        SetUserRoles.Map(users);
+        return admin;
+    }
+
     private static void NameIdentityEndpoints(EndpointBuilder endpoint)
     {
         if (endpoint is not RouteEndpointBuilder route || route.Metadata.OfType<HttpMethodMetadata>().FirstOrDefault() is not { } methods)

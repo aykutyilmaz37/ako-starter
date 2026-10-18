@@ -6,6 +6,8 @@
  */
 
 export * from './accessTokenResponse';
+export * from './adminListUsersParams';
+export * from './adminUserResponse';
 export * from './changeEmailRequest';
 export * from './confirmChangeEmailRequest';
 export * from './confirmEmailRequest';
@@ -22,6 +24,7 @@ export * from './loginParams';
 export * from './loginRequest';
 export * from './meResponse';
 export * from './nativeLoginRequest';
+export * from './pagedResponseOfAdminUserResponse';
 export * from './pagedResponseOfProductResponse';
 export * from './problemDetails';
 export * from './productResponse';
@@ -30,6 +33,7 @@ export * from './refreshRequest';
 export * from './registerRequest';
 export * from './resetPasswordRequest';
 export * from './sendConfirmationCodeRequest';
+export * from './setUserRolesRequest';
 export * from './todoResponse';
 export * from './twoFactorRequest';
 export * from './twoFactorResponse';

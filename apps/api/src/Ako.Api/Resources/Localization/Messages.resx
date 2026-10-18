@@ -63,4 +63,7 @@
   <data name="email.footer" xml:space="preserve"><value>Bu e-posta otomatik olarak gönderilmiştir, lütfen yanıtlamayın.</value></data>
   <data name="email.code.note" xml:space="preserve"><value>Kod 10 dakika geçerlidir. Bu isteği siz yapmadıysanız bu e-postayı yok sayabilirsiniz.</value></data>
   <data name="rate_limited" xml:space="preserve"><value>Çok fazla istek gönderildi. Lütfen biraz bekleyip tekrar deneyin.</value></data>
+  <data name="auth.user_not_found" xml:space="preserve"><value>'{0}' kimlikli kullanıcı bulunamadı.</value></data>
+  <data name="auth.cannot_remove_own_admin" xml:space="preserve"><value>Kendi Admin rolünüzü kaldıramazsınız.</value></data>
+  <data name="field.roles" xml:space="preserve"><value>Roller</value></data>
 </root>

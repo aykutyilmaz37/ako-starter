@@ -15,4 +15,6 @@ internal static class AuthErrors
     public static Error CodeThrottled() => Error.TooManyRequests("auth.code_throttled");
     public static Error TooManyAttempts() => Error.TooManyRequests("auth.too_many_attempts");
     public static Error UseEmailChangeEndpoint() => Error.Failure("auth.use_email_change");
+    public static Error UserNotFound(Guid id) => Error.NotFound("auth.user_not_found", id);
+    public static Error CannotRemoveOwnAdmin() => Error.Failure("auth.cannot_remove_own_admin");
 }

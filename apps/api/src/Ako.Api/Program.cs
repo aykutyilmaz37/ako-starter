@@ -14,6 +14,7 @@ builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddFeatures();
 builder.Services.AddAuth(builder.Configuration); // ako:auth
 builder.Services.AddAppRateLimiting(builder.Configuration);
+builder.Services.AddAppForwardedHeaders(builder.Configuration);
 builder.Services.AddAppHealthChecks(builder.Configuration);
 
 if (builder.Environment.IsDevelopment())
@@ -22,6 +23,9 @@ if (builder.Environment.IsDevelopment())
 }
 
 var app = builder.Build();
+
+// Proxy arkasında gerçek istemci IP'si (rate limiting ve loglar için). İlk sırada olmalı.
+app.UseForwardedHeaders();
 
 // Her istek için tek satırlık özet log (yöntem, adres, durum kodu, süre).
 app.UseSerilogRequestLogging();
@@ -52,6 +56,12 @@ app.MapAppHealthChecks(); // /health/live, /health/ready
 app.MapAuth(); // ako:auth
 app.MapTodos();
 app.MapProducts();
+
+// Backoffice adresleri: yalnızca Api:EnableAdminEndpoints=true olan (iç ağdaki) örnekte oluşur.
+if (AdminEndpoints.IsEnabled(app.Configuration))
+{
+    app.MapAdmin(admin => admin.MapAuthAdmin()); // ako:auth
+}
 
 app.Run();
 

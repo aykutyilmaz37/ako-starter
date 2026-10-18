@@ -1,0 +1,6 @@
+@import 'tailwindcss';
+@import '@mari-ui/components/tailwind.css';
+@import '@mari-ui/tokens/fonts.css';
+
+/* Ortak bileşenlerdeki (packages/ui) Tailwind sınıfları da derlensin. */
+@source '../../../../packages/ui/src';

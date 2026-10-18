@@ -6,6 +6,24 @@
       "runtimeExecutable": "dotnet",
       "runtimeArgs": ["run", "--project", "apps/api/src/Ako.Api", "--launch-profile", "http"],
       "port": 5165
+    },
+    {
+      "name": "site",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "NODE_OPTIONS=--conditions=development pnpm --filter @ako/web-site dev"
+      ],
+      "port": 5173
+    },
+    {
+      "name": "backoffice",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "NODE_OPTIONS=--conditions=development pnpm --filter @ako/web-backoffice dev"
+      ],
+      "port": 5174
     }
   ]
 }

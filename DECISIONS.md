@@ -17,7 +17,7 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
   packages/shared       ortak TS yardımcıları
   ```
 - **Birden fazla web ürünü / backoffice:** aynı monorepoda `apps/web/` altında ayrı uygulamalar; ayrı build, ayrı domain, ayrı deploy. Tek uygulamada sayfa grupları olarak tutulmaz (müşteri paketine admin kodu girmez, biri diğerini yeniden yayınlatmaz). Ayrı repo yalnızca ayrı ekip/takvim ya da zorunlu ağ ayrımı varsa.
-- **Backoffice güvenliği:** aynı API kodu, iki deploy. İnternete açık örnekte admin endpoint'leri kapalı (`Api:EnableAdminEndpoints=false`, adresler hiç oluşmaz), iç ağdaki/VPN'deki örnekte açık. Rol kontrolü (`AppPolicies.Admin`) ikinci katman olarak kalır. Admin endpoint'leri her özelliğin içinde `Actions/Admin/` altında, `/admin/...` adresinde durur. (Ayar ilk admin özelliğiyle eklenecek.)
+- **Backoffice güvenliği:** aynı API kodu, iki deploy. İnternete açık örnekte admin endpoint'leri kapalı (`Api:EnableAdminEndpoints=false`, adresler hiç oluşmaz), iç ağdaki/VPN'deki örnekte açık. Rol kontrolü (`AppPolicies.Admin`) ikinci katman olarak kalır. Admin endpoint'leri her özelliğin içinde `Actions/Admin/` altında, `/admin/...` adresinde durur. Build sırasında üretilen `openapi.json` admin adreslerini her zaman içerir (api-client'ta hook'lar olsun diye).
 - **Kural:** her uygulama tek başına silinebilir. Uygulamalar birbirini import etmez, ortak olan her şey `packages/` altında durur.
 
 ## Backend: `apps/api`
@@ -58,14 +58,18 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - Hatalar `ApiError` (`status`, `code`, `fieldErrors`); `applyFieldErrors` react-hook-form'a bağlar.
 - API'de JSON sayıları katı (`NumberHandling.Strict`) ve sorgu parametreleri camelCase; aksi hâlde üretilen tipler `number | string` ve `Page` olurdu. Identity endpoint'lerine ad verildi (`useLogin`, `useRegister`…).
 
-## Web: `apps/web`
+## Web: `apps/web/<ürün>`
 
-- **React Router v7** framework modu: Vite, SSR, loader/action.
-- **Hono** BFF rolünde: httpOnly session cookie'yi tutar ve .NET'e token'ı sunucudan ekler. Tarayıcı .NET'e hiç erişmez, CORS gerekmez.
-- Node 22 LTS. Bun daha sonra düşünülebilir; Hono'da bu yalnızca adaptör değişikliğidir.
-- mari-ui (`@mari-ui/components`) npm'den gelir.
-- Cache: herkese açık sayfalarda `Cache-Control` + CDN (`stale-while-revalidate`), statik sayfalarda prerender.
+- **React Router 8** framework modu: Vite, SSR, loader/action. (İlk kararda v7 yazıyordu; kurulumda güncel major 8'di.)
+- **Hono** BFF rolünde (`react-router-hono-server`, ortak kod `packages/web-core`): token'lar şifreli httpOnly çerezde, `/api/*` .NET'e token sunucuda eklenerek iletilir, 401'de sunucuda yenilenir. Tarayıcı .NET'e hiç erişmez, CORS gerekmez. Backoffice BFF'i yalnızca Admin rolünü içeri alır.
+- **Node 24 LTS** (adaptör 24.19+ istiyor). Bun daha sonra düşünülebilir; Hono'da bu yalnızca adaptör değişikliğidir.
+- mari-ui (`@mari-ui/components`) npm'den gelir; Tailwind v4 ile. `@mari-ui/modules` henüz npm'de yok, adapter deseni bekliyor.
+- Uygulama içi yapı özellik bazlı: `app/features/<özellik>/{pages,components,hooks}`, adresler `app/routes.ts`'te tek yerde (Next tarzı klasör = adres yerine; API'deki Features yapısıyla aynı mantık).
+- Ortak web bileşenleri `packages/ui` (form alanları, giriş formu, sağlayıcılar).
+- Cache: herkese açık sayfalarda `Cache-Control` + CDN (`stale-while-revalidate`), oturum açıksa `private, no-store`.
+- Veri: herkese açık/SEO → loader; kullanıcıya özel/etkileşimli → TanStack Query.
 - **Kural:** iş mantığı loader'lara yazılmaz. Mantık .NET'te, çağrılar `api-client` üzerinden yapılır. Böylece web framework'ü yapının en ince ve en kolay değiştirilen katmanı olarak kalır.
+- Hassas formlar `method="post"`: JS yüklenmezse veri URL'ye yazılmaz.
 - Next.js'in seçilmeme sebebi: sık çıkan güvenlik açıkları (RSC, Server Actions, middleware) ve düşük RPS.
 
 ## Mobil: `apps/mobile`
