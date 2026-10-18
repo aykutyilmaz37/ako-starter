@@ -42,7 +42,16 @@ public static class AuthSetup
         services.AddSingleton<IdTokenValidator>();
         services.AddScoped<ExternalUserResolver>();
         services.AddScoped<EmailCodes>();
-        services.AddTransient<IAppEmailSender, LoggingEmailSender>();
+        // E-posta: "Email:Smtp:Host" doluysa SMTP ile gönderilir, boşsa kod yalnızca log'a yazılır.
+        services.Configure<EmailOptions>(configuration.GetSection("Email"));
+        if (string.IsNullOrWhiteSpace(configuration["Email:Smtp:Host"]))
+        {
+            services.AddTransient<IAppEmailSender, LoggingEmailSender>();
+        }
+        else
+        {
+            services.AddTransient<IAppEmailSender, SmtpEmailSender>();
+        }
         services.AddTransient<IEmailSender<AppUser>, NoLinkEmailSender>();
 
         return services;

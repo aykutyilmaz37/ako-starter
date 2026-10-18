@@ -5,7 +5,7 @@
 ## Çalıştırma
 
 ```bash
-pnpm db:up                 # kökten: Postgres'i Docker'da başlatır
+pnpm db:up                 # kökten: Postgres + Mailpit'i Docker'da başlatır
 pnpm --filter @ako/api dev # http://localhost:5165
 ```
 
@@ -13,6 +13,7 @@ Development'ta açılışta bekleyen migration'lar otomatik uygulanır ve bir Ad
 (`admin@ako.local` / `Admin123!`, bkz. `appsettings.Development.json`).
 
 - API dokümantasyonu ve deneme arayüzü: <http://localhost:5165/swagger>
+- Gönderilen e-postalar (Mailpit gelen kutusu): <http://localhost:8025>
 - Canlı OpenAPI şeması: <http://localhost:5165/openapi/v1.json>
 - `openapi.json` (bu klasörde): build sırasında üretilir, commit edilir, `packages/api-client` bunu okur.
 
@@ -69,8 +70,10 @@ Her use case dosyası aynı sırayla `#region`'lara ayrılır:
 - **Roller:** `Admin` ve `User`. Kayıt olan herkes `User` olur. Endpoint'te `RequireAuthorization()` (giriş yeterli)
   ya da `RequireAuthorization(AppPolicies.Admin)` kullanılır.
 - **Kullanıcı bilgisi:** `GET /auth/me`. Handler'larda kullanıcı kimliği `ICurrentUser.Id` ile okunur.
-- **E-postalar:** Şimdilik log'a yazılır (`LoggingEmailSender`, konsolda görünür); gerçek gönderim için
-  `IAppEmailSender`'ı uygulayan bir sınıf yazılmalı.
+- **E-postalar:** `Email:Smtp:Host` doluysa SMTP ile gönderilir (MailKit, `SmtpEmailSender`), boşsa kod yalnızca
+  log'a yazılır. Geliştirmede Mailpit'e gider (`localhost:1025`), hiçbir mail dışarı çıkmaz.
+  Production'da herhangi bir SMTP sağlayıcısı (SES, Mailgun, Resend, Brevo, Office 365…) ayarla bağlanır;
+  şifre user-secrets / ortam değişkeniyle verilir: `Email__Smtp__Password`.
 
 ### E-posta kodları (6 hane)
 

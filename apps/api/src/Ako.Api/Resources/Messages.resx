@@ -54,4 +54,11 @@
   <data name="field.email" xml:space="preserve"><value>E-posta</value></data>
   <data name="field.newEmail" xml:space="preserve"><value>Yeni e-posta</value></data>
   <data name="field.newPassword" xml:space="preserve"><value>Yeni şifre</value></data>
+  <data name="email.ConfirmEmail.subject" xml:space="preserve"><value>E-posta doğrulama kodunuz</value></data>
+  <data name="email.ConfirmEmail.intro" xml:space="preserve"><value>E-posta adresinizi doğrulamak için aşağıdaki kodu girin:</value></data>
+  <data name="email.ResetPassword.subject" xml:space="preserve"><value>Şifre sıfırlama kodunuz</value></data>
+  <data name="email.ResetPassword.intro" xml:space="preserve"><value>Şifrenizi sıfırlamak için aşağıdaki kodu girin:</value></data>
+  <data name="email.ChangeEmail.subject" xml:space="preserve"><value>E-posta değişikliği kodunuz</value></data>
+  <data name="email.ChangeEmail.intro" xml:space="preserve"><value>Yeni e-posta adresinizi onaylamak için aşağıdaki kodu girin:</value></data>
+  <data name="email.footer" xml:space="preserve"><value>Kod 10 dakika geçerlidir. Bu isteği siz yapmadıysanız bu e-postayı yok sayabilirsiniz.</value></data>
 </root>

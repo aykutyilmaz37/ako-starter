@@ -62,7 +62,8 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - Sosyal giriş: tarayıcı akışı (`AuthSession` + `ako://` deep link) tüm sağlayıcılar için; Google ve Apple'da ek olarak native SDK ile id token gönderilebilir.
 
 ## Altyapı ve güvenlik
-- Docker Compose: Postgres + api + web.
+- Docker Compose: Postgres + Mailpit (yerel SMTP, `localhost:8025`) + api + web.
+- E-posta: SMTP (MailKit). Sağlayıcıya bağlı değil; ayardan değişir.
 - Renovate/Dependabot. CI'da `pnpm audit` ve `dotnet list package --vulnerable` çalışır.
 - `@mari-ui/modules` adapter deseni: modüllerin arayüzleri `api-client` ile doldurulur.
 

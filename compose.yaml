@@ -1,4 +1,4 @@
-# Yerel geliştirme: şimdilik yalnızca Postgres. api ve web servisleri sonra eklenecek.
+# Yerel geliştirme: Postgres + Mailpit. api ve web servisleri sonra eklenecek.
 services:
   postgres:
     image: postgres:17-alpine
@@ -15,6 +15,14 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
+  # Yerel SMTP: API'nin gönderdiği tüm e-postaları yakalar, hiçbirini dışarı göndermez.
+  # Gelen kutusu: http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # web arayüzü
 
 volumes:
   postgres-data:

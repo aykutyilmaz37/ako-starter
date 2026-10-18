@@ -54,4 +54,11 @@
   <data name="field.email" xml:space="preserve"><value>Email</value></data>
   <data name="field.newEmail" xml:space="preserve"><value>New email</value></data>
   <data name="field.newPassword" xml:space="preserve"><value>New password</value></data>
+  <data name="email.ConfirmEmail.subject" xml:space="preserve"><value>Your email verification code</value></data>
+  <data name="email.ConfirmEmail.intro" xml:space="preserve"><value>Enter the code below to verify your email address:</value></data>
+  <data name="email.ResetPassword.subject" xml:space="preserve"><value>Your password reset code</value></data>
+  <data name="email.ResetPassword.intro" xml:space="preserve"><value>Enter the code below to reset your password:</value></data>
+  <data name="email.ChangeEmail.subject" xml:space="preserve"><value>Your email change code</value></data>
+  <data name="email.ChangeEmail.intro" xml:space="preserve"><value>Enter the code below to confirm your new email address:</value></data>
+  <data name="email.footer" xml:space="preserve"><value>The code is valid for 10 minutes. If you didn't request this, you can ignore this email.</value></data>
 </root>
