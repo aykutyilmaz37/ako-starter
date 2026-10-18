@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="El değirmeni">
+  <rect width="800" height="800" fill="#F5EFE6"/>
+  <circle cx="400" cy="380" r="250" fill="#EADBC8"/>
+  <ellipse cx="400" cy="690" rx="200" ry="20" fill="#3B2A1E" opacity="0.12"/>
+  <rect x="330" y="300" width="140" height="330" rx="22" fill="#5C4330"/>
+  <rect x="330" y="440" width="140" height="22" fill="#78340B"/>
+  <rect x="345" y="630" width="110" height="50" rx="10" fill="#3B2A1E"/>
+  <rect x="385" y="230" width="30" height="70" fill="#3B2A1E"/>
+  <path d="M400 240 L590 200" stroke="#3B2A1E" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="600" cy="198" r="34" fill="#C67B5C"/>
+</svg>

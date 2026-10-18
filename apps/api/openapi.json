@@ -961,6 +961,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ProductCategory"
+            }
           }
         ],
         "responses": {
@@ -1457,6 +1464,8 @@
           "sku",
           "name",
           "description",
+          "category",
+          "imageUrl",
           "price",
           "stock"
         ],
@@ -1469,6 +1478,15 @@
             "type": "string"
           },
           "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "category": {
+            "$ref": "#/components/schemas/ProductCategory"
+          },
+          "imageUrl": {
             "type": [
               "null",
               "string"
@@ -1781,12 +1799,21 @@
           }
         }
       },
+      "ProductCategory": {
+        "enum": [
+          "Coffee",
+          "Equipment",
+          "Accessory"
+        ]
+      },
       "ProductResponse": {
         "required": [
           "id",
           "sku",
           "name",
           "description",
+          "category",
+          "imageUrl",
           "price",
           "stock",
           "createdAt",
@@ -1805,6 +1832,15 @@
             "type": "string"
           },
           "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "category": {
+            "$ref": "#/components/schemas/ProductCategory"
+          },
+          "imageUrl": {
             "type": [
               "null",
               "string"
@@ -2007,6 +2043,8 @@
         "required": [
           "name",
           "description",
+          "category",
+          "imageUrl",
           "price",
           "stock"
         ],
@@ -2016,6 +2054,15 @@
             "type": "string"
           },
           "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "category": {
+            "$ref": "#/components/schemas/ProductCategory"
+          },
+          "imageUrl": {
             "type": [
               "null",
               "string"

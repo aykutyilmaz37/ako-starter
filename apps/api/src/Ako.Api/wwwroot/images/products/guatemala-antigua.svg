@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Akı Kahve Guatemala Antigua paketi">
+  <rect width="800" height="800" fill="#F5EFE6"/>
+  <circle cx="620" cy="170" r="120" fill="#E07A3F" opacity="0.18"/>
+  <circle cx="170" cy="640" r="90" fill="#2B4C7E" opacity="0.12"/>
+  <ellipse cx="400" cy="705" rx="190" ry="22" fill="#3B2A1E" opacity="0.12"/>
+  <path d="M255 190 L545 190 L575 690 L225 690 Z" fill="#C8A57C"/>
+  <path d="M255 190 L545 190 L552 260 L248 260 Z" fill="#B48E62"/>
+  <rect x="250" y="168" width="300" height="34" rx="6" fill="#A47F55"/>
+  <path d="M243 330 L557 330 L566 470 L234 470 Z" fill="#2B4C7E"/>
+  <circle cx="400" cy="400" r="58" fill="#F5EFE6"/>
+  <text x="400" y="392" text-anchor="middle" font-family="Georgia, serif" font-size="30" font-weight="700" fill="#2B4C7E">Akı</text>
+  <text x="400" y="422" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" letter-spacing="3" fill="#2B4C7E">KAHVE</text>
+  <text x="400" y="545" text-anchor="middle" font-family="Georgia, serif" font-size="40" font-weight="700" fill="#3B2A1E">Guatemala</text>
+  <text x="400" y="585" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" letter-spacing="4" fill="#5C4330">ANTIGUA</text>
+  <text x="400" y="640" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" letter-spacing="2" fill="#5C4330">ORTA KAVRUM · 250 G</text>
+</svg>

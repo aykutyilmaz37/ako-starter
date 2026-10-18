@@ -1,4 +1,5 @@
 import type { AdminUserResponse, PagedResponseOfAdminUserResponse } from '@ako/api-client/model';
+import { Avatar } from '@mari-ui/components/avatar';
 import { Button } from '@mari-ui/components/button';
 import { Popconfirm } from '@mari-ui/components/popconfirm';
 import { Table, type ColumnDef } from '@mari-ui/components/table';
@@ -17,7 +18,19 @@ export function UsersTable({ users, loading, onPageChange }: UsersTableProps) {
   const admin = useToggleAdmin();
 
   const columns: ColumnDef<AdminUserResponse>[] = [
-    { header: 'E-posta', columnName: 'email', render: (_, user) => user.email ?? user.userName },
+    {
+      header: 'Müşteri',
+      columnName: 'email',
+      render: (_, user) => {
+        const email = user.email ?? user.userName;
+        return (
+          <div className="flex items-center gap-3">
+            <Avatar size="sm" src={email.slice(0, 2).toUpperCase()} alt={email} />
+            <span className="truncate">{email}</span>
+          </div>
+        );
+      },
+    },
     {
       header: 'Roller',
       columnName: 'roles',

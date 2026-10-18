@@ -1,5 +1,6 @@
 using Ako.Api.Common;
 using Ako.Api.Features.Auth;
+using Ako.Api.Features.Products;
 using Ako.Api.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,8 @@ namespace Ako.Api.Infrastructure;
 /// <summary>
 /// Yalnızca Development'ta, uygulama açılırken çalışır:
 /// 1) Bekleyen migration'ları uygular (elle "dotnet ef database update" gerekmez).
-/// 2) "Auth:Admin" ayarı doluysa Admin hesabını oluşturur.
+/// 2) Örnek ürünleri ekler (yoksa).
+/// 3) "Auth:Admin" ayarı doluysa Admin hesabını oluşturur.
 /// Production'da migration'lar deploy adımında ayrıca çalıştırılmalıdır.
 /// </summary>
 internal sealed class DevDataInitializer(IServiceProvider services, IConfiguration configuration, ILogger<DevDataInitializer> logger)
@@ -18,7 +20,9 @@ internal sealed class DevDataInitializer(IServiceProvider services, IConfigurati
     public async Task StartAsync(CancellationToken ct)
     {
         using var scope = services.CreateScope();
-        await scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync(ct);
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await db.Database.MigrateAsync(ct);
+        await ProductSeed.SeedAsync(db, ct); // örnek ürünler (Akı Kahve)
 
         var email = configuration["Auth:Admin:Email"];
         var password = configuration["Auth:Admin:Password"];

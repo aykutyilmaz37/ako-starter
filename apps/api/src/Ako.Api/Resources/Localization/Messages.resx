@@ -66,4 +66,7 @@
   <data name="auth.user_not_found" xml:space="preserve"><value>'{0}' kimlikli kullanıcı bulunamadı.</value></data>
   <data name="auth.cannot_remove_own_admin" xml:space="preserve"><value>Kendi Admin rolünüzü kaldıramazsınız.</value></data>
   <data name="field.roles" xml:space="preserve"><value>Roller</value></data>
+  <data name="products.image_url_format" xml:space="preserve"><value>Görsel adresi "/" ile başlayan bir yol ya da https adresi olmalı.</value></data>
+  <data name="field.category" xml:space="preserve"><value>Kategori</value></data>
+  <data name="field.imageUrl" xml:space="preserve"><value>Görsel</value></data>
 </root>

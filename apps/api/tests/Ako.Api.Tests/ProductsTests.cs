@@ -22,7 +22,7 @@ public sealed class ProductsTests(ApiFactory factory)
     {
         var sku = NewSku();
 
-        var create = await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(sku, "Kalem", null, 12.50m, 3));
+        var create = await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(sku, "Kalem", null, ProductCategory.Coffee, null, 12.50m, 3));
         Assert.Equal(HttpStatusCode.Created, create.StatusCode);
         var created = (await create.Content.ReadFromJsonAsync<ProductResponse>())!;
         Assert.Equal(sku.ToUpperInvariant(), created.Sku);
@@ -30,7 +30,7 @@ public sealed class ProductsTests(ApiFactory factory)
         var get = await _client.GetFromJsonAsync<ProductResponse>($"/products/{created.Id}");
         Assert.Equal("Kalem", get!.Name);
 
-        var update = await _client.PutAsJsonAsync($"/admin/products/{created.Id}", new UpdateProductRequest("Kurşun kalem", "HB", 15m, 10));
+        var update = await _client.PutAsJsonAsync($"/admin/products/{created.Id}", new UpdateProductRequest("Kurşun kalem", "HB", ProductCategory.Coffee, null, 15m, 10));
         Assert.Equal(HttpStatusCode.OK, update.StatusCode);
         Assert.Equal(15m, (await update.Content.ReadFromJsonAsync<ProductResponse>())!.Price);
 
@@ -45,9 +45,9 @@ public sealed class ProductsTests(ApiFactory factory)
     public async Task Ayni_sku_ikinci_kez_eklenirse_409_ve_hata_kodu_doner()
     {
         var sku = NewSku();
-        await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(sku, "A", null, 1m, 0));
+        await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(sku, "A", null, ProductCategory.Coffee, null, 1m, 0));
 
-        var response = await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(sku.ToLowerInvariant(), "B", null, 1m, 0));
+        var response = await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(sku.ToLowerInvariant(), "B", null, ProductCategory.Coffee, null, 1m, 0));
 
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
@@ -57,7 +57,7 @@ public sealed class ProductsTests(ApiFactory factory)
     [Fact]
     public async Task Gecersiz_istek_alan_bazli_hatalar_doner_ve_dile_gore_cevrilir()
     {
-        var body = new CreateProductRequest("ab c", "", null, 0m, -1);
+        var body = new CreateProductRequest("ab c", "", null, ProductCategory.Coffee, null, 0m, -1);
 
         var tr = await Send(body, "tr");
         Assert.Equal("SKU yalnızca harf, rakam ve tire içerebilir.", tr.Errors["sku"].Single());
@@ -83,7 +83,7 @@ public sealed class ProductsTests(ApiFactory factory)
         var tag = Guid.NewGuid().ToString("N")[..8];
         foreach (var i in Enumerable.Range(1, 3))
         {
-            await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(NewSku(), $"Defter {tag} {i}", null, 5m, 1));
+            await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(NewSku(), $"Defter {tag} {i}", null, ProductCategory.Coffee, null, 5m, 1));
         }
 
         var page = await _client.GetFromJsonAsync<PagedResponse<ProductResponse>>($"/products?search={tag}&pageSize=2&page=2");
@@ -98,7 +98,7 @@ public sealed class ProductsTests(ApiFactory factory)
     {
         var anonymous = factory.CreateClient();
         var user = await factory.CreateUserClientAsync();
-        var body = new CreateProductRequest(NewSku(), "A", null, 1m, 0);
+        var body = new CreateProductRequest(NewSku(), "A", null, ProductCategory.Coffee, null, 1m, 0);
 
         Assert.Equal(HttpStatusCode.OK, (await anonymous.GetAsync("/products")).StatusCode);
         Assert.Equal(HttpStatusCode.Unauthorized, (await anonymous.PostAsJsonAsync("/admin/products", body)).StatusCode);
@@ -110,8 +110,31 @@ public sealed class ProductsTests(ApiFactory factory)
     public async Task Herkese_acik_adreste_yazma_islemi_yoktur()
     {
         // Yönetim yalnızca /admin altında; internete açık deploy'da bu grup hiç oluşmaz.
-        var response = await _client.PostAsJsonAsync("/products", new CreateProductRequest(NewSku(), "A", null, 1m, 0));
+        var response = await _client.PostAsJsonAsync("/products", new CreateProductRequest(NewSku(), "A", null, ProductCategory.Coffee, null, 1m, 0));
         Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Kategoriye_gore_suzer_ve_kategori_metin_olarak_doner()
+    {
+        var tag = Guid.NewGuid().ToString("N")[..8];
+        await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(NewSku(), $"Kupa {tag}", null, ProductCategory.Accessory, "/images/products/seramik-kupa.svg", 350m, 5));
+        await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(NewSku(), $"Kahve {tag}", null, ProductCategory.Coffee, null, 400m, 5));
+
+        var raw = await _client.GetStringAsync($"/products?search={tag}&category=Accessory");
+
+        Assert.Contains("\"category\":\"Accessory\"", raw);
+        Assert.DoesNotContain($"Kahve {tag}", raw);
+    }
+
+    [Theory]
+    [InlineData("javascript:alert(1)")]
+    [InlineData("http://site.test/a.png")]
+    [InlineData("//site.test/a.png")]
+    public async Task Gecersiz_gorsel_adresi_400_doner(string imageUrl)
+    {
+        var response = await _client.PostAsJsonAsync("/admin/products", new CreateProductRequest(NewSku(), "A", null, ProductCategory.Coffee, imageUrl, 1m, 0));
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]

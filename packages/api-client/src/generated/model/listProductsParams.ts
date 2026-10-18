@@ -4,9 +4,11 @@
  * Ako.Api | v1
  * OpenAPI spec version: 1.0.0
  */
+import type { ProductCategory } from './productCategory';
 
 export type ListProductsParams = {
 page?: number;
 pageSize?: number;
 search?: string;
+category?: ProductCategory;
 };

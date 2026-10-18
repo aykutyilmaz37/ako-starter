@@ -1,11 +1,11 @@
 import { SearchInput } from '@mari-ui/components/input';
-import { Title } from '@mari-ui/components/typography';
+import { PageHeader } from '../../../shared/page-header';
 import { useSearchParams } from 'react-router';
 import { UsersTable } from '../components/users-table';
 import { useUsers } from '../hooks/use-users';
 
 export function meta() {
-  return [{ title: 'Kullanıcılar | Ako Backoffice' }];
+  return [{ title: 'Müşteriler | Akı Kahve Yönetim' }];
 }
 
 /**
@@ -28,17 +28,21 @@ export default function UsersPage() {
 
   return (
     <section className="flex flex-col gap-6">
-      <Title level={2}>Kullanıcılar</Title>
+      <PageHeader title="Müşteriler" description="Kayıtlı hesaplar, roller ve giriş yöntemleri." />
       <SearchInput
         placeholder="E-posta ile ara"
+        size="sm"
+        aria-label="Müşterilerde ara"
         defaultValue={search ?? ''}
         onSearch={(value) => setParam('search', value || undefined)}
       />
-      <UsersTable
-        users={users.data}
-        loading={users.isFetching}
-        onPageChange={(p) => setParam('page', String(p))}
-      />
+      <div className="rounded-mari-lg border border-mari-border bg-mari-surface">
+        <UsersTable
+          users={users.data}
+          loading={users.isFetching}
+          onPageChange={(p) => setParam('page', String(p))}
+        />
+      </div>
     </section>
   );
 }

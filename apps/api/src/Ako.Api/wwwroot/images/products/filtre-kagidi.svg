@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Filtre kağıdı">
+  <rect width="800" height="800" fill="#F5EFE6"/>
+  <circle cx="400" cy="380" r="250" fill="#EADBC8"/>
+  <ellipse cx="400" cy="690" rx="200" ry="20" fill="#3B2A1E" opacity="0.12"/>
+  <path d="M260 280 L540 280 L450 600 L350 600 Z" fill="#FFFFFF" stroke="#D9C7AE" stroke-width="6"/>
+  <path d="M285 300 L555 300 L465 620 L365 620 Z" fill="#FBF7F1" stroke="#D9C7AE" stroke-width="6" opacity="0.9"/>
+  <path d="M330 330 L390 560 M400 330 L400 560 M470 330 L410 560" stroke="#EADBC8" stroke-width="5"/>
+  <rect x="320" y="630" width="160" height="40" rx="10" fill="#78340B"/>
+  <text x="400" y="657" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" fill="#F5EFE6">100 ADET</text>
+</svg>

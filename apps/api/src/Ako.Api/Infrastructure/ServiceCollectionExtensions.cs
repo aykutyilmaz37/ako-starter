@@ -50,7 +50,12 @@ public static class ServiceCollectionExtensions
 
         // Sayılar yalnızca sayı olarak kabul edilir ("12" değil 12). Aksi hâlde OpenAPI şeması
         // her sayıyı "integer | string" yazar ve api-client tipleri number | string olur.
-        services.ConfigureHttpJsonOptions(options => options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict);
+        services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
+            // Enum'lar sayı (0, 1) yerine metin ("Coffee") olarak gider; api-client'ta tipli birleşim olur.
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUser>();
 

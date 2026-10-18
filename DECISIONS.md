@@ -72,6 +72,15 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - Hassas formlar `method="post"`: JS yüklenmezse veri URL'ye yazılmaz.
 - Next.js'in seçilmeme sebebi: sık çıkan güvenlik açıkları (RSC, Server Actions, middleware) ve düşük RPS.
 
+## Tasarım ve örnek senaryo
+
+- Şablon gerçekçi bir senaryoyla gelir: **Akı Kahve**, butik bir kahve kavurucusu. Site = vitrin (katalog, ürün detayı, alışveriş listesi); backoffice = ürün ve müşteri yönetimi. Todos örneği bu senaryoda "alışveriş listem"dir. Projeye başlarken senaryo silinir, yapı kalır.
+- Stil: "Nature Distilled" (toprak tonları, yumuşak gölge, el yapımı sıcaklık). Renk: kahve `#92400E` + terracotta vurgu `#C67B5C`, krem yüzeyler. Tipografi: başlık Playfair Display, gövde Inter (backoffice'te ikisi de Inter). Seçimler ui-ux-pro-max tasarım veritabanından (Bakery/Cafe paleti, artisan stil).
+- Tema mari-ui'ın kendi sistemiyle: `packages/ui/themes/<uygulama>/mari-ui.config.json` → `pnpm --filter @ako/ui theme` → tema CSS'i (kontrastlar AA'ya göre otomatik). mari-ui yapılandırması nötr renkleri değiştiremediği için sıcak nötrler `themes/warm-neutrals.css` ile ezilir (kontrastlar dosyada belgeli).
+- Site `editorial` kişilik, rahat boşluk, büyük köşe; backoffice `corporate`, sıkı boşluk (yoğun tablolar).
+- Fontlar `@fontsource` ile uygulamaya gömülü (Google Fonts'a istek yok). İkonlar lucide (emoji yok).
+- Ürün modeli: kategori (enum, JSON'da metin) + görsel adresi. Örnek görseller API'nin `wwwroot/images`'ında (SVG); web'de BFF üzerinden `/api/images/...`. Gerçek projede yüklenen fotoğraflar gelir.
+
 ## Mobil: `apps/mobile`
 
 - Expo + `@mari-ui/native`.

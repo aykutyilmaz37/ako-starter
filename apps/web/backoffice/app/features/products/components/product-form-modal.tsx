@@ -1,12 +1,14 @@
 import { applyFieldErrors, isApiError } from '@ako/api-client';
-import type { ProductResponse } from '@ako/api-client/model';
+import type { ProductCategory, ProductResponse } from '@ako/api-client/model';
 import { AdminCreateProductBody } from '@ako/api-client/zod/admin-products';
-import { TextField } from '@ako/ui';
+import { CATEGORIES, CATEGORY_LABELS, productImageSrc, TextField } from '@ako/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert } from '@mari-ui/components/alert';
+import { Field } from '@mari-ui/components/field';
+import { Select } from '@mari-ui/components/select';
 import { Modal } from '@mari-ui/components/modal';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useSaveProduct } from '../hooks/use-products';
 
@@ -20,12 +22,22 @@ const Schema = AdminCreateProductBody.extend({
     .regex(/^[A-Za-z0-9-]+$/, 'Yalnızca harf, rakam ve tire.'),
   name: z.string().trim().min(1).max(200),
   description: z.string().max(2000).nullish(),
+  category: z.enum(CATEGORIES as [ProductCategory, ...ProductCategory[]]),
+  imageUrl: z.string().max(500).nullish(),
   price: z.number().positive(),
   stock: z.number().int().min(0),
 });
 type Values = z.infer<typeof Schema>;
 
-const empty: Values = { sku: '', name: '', description: '', price: 0, stock: 0 };
+const empty: Values = {
+  sku: '',
+  name: '',
+  description: '',
+  category: 'Coffee',
+  imageUrl: '',
+  price: 0,
+  stock: 0,
+};
 
 interface ProductFormModalProps {
   open: boolean;
@@ -44,7 +56,11 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
   useEffect(() => {
     if (open) {
       setMessage(null);
-      form.reset(product ? { ...product, description: product.description ?? '' } : empty);
+      form.reset(
+        product
+          ? { ...product, description: product.description ?? '', imageUrl: product.imageUrl ?? '' }
+          : empty,
+      );
     }
   }, [open, product, form]);
 
@@ -54,7 +70,11 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
   });
 
   const submit = form.handleSubmit(({ sku, ...values }) => {
-    const data = { ...values, description: values.description || null };
+    const data = {
+      ...values,
+      description: values.description || null,
+      imageUrl: values.imageUrl || null,
+    };
     if (product) update.mutate({ id: product.id, data });
     else create.mutate({ data: { sku, ...data } });
   });
@@ -81,7 +101,43 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
           />
         )}
         <TextField control={form.control} name="name" label="Ad" required />
-        <TextField control={form.control} name="description" label="Açıklama" />
+        <Controller
+          control={form.control}
+          name="category"
+          render={({ field, fieldState }) => (
+            <Field label="Kategori" required error={fieldState.error?.message}>
+              <Select
+                value={field.value}
+                onChange={(value) => field.onChange(value)}
+                options={CATEGORIES.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
+              />
+            </Field>
+          )}
+        />
+        <TextField
+          control={form.control}
+          name="description"
+          label="Açıklama"
+          hint="Kahvelerde: işlem. kavrum. tadım notaları."
+        />
+        <div className="flex items-end gap-3">
+          <div className="flex-1">
+            <TextField
+              control={form.control}
+              name="imageUrl"
+              label="Görsel adresi"
+              placeholder="/images/products/… ya da https://…"
+            />
+          </div>
+          {/* Girilen adresin önizlemesi */}
+          <img
+            src={productImageSrc(form.watch('imageUrl')) ?? ''}
+            alt=""
+            width={56}
+            height={56}
+            className="mb-0.5 size-14 shrink-0 rounded-mari-md border border-mari-border bg-mari-surface-alt object-cover"
+          />
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <TextField control={form.control} name="price" label="Fiyat (₺)" type="number" required />
           <TextField control={form.control} name="stock" label="Stok" type="number" required />

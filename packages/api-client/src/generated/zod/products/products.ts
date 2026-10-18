@@ -13,7 +13,8 @@ export const listProductsQueryPageSizeDefault = 20;
 export const ListProductsQueryParams = zod.object({
   "page": zod.int().default(listProductsQueryPageDefault),
   "pageSize": zod.int().default(listProductsQueryPageSizeDefault),
-  "search": zod.string().optional()
+  "search": zod.string().optional(),
+  "category": zod.enum(['Coffee', 'Equipment', 'Accessory']).optional()
 })
 
 export const ListProductsResponse = zod.object({
@@ -22,6 +23,8 @@ export const ListProductsResponse = zod.object({
   "sku": zod.string(),
   "name": zod.string(),
   "description": zod.string().nullable(),
+  "category": zod.enum(['Coffee', 'Equipment', 'Accessory']),
+  "imageUrl": zod.string().nullable(),
   "price": zod.number(),
   "stock": zod.int(),
   "createdAt": zod.iso.datetime({"offset":true}),
@@ -42,6 +45,8 @@ export const GetProductResponse = zod.object({
   "sku": zod.string(),
   "name": zod.string(),
   "description": zod.string().nullable(),
+  "category": zod.enum(['Coffee', 'Equipment', 'Accessory']),
+  "imageUrl": zod.string().nullable(),
   "price": zod.number(),
   "stock": zod.int(),
   "createdAt": zod.iso.datetime({"offset":true}),

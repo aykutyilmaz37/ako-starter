@@ -1,4 +1,5 @@
 import { isApiError } from '@ako/api-client';
+import type { ProductCategory } from '@ako/api-client/model';
 import {
   useAdminCreateProduct,
   useAdminDeleteProduct,
@@ -8,7 +9,12 @@ import { getListProductsQueryKey, useListProducts } from '@ako/api-client/produc
 import { useToast } from '@mari-ui/components/toast';
 import { keepPreviousData, useQueryClient } from '@tanstack/react-query';
 
-export function useProducts(params: { page: number; pageSize: number; search?: string }) {
+export function useProducts(params: {
+  page: number;
+  pageSize: number;
+  search?: string;
+  category?: ProductCategory;
+}) {
   return useListProducts(params, { query: { placeholderData: keepPreviousData } });
 }
 

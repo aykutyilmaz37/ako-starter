@@ -27,6 +27,7 @@ export * from './nativeLoginRequest';
 export * from './pagedResponseOfAdminUserResponse';
 export * from './pagedResponseOfProductResponse';
 export * from './problemDetails';
+export * from './productCategory';
 export * from './productResponse';
 export * from './providersResponse';
 export * from './refreshRequest';

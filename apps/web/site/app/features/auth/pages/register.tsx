@@ -1,24 +1,28 @@
-import { Card } from '@mari-ui/components/card';
 import { Link, useNavigate } from 'react-router';
+import { AuthLayout } from '../components/auth-layout';
 import { RegisterForm } from '../components/register-form';
 
 export function meta() {
-  return [{ title: 'Hesap oluştur | Ako' }];
+  return [{ title: 'Hesap oluştur | Akı Kahve' }];
 }
 
 export default function RegisterPage() {
   const navigate = useNavigate();
 
   return (
-    <Card title="Hesap oluştur" className="mx-auto max-w-sm">
-      <div className="flex flex-col gap-4">
-        <RegisterForm
-          onRegistered={(email) => navigate(`/verify?email=${encodeURIComponent(email)}`)}
-        />
-        <Link to="/login" className="text-sm">
-          Zaten hesabım var
+    <AuthLayout
+      title="Hesap oluşturun"
+      description="Bir dakika sürer. E-postanıza 6 haneli bir doğrulama kodu göndereceğiz."
+    >
+      <RegisterForm
+        onRegistered={(email) => navigate(`/verify?email=${encodeURIComponent(email)}`)}
+      />
+      <p className="text-sm text-mari-muted">
+        Zaten hesabınız var mı?{' '}
+        <Link to="/login" className="font-medium text-mari-primary">
+          Giriş yapın
         </Link>
-      </div>
-    </Card>
+      </p>
+    </AuthLayout>
   );
 }

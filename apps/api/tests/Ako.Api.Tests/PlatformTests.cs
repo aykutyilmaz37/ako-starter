@@ -27,9 +27,9 @@ public sealed class PlatformTests(ApiFactory factory)
     {
         var admin = await factory.CreateAdminClientAsync();
         var me = await admin.GetFromJsonAsync<Ako.Api.Features.Auth.MeResponse>("/auth/me");
-        var create = await admin.PostAsJsonAsync("/admin/products", new CreateProductRequest($"A-{Guid.NewGuid():N}"[..20], "A", null, 1m, 1));
+        var create = await admin.PostAsJsonAsync("/admin/products", new CreateProductRequest($"A-{Guid.NewGuid():N}"[..20], "A", null, ProductCategory.Coffee, null, 1m, 1));
         var created = (await create.Content.ReadFromJsonAsync<ProductResponse>())!;
-        await admin.PutAsJsonAsync($"/admin/products/{created.Id}", new UpdateProductRequest("B", null, 2m, 2));
+        await admin.PutAsJsonAsync($"/admin/products/{created.Id}", new UpdateProductRequest("B", null, ProductCategory.Coffee, null, 2m, 2));
 
         using var scope = factory.Services.CreateScope();
         var product = await scope.ServiceProvider.GetRequiredService<AppDbContext>().Products.AsNoTracking().SingleAsync(p => p.Id == created.Id);

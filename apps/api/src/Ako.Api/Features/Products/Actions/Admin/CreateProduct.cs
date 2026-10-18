@@ -11,7 +11,8 @@ namespace Ako.Api.Features.Products;
 
 #region İstek — gönderilen JSON gövdesi
 
-public sealed record CreateProductRequest(string Sku, string Name, string? Description, decimal Price, int Stock);
+public sealed record CreateProductRequest(
+    string Sku, string Name, string? Description, ProductCategory Category, string? ImageUrl, decimal Price, int Stock);
 
 #endregion
 
@@ -27,6 +28,10 @@ internal sealed class CreateProductRequestValidator : AbstractValidator<CreatePr
             .Matches("^[A-Za-z0-9-]+$").WithMessage(_ => Messages.Get("products.sku_format"));
         RuleFor(x => x.Name).NotEmpty().MaximumLength(Product.NameMaxLength);
         RuleFor(x => x.Description).MaximumLength(Product.DescriptionMaxLength);
+        RuleFor(x => x.Category).IsInEnum();
+        RuleFor(x => x.ImageUrl)
+            .MaximumLength(Product.ImageUrlMaxLength)
+            .Must(ProductRules.IsValidImageUrl).WithMessage(_ => Messages.Get("products.image_url_format"));
         RuleFor(x => x.Price).GreaterThan(0).PrecisionScale(12, 2, ignoreTrailingZeros: true);
         RuleFor(x => x.Stock).GreaterThanOrEqualTo(0);
     }
@@ -48,7 +53,8 @@ public sealed class CreateProductHandler(AppDbContext db)
             return ProductErrors.SkuTaken(sku);
         }
 
-        var product = Product.Create(sku, request.Name, request.Description, request.Price, request.Stock);
+        var product = Product.Create(
+            sku, request.Name, request.Description, request.Category, request.ImageUrl, request.Price, request.Stock);
         db.Products.Add(product);
         await db.SaveChangesAsync(ct);
         return ProductResponse.From(product);

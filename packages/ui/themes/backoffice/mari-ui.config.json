@@ -1,0 +1,11 @@
+{
+  "$schema": "https://mari-ui.dev/schema/theme.schema.json",
+  "persona": "corporate",
+  "color": { "primary": "#92400E", "accent": "#C67B5C" },
+  "typography": {
+    "fontFamilySans": "\"Inter Variable\", \"Inter\", ui-sans-serif, system-ui, sans-serif",
+    "fontFamilyHeading": "\"Inter Variable\", \"Inter\", ui-sans-serif, system-ui, sans-serif"
+  },
+  "density": { "radius": "md", "spacing": "compact", "shadow": "soft" },
+  "motion": "normal"
+}

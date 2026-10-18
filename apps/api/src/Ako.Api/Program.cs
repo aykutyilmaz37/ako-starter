@@ -33,6 +33,12 @@ app.UseSerilogRequestLogging();
 // Sonraki her şey (hata yanıtları dahil) isteğin dilinde üretilir.
 app.UseRequestLocalization();
 
+// wwwroot: ürün görselleri (/images/...). Web'de BFF üzerinden /api/images/... olarak gelir.
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx => ctx.Context.Response.Headers.CacheControl = "public, max-age=86400",
+});
+
 // Yakalanmayan hatalar ve boş 4xx/5xx yanıtlar ProblemDetails olarak döner.
 app.UseExceptionHandler();
 app.UseStatusCodePages();

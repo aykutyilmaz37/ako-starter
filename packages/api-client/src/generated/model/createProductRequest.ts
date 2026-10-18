@@ -4,12 +4,16 @@
  * Ako.Api | v1
  * OpenAPI spec version: 1.0.0
  */
+import type { ProductCategory } from './productCategory';
 
 export interface CreateProductRequest {
   sku: string;
   name: string;
   /** @nullable */
   description: string | null;
+  category: ProductCategory;
+  /** @nullable */
+  imageUrl: string | null;
   price: number;
   stock: number;
 }

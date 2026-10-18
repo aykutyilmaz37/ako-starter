@@ -33,7 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-screen bg-mari-bg text-mari-fg">
+      <body className="min-h-screen bg-mari-surface text-mari-foreground antialiased">
         {children}
         <ScrollRestoration />
         <Scripts />

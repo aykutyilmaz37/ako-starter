@@ -13,9 +13,12 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Sku).HasMaxLength(Product.SkuMaxLength);
         builder.Property(p => p.Name).HasMaxLength(Product.NameMaxLength);
         builder.Property(p => p.Description).HasMaxLength(Product.DescriptionMaxLength);
+        builder.Property(p => p.Category).HasConversion<string>().HasMaxLength(32);
+        builder.Property(p => p.ImageUrl).HasMaxLength(Product.ImageUrlMaxLength);
         builder.Property(p => p.Price).HasPrecision(12, 2);
 
         builder.HasIndex(p => p.Sku).IsUnique();
         builder.HasIndex(p => p.Name);
+        builder.HasIndex(p => p.Category);
     }
 }

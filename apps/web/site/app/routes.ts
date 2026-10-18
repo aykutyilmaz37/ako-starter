@@ -2,8 +2,10 @@ import { index, route, type RouteConfig } from '@react-router/dev/routes';
 
 // Adres → sayfa eşlemesi. Sayfalar özellik klasörlerinde durur (features/<özellik>/pages).
 export default [
-  index('features/products/pages/products.tsx'),
-  route('todos', 'features/todos/pages/todos.tsx'),
+  index('features/home/pages/home.tsx'),
+  route('products', 'features/products/pages/catalog.tsx'),
+  route('products/:id', 'features/products/pages/product-detail.tsx'),
+  route('list', 'features/todos/pages/todos.tsx'),
   route('login', 'features/auth/pages/login.tsx'),
   route('register', 'features/auth/pages/register.tsx'),
   route('verify', 'features/auth/pages/verify.tsx'),

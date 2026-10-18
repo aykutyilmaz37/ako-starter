@@ -1,6 +1,23 @@
 @import 'tailwindcss';
 @import '@mari-ui/components/tailwind.css';
-@import '@mari-ui/tokens/fonts.css';
+/* Fontlar uygulamaya gömülü (npm/@fontsource): dış istek yok, ziyaretçi IP'si üçüncü tarafa gitmez. */
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/playfair-display';
+/* Akı Kahve teması: packages/ui/themes/site/mari-ui.config.json'dan üretilir (pnpm --filter @ako/ui theme). */
+@import '@ako/ui/themes/site.css';
+@import '@ako/ui/themes/warm-neutrals.css';
 
 /* Ortak bileşenlerdeki (packages/ui) Tailwind sınıfları da derlensin. */
 @source '../../../../packages/ui/src';
+
+@layer base {
+  body {
+    font-family: var(--mari-font-sans);
+  }
+  h1,
+  h2,
+  h3,
+  .font-heading {
+    font-family: var(--mari-font-heading);
+  }
+}

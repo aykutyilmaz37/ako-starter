@@ -11,6 +11,8 @@ export const AdminCreateProductBody = zod.object({
   "sku": zod.string(),
   "name": zod.string(),
   "description": zod.string().nullable(),
+  "category": zod.enum(['Coffee', 'Equipment', 'Accessory']),
+  "imageUrl": zod.string().nullable(),
   "price": zod.number(),
   "stock": zod.int()
 })
@@ -20,6 +22,8 @@ export const AdminCreateProductResponse = zod.object({
   "sku": zod.string(),
   "name": zod.string(),
   "description": zod.string().nullable(),
+  "category": zod.enum(['Coffee', 'Equipment', 'Accessory']),
+  "imageUrl": zod.string().nullable(),
   "price": zod.number(),
   "stock": zod.int(),
   "createdAt": zod.iso.datetime({"offset":true}),
@@ -33,6 +37,8 @@ export const AdminUpdateProductParams = zod.object({
 export const AdminUpdateProductBody = zod.object({
   "name": zod.string(),
   "description": zod.string().nullable(),
+  "category": zod.enum(['Coffee', 'Equipment', 'Accessory']),
+  "imageUrl": zod.string().nullable(),
   "price": zod.number(),
   "stock": zod.int()
 })
@@ -42,6 +48,8 @@ export const AdminUpdateProductResponse = zod.object({
   "sku": zod.string(),
   "name": zod.string(),
   "description": zod.string().nullable(),
+  "category": zod.enum(['Coffee', 'Equipment', 'Accessory']),
+  "imageUrl": zod.string().nullable(),
   "price": zod.number(),
   "stock": zod.int(),
   "createdAt": zod.iso.datetime({"offset":true}),

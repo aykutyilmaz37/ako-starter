@@ -6,11 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ako.Api.Features.Products;
 
-// GET /products?page=1&pageSize=20&search=kalem → sayfalı ürün listesi
+// GET /products?page=1&pageSize=20&search=etiyopya&category=Coffee → sayfalı ürün listesi
 
 #region İstek — query string parametreleri
 
-public sealed record ListProductsQuery(int Page = 1, int PageSize = Paging.DefaultPageSize, string? Search = null);
+public sealed record ListProductsQuery(
+    int Page = 1, int PageSize = Paging.DefaultPageSize, string? Search = null, ProductCategory? Category = null);
 
 #endregion
 
@@ -23,6 +24,7 @@ internal sealed class ListProductsQueryValidator : AbstractValidator<ListProduct
         RuleFor(x => x.Page).ValidPage();
         RuleFor(x => x.PageSize).ValidPageSize();
         RuleFor(x => x.Search).MaximumLength(100);
+        RuleFor(x => x.Category).IsInEnum();
     }
 }
 
@@ -32,7 +34,7 @@ internal sealed class ListProductsQueryValidator : AbstractValidator<ListProduct
 
 public sealed class ListProductsHandler(AppDbContext db)
 {
-    /// <summary>Ada göre sıralı ürünleri döner; search varsa ad ve SKU içinde arar (büyük/küçük harf duyarsız).</summary>
+    /// <summary>Ada göre sıralı ürünleri döner; search ad ve SKU içinde arar (büyük/küçük harf duyarsız), category süzer.</summary>
     public Task<PagedResponse<ProductResponse>> HandleAsync(ListProductsQuery query, CancellationToken ct)
     {
         var products = db.Products.AsNoTracking();
@@ -43,10 +45,15 @@ public sealed class ListProductsHandler(AppDbContext db)
             products = products.Where(p => EF.Functions.ILike(p.Name, pattern) || EF.Functions.ILike(p.Sku, pattern));
         }
 
+        if (query.Category is { } category)
+        {
+            products = products.Where(p => p.Category == category);
+        }
+
         return products
             .OrderBy(p => p.Name)
             .ThenBy(p => p.Id)
-            .Select(p => new ProductResponse(p.Id, p.Sku, p.Name, p.Description, p.Price, p.Stock, p.CreatedAt, p.UpdatedAt))
+            .Select(p => new ProductResponse(p.Id, p.Sku, p.Name, p.Description, p.Category, p.ImageUrl, p.Price, p.Stock, p.CreatedAt, p.UpdatedAt))
             .ToPagedAsync(query.Page, query.PageSize, ct);
     }
 }

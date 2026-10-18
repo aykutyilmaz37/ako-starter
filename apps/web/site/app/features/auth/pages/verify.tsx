@@ -1,9 +1,9 @@
-import { Card } from '@mari-ui/components/card';
 import { useNavigate, useSearchParams } from 'react-router';
+import { AuthLayout } from '../components/auth-layout';
 import { VerifyEmailForm } from '../components/verify-email-form';
 
 export function meta() {
-  return [{ title: 'E-posta doğrulama | Ako' }];
+  return [{ title: 'E-posta doğrulama | Akı Kahve' }];
 }
 
 /** Kayıttan sonra ya da doğrulanmamış hesapla girişte (?resend=1) gelinir. */
@@ -12,12 +12,12 @@ export default function VerifyPage() {
   const navigate = useNavigate();
 
   return (
-    <Card title="E-postanızı doğrulayın" className="mx-auto max-w-sm">
+    <AuthLayout title="E-postanızı doğrulayın">
       <VerifyEmailForm
         email={params.get('email') ?? ''}
         sendOnMount={params.has('resend')}
         onVerified={() => navigate('/login?verified=1')}
       />
-    </Card>
+    </AuthLayout>
   );
 }

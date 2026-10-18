@@ -1,0 +1,22 @@
+/**
+ * Akı Kahve sıcak nötr renkleri. mari-ui.config.json yalnızca marka ve vurgu rengini değiştirebiliyor; yüzey,
+ * kenarlık ve ikincil metin kütüphanenin varsayılan (soğuk/mor) tonunda kalıyor. Bu dosya onları krem ve
+ * kahverengi tonlarla ezer. Tema CSS'inden SONRA import edilir.
+ *
+ * Kontrast (WCAG AA, surface #FBF8F3 üzerinde): foreground 15.4, muted 6.2, neutral 5.9, input kenarlığı 3.2.
+ * Yalnızca açık tema; koyu tema eklenirse [data-theme='dark'] için ayrı değerler gerekir.
+ */
+:root {
+  --mari-color-surface: #fbf8f3;
+  --mari-color-surface-alt: #f3ece2;
+  --mari-color-border: #e7dccd;
+  --mari-color-input: #9a8878;
+  --mari-color-foreground: #2b1d14;
+  --mari-color-muted: #6b5a4c;
+  --mari-color-neutral: #6e5e50;
+  --mari-color-neutral-solid: #6e5e50;
+  --mari-color-neutral-solid-hover: #4f4136;
+  --mari-color-neutral-subtle: #f3ece2;
+  --mari-color-neutral-subtle-contrast: #5c4c3f;
+  --mari-color-neutral-border: #6e5e50;
+}

@@ -4,10 +4,14 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./themes/site.css": "./themes/site/mari-ui-theme.css",
+    "./themes/backoffice.css": "./themes/backoffice/mari-ui-theme.css",
+    "./themes/warm-neutrals.css": "./themes/warm-neutrals.css"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "theme": "cd themes/site && pnpm dlx @mari-ui/cli@0.2.0 theme && rm -f mari-ui-theme.ts && cd ../backoffice && pnpm dlx @mari-ui/cli@0.2.0 theme && rm -f mari-ui-theme.ts"
   },
   "devDependencies": {
     "@ako/tsconfig": "workspace:*",

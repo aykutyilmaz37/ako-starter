@@ -3,6 +3,8 @@
 Her web ürünü ayrı bir uygulamadır (ayrı build, ayrı domain, ayrı deploy). Hepsi aynı yapıyı kullanır:
 **React Router 8** (framework modu, SSR) + **Hono** sunucusu (BFF) + **mari-ui** + **TanStack Query**.
 
+Örnek senaryo **Akı Kahve** (butik kahve kavurucusu); tasarım kararları kök `DECISIONS.md` → "Tasarım ve örnek senaryo".
+
 | Uygulama      | Port | Kimler girer   | Not                                                                   |
 | ------------- | ---- | -------------- | --------------------------------------------------------------------- |
 | `site/`       | 5173 | herkes         | herkese açık ürünler (SSR + CDN önbelleği), giriş, kayıt, görevler    |
@@ -77,6 +79,18 @@ tarayıcı ──/api/*──▶ Hono BFF ──Bearer token──▶ .NET API
 - Backoffice: `requiredRole: 'Admin'`; Admin olmayan kullanıcı girişte 403 alır.
 - Gerçek istemci IP'si `X-Forwarded-For` ile API'ye iletilir (rate limiting için). API bu başlığa yalnızca
   güvendiği proxy'lerden inanır: varsayılan aynı makine, diğerleri `ForwardedHeaders:KnownNetworks` ile.
+
+## Tema
+
+```text
+packages/ui/themes/
+  site/mari-ui.config.json        marka rengi, font, kişilik, boşluk → mari-ui-theme.css (üretilir)
+  backoffice/mari-ui.config.json
+  warm-neutrals.css               sıcak yüzey/kenarlık/metin renkleri (mari-ui config'i bunları değiştiremiyor)
+```
+
+Tema değişince: `pnpm --filter @ako/ui theme`. Bileşenlerde ham renk (hex) yazılmaz; `bg-mari-surface`,
+`text-mari-muted`, `bg-mari-primary-solid` gibi tema sınıfları kullanılır. Fontlar `@fontsource` ile gömülüdür.
 
 ## Formlar
 

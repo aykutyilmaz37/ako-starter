@@ -10,6 +10,7 @@ public sealed class Product : IEntity, IAuditable
     public const int NameMaxLength = 200;
     public const int SkuMaxLength = 64;
     public const int DescriptionMaxLength = 2000;
+    public const int ImageUrlMaxLength = 500;
 
     private Product() { } // EF Core veritabanından okurken bu boş constructor'ı kullanır.
 
@@ -19,6 +20,10 @@ public sealed class Product : IEntity, IAuditable
     public string Sku { get; private set; } = null!;
     public string Name { get; private set; } = null!;
     public string? Description { get; private set; }
+    public ProductCategory Category { get; private set; }
+
+    /// <summary>API'nin kendi görseli ("/images/products/x.svg") ya da tam adres ("https://…").</summary>
+    public string? ImageUrl { get; private set; }
     public decimal Price { get; private set; }
     public int Stock { get; private set; }
 
@@ -29,22 +34,25 @@ public sealed class Product : IEntity, IAuditable
     public Guid? UpdatedBy { get; private set; }
 
     /// <summary>Yeni ürün oluşturur. Id zamana göre sıralı (UUID v7) üretilir.</summary>
-    public static Product Create(string sku, string name, string? description, decimal price, int stock)
+    public static Product Create(
+        string sku, string name, string? description, ProductCategory category, string? imageUrl, decimal price, int stock)
     {
         var product = new Product
         {
             Id = Guid.CreateVersion7(),
             Sku = NormalizeSku(sku),
         };
-        product.Update(name, description, price, stock);
+        product.Update(name, description, category, imageUrl, price, stock);
         return product;
     }
 
     /// <summary>Düzenlenebilir alanları günceller. SKU değiştirilemez.</summary>
-    public void Update(string name, string? description, decimal price, int stock)
+    public void Update(string name, string? description, ProductCategory category, string? imageUrl, decimal price, int stock)
     {
         Name = name.Trim();
         Description = string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+        Category = category;
+        ImageUrl = string.IsNullOrWhiteSpace(imageUrl) ? null : imageUrl.Trim();
         Price = price;
         Stock = stock;
     }

@@ -13,6 +13,14 @@ const bff = createBff({
 });
 
 export default await createHonoServer({
-  configure: bff.configure,
+  configure(app) {
+    // Geliştirme aracı (uygulamadaki önizleme paneli) hazır olup olmadığını HEAD / ile sorar. Backoffice'te "/"
+    // giriş istediği için 302 döner ve araç sunucuyu hiç hazır saymaz. Gövde dönmediği için bir şey açığa çıkmaz.
+    if (process.env.NODE_ENV !== 'production') {
+      // (Hono HEAD isteklerini GET route'larına yönlendirdiği için app.on('HEAD') eşleşmez; middleware gerekir.)
+      app.use('/', async (c, next) => (c.req.method === 'HEAD' ? c.body(null, 200) : next()));
+    }
+    bff.configure(app);
+  },
   getLoadContext: bff.getLoadContext,
 });

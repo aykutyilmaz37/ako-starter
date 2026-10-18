@@ -7,11 +7,13 @@ public sealed record ProductResponse(
     string Sku,
     string Name,
     string? Description,
+    ProductCategory Category,
+    string? ImageUrl,
     decimal Price,
     int Stock,
     DateTimeOffset CreatedAt,
     DateTimeOffset UpdatedAt)
 {
     public static ProductResponse From(Product p) =>
-        new(p.Id, p.Sku, p.Name, p.Description, p.Price, p.Stock, p.CreatedAt, p.UpdatedAt);
+        new(p.Id, p.Sku, p.Name, p.Description, p.Category, p.ImageUrl, p.Price, p.Stock, p.CreatedAt, p.UpdatedAt);
 }

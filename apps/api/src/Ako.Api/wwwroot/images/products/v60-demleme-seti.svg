@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="V60 demleme seti">
+  <rect width="800" height="800" fill="#F5EFE6"/>
+  <circle cx="400" cy="380" r="250" fill="#EADBC8"/>
+  <ellipse cx="400" cy="690" rx="200" ry="20" fill="#3B2A1E" opacity="0.12"/>
+  <rect x="250" y="560" width="300" height="120" rx="20" fill="#FFFFFF" opacity="0.85"/>
+  <path d="M270 560 L530 560 L510 680 L290 680 Z" fill="#D9E6EA" opacity="0.9"/>
+  <path d="M235 270 L565 270 L455 470 L345 470 Z" fill="#FFFFFF" stroke="#78340B" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M300 300 L370 440 M400 300 L400 440 M500 300 L430 440" stroke="#E3D2BD" stroke-width="8" stroke-linecap="round"/>
+  <rect x="320" y="470" width="160" height="30" rx="8" fill="#78340B"/>
+  <path d="M565 300 q60 10 40 80 q-15 40 -70 40" fill="none" stroke="#78340B" stroke-width="18" stroke-linecap="round"/>
+</svg>

@@ -1,4 +1,5 @@
 using Ako.Api.Common;
+using Ako.Api.Resources.Localization;
 using Ako.Api.Infrastructure.Data;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -10,7 +11,8 @@ namespace Ako.Api.Features.Products;
 
 #region İstek — SKU yok, çünkü SKU değiştirilemez
 
-public sealed record UpdateProductRequest(string Name, string? Description, decimal Price, int Stock);
+public sealed record UpdateProductRequest(
+    string Name, string? Description, ProductCategory Category, string? ImageUrl, decimal Price, int Stock);
 
 #endregion
 
@@ -22,6 +24,10 @@ internal sealed class UpdateProductRequestValidator : AbstractValidator<UpdatePr
     {
         RuleFor(x => x.Name).NotEmpty().MaximumLength(Product.NameMaxLength);
         RuleFor(x => x.Description).MaximumLength(Product.DescriptionMaxLength);
+        RuleFor(x => x.Category).IsInEnum();
+        RuleFor(x => x.ImageUrl)
+            .MaximumLength(Product.ImageUrlMaxLength)
+            .Must(ProductRules.IsValidImageUrl).WithMessage(_ => Messages.Get("products.image_url_format"));
         RuleFor(x => x.Price).GreaterThan(0).PrecisionScale(12, 2, ignoreTrailingZeros: true);
         RuleFor(x => x.Stock).GreaterThanOrEqualTo(0);
     }
@@ -42,7 +48,7 @@ public sealed class UpdateProductHandler(AppDbContext db)
             return ProductErrors.NotFound(id);
         }
 
-        product.Update(request.Name, request.Description, request.Price, request.Stock);
+        product.Update(request.Name, request.Description, request.Category, request.ImageUrl, request.Price, request.Stock);
         await db.SaveChangesAsync(ct);
         return ProductResponse.From(product);
     }
