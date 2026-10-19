@@ -133,14 +133,14 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
       '@mari-ui/components':
-        specifier: ^0.3.0
-        version: 0.3.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: ^0.3.1
+        version: 0.3.1(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@mari-ui/core':
-        specifier: ^0.3.0
-        version: 0.3.0(react@19.3.1)
+        specifier: ^0.3.1
+        version: 0.3.1(react@19.3.1)
       '@mari-ui/tokens':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.1
+        version: 0.3.1
       '@react-router/node':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
@@ -185,8 +185,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/tsconfig
       '@mari-ui/cli':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.1
+        version: 0.3.1
       '@react-router/dev':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
@@ -230,14 +230,14 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
       '@mari-ui/components':
-        specifier: ^0.3.0
-        version: 0.3.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: ^0.3.1
+        version: 0.3.1(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@mari-ui/core':
-        specifier: ^0.3.0
-        version: 0.3.0(react@19.3.1)
+        specifier: ^0.3.1
+        version: 0.3.1(react@19.3.1)
       '@mari-ui/tokens':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.1
+        version: 0.3.1
       '@react-router/node':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
@@ -282,8 +282,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/tsconfig
       '@mari-ui/cli':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.1
+        version: 0.3.1
       '@react-router/dev':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
@@ -738,12 +738,12 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@mari-ui/cli@0.3.0':
-    resolution: {integrity: sha512-StwdCQ6Y8ff1o5hnxtKyE3IbFFyYpZn4KtLI7eZUZqTnubbf/qPTtpGpWx+sSH+/Y0tIhPlquFfHKY4UvFqrLA==}
+  '@mari-ui/cli@0.3.1':
+    resolution: {integrity: sha512-rjrdNc0+MeBNnWCGVwMDSI3LM14SfScLIKZfstxFar4vGztKExJhhbGI+qC87lCsQ/hCqiFpFb/bO9CvZnrraQ==}
     hasBin: true
 
-  '@mari-ui/components@0.3.0':
-    resolution: {integrity: sha512-hT3i4FsZObd2U0MFjLc1uCSNNN7rrNmQouGnh8Ctq30Xc053kB1MZoHsdYhz9r3OEWPQ3T9nqAP/JyZr3Ejknw==}
+  '@mari-ui/components@0.3.1':
+    resolution: {integrity: sha512-uKQ3UJw2eC9S/gXKUZh8573bZjkZdQVAxAavPsTTIKKsG6xHk4a0DeVM/iuHtd2AiprwOp19FZesZUvW7UN05w==}
     peerDependencies:
       embla-carousel-autoplay: ^8.0.0
       embla-carousel-react: ^8.0.0
@@ -755,13 +755,13 @@ packages:
       embla-carousel-react:
         optional: true
 
-  '@mari-ui/core@0.3.0':
-    resolution: {integrity: sha512-5Ty2J6kF1eKRab4T+1Tdn3uRX7UNidsmBIt9kQ5q6mJL1RKu6XgU1ZbNLYfMmLiyoiEWMonG4QD5L/U/2VFO1w==}
+  '@mari-ui/core@0.3.1':
+    resolution: {integrity: sha512-iHm7u3bzsdK7v/NCbyFuOt4nB+t4EhW1VF7AE58CfE8H1Z2PDspUXhMZS1YWKlJ8ES9ocB8854omaA8Mw+9l2A==}
     peerDependencies:
       react: '>=18'
 
-  '@mari-ui/tokens@0.3.0':
-    resolution: {integrity: sha512-djBXZl2oR2qFjFU4a7DYZ1TbRfTD/mrnSLqCgVvDDP6aGW1Kt9YbJrJSEkbqNAnSfxSz8UiOGu+3NLewv6gQlA==}
+  '@mari-ui/tokens@0.3.1':
+    resolution: {integrity: sha512-FCWoo9IruKm2iqIroVoATIkE37NfCoPMRhcTuMFllGkg5FNdmFeOXwlZnSKbISgyAkAB3Pl/uGZXxBFJNjR1sA==}
 
   '@orval/angular@8.43.0':
     resolution: {integrity: sha512-IxDrLrm2lORBsIQt01f4fDM8P/qXuDC8qB66FABxFy8znUXre+bNZBAIeB9IwwH0A4tnPgIKM67uqaXne8qahQ==}
@@ -2437,15 +2437,15 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@mari-ui/cli@0.3.0':
+  '@mari-ui/cli@0.3.1':
     dependencies:
       '@clack/prompts': 1.8.1
-      '@mari-ui/tokens': 0.3.0
+      '@mari-ui/tokens': 0.3.1
 
-  '@mari-ui/components@0.3.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@mari-ui/components@0.3.1(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@mari-ui/core': 0.3.0(react@19.3.1)
-      '@mari-ui/tokens': 0.3.0
+      '@mari-ui/core': 0.3.1(react@19.3.1)
+      '@mari-ui/tokens': 0.3.1
       '@react-input/mask': 2.0.4(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       lucide-react: 0.511.0(react@19.3.1)
       qrcode-generator: 1.5.2
@@ -2457,14 +2457,14 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@mari-ui/core@0.3.0(react@19.3.1)':
+  '@mari-ui/core@0.3.1(react@19.3.1)':
     dependencies:
-      '@mari-ui/tokens': 0.3.0
+      '@mari-ui/tokens': 0.3.1
       clsx: 2.1.1
       react: 19.3.1
       tailwind-merge: 3.7.0
 
-  '@mari-ui/tokens@0.3.0': {}
+  '@mari-ui/tokens@0.3.1': {}
 
   '@orval/angular@8.43.0':
     dependencies:

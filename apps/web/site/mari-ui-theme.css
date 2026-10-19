@@ -115,8 +115,8 @@
   --mari-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
   --mari-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
   --mari-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
-  --mari-z-dropdown: 1000;
-  --mari-z-sticky: 1100;
+  --mari-z-dropdown: 1100;
+  --mari-z-sticky: 1000;
   --mari-z-drawer: 1200;
   --mari-z-modal: 1300;
   --mari-z-toast: 1400;

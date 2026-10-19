@@ -157,8 +157,8 @@ export const mariTheme = {
       "xl": "0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05)"
     },
     "zIndex": {
-      "dropdown": 1000,
-      "sticky": 1100,
+      "dropdown": 1100,
+      "sticky": 1000,
       "drawer": 1200,
       "modal": 1300,
       "toast": 1400,
@@ -328,8 +328,8 @@ export const mariTheme = {
       "xl": "0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05)"
     },
     "zIndex": {
-      "dropdown": 1000,
-      "sticky": 1100,
+      "dropdown": 1100,
+      "sticky": 1000,
       "drawer": 1200,
       "modal": 1300,
       "toast": 1400,

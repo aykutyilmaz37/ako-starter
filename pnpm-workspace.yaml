@@ -8,7 +8,7 @@ allowBuilds:
   esbuild: true # Orval config dosyasını yüklerken kullanır
 
 minimumReleaseAgeExclude:
-  - '@mari-ui/cli@0.3.0'
-  - '@mari-ui/components@0.3.0'
-  - '@mari-ui/core@0.3.0'
-  - '@mari-ui/tokens@0.3.0'
+  - '@mari-ui/cli@0.3.0 || 0.3.1'
+  - '@mari-ui/components@0.3.0 || 0.3.1'
+  - '@mari-ui/core@0.3.0 || 0.3.1'
+  - '@mari-ui/tokens@0.3.0 || 0.3.1'
