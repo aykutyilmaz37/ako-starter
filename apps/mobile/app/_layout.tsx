@@ -1,10 +1,10 @@
 import '~/lib/api';
-import { ThemeProvider, ToastProvider } from '@mari-ui/native';
+import { ThemeProvider, ToastProvider, useTheme } from '@mari-ui/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SessionProvider, useSession } from '~/lib/session';
 import { OfflineScreen } from '~/components/offline-screen';
@@ -22,13 +22,15 @@ function Themed({ children }: { children: React.ReactNode }) {
 
 function Routes() {
   const { status } = useSession();
+  // Native stack ve kök görünüm sistemin arka planını kullanır; tema yüzeyini (açık/koyu) kendimiz veririz.
+  const surface = useTheme().color.canvas.surface;
 
   // Token okunurken / ilk /auth/me beklenirken boş ekran: giriş ekranı göz kırpmasın.
-  if (status === 'loading') return null;
+  if (status === 'loading') return <View style={{ flex: 1, backgroundColor: surface }} />;
   if (status === 'offline') return <OfflineScreen />;
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: surface } }}>
       <Stack.Protected guard={status === 'authenticated'}>
         <Stack.Screen name="(app)" />
       </Stack.Protected>
