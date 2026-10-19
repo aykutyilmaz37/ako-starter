@@ -2,6 +2,7 @@ import { Paragraph, useTheme } from '@mari-ui/native';
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import { Heading } from '~/components/ui';
+import { useT } from '~/lib/i18n';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -17,6 +18,7 @@ export function AuthScreen({
 }) {
   const insets = useSafeAreaInsets();
   const { color } = useTheme();
+  const t = useT();
 
   return (
     <KeyboardAvoidingView
@@ -36,7 +38,7 @@ export function AuthScreen({
       >
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Geri"
+          accessibilityLabel={t('common.back')}
           hitSlop={10}
           onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
           style={{ width: 44, height: 44, justifyContent: 'center' }}

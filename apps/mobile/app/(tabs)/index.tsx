@@ -1,5 +1,5 @@
-import { useListProducts } from '@ako/api-client/products';
 import type { ProductCategory } from '@ako/api-client/model';
+import { useListProducts } from '@ako/api-client/products';
 import { Button, Paragraph, Tag, Text, useTheme } from '@mari-ui/native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
@@ -8,26 +8,9 @@ import { FlatList, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ProductCard } from '~/components/product-card';
 import { Heading, Muted, SectionHeader } from '~/components/ui';
-import { CATEGORIES, CATEGORY_BLURBS, CATEGORY_NAMES, RADIUS, imageSource } from '~/lib/brand';
+import { CATEGORIES, RADIUS, imageSource } from '~/lib/brand';
+import { useT } from '~/lib/i18n';
 import { useSession } from '~/lib/session';
-
-const BENEFITS = [
-  {
-    icon: Flame,
-    title: 'Haftada iki kez kavurma',
-    text: 'Pazartesi ve perşembe kavurur, aynı gün paketleriz.',
-  },
-  {
-    icon: Truck,
-    title: '750 ₺ üzeri ücretsiz kargo',
-    text: 'İstanbul içi ertesi gün, diğer şehirlere 2 iş günü.',
-  },
-  {
-    icon: BookOpen,
-    title: 'Her pakette demleme rehberi',
-    text: 'Oran, öğütme ve süre: o kahve için denediğimiz tarif.',
-  },
-];
 
 function openShop(category?: ProductCategory) {
   router.navigate({ pathname: '/shop', params: category ? { category } : {} });
@@ -37,9 +20,20 @@ function openShop(category?: ProductCategory) {
 export default function Home() {
   const { color } = useTheme();
   const insets = useSafeAreaInsets();
+  const t = useT();
   const { user } = useSession();
   const featured = useListProducts({ category: 'Coffee', pageSize: 4 });
   const images = (featured.data?.items ?? []).slice(0, 3);
+
+  const benefits = [
+    { icon: Flame, title: t('home.benefits.roast.title'), text: t('home.benefits.roast.text') },
+    {
+      icon: Truck,
+      title: t('home.benefits.shipping.title'),
+      text: t('home.benefits.shipping.text'),
+    },
+    { icon: BookOpen, title: t('home.benefits.guide.title'), text: t('home.benefits.guide.text') },
+  ];
 
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
@@ -54,12 +48,11 @@ export default function Home() {
         }}
       >
         <Tag color="primary" variant="soft">
-          BU HAFTA KAVRULDU
+          {t('home.hero.badge')}
         </Tag>
-        <Heading size={38}>Her fincanda, kavrulduğu günün tazeliği.</Heading>
+        <Heading size={38}>{t('home.hero.title')}</Heading>
         <Paragraph muted style={{ fontSize: 16, lineHeight: 24 }}>
-          Tek menşeli çekirdekleri küçük partiler hâlinde kavuruyor, kavrulduğu hafta kapınıza
-          gönderiyoruz.
+          {t('home.hero.text')}
         </Paragraph>
         <View style={{ gap: 10 }}>
           <Button
@@ -69,10 +62,10 @@ export default function Home() {
             iconPosition="end"
             onPress={() => openShop('Coffee')}
           >
-            Kahveleri keşfet
+            {t('home.hero.ctaCoffee')}
           </Button>
           <Button block size="lg" variant="outline" onPress={() => openShop('Equipment')}>
-            Demleme ekipmanı
+            {t('home.hero.ctaEquipment')}
           </Button>
         </View>
         <View style={{ height: 190, marginTop: 8 }} accessibilityElementsHidden>
@@ -108,7 +101,7 @@ export default function Home() {
           borderBottomColor: color.canvas.border,
         }}
       >
-        {BENEFITS.map(({ icon: Icon, title, text }) => (
+        {benefits.map(({ icon: Icon, title, text }) => (
           <View key={title} style={{ flexDirection: 'row', gap: 14, alignItems: 'center' }}>
             <View
               style={{
@@ -134,11 +127,11 @@ export default function Home() {
       <View style={{ marginTop: 32, gap: 16 }}>
         <View style={{ paddingHorizontal: 20 }}>
           <SectionHeader
-            eyebrow="Tadım masasından"
-            title="Bu haftanın kahveleri"
+            eyebrow={t('home.featured.eyebrow')}
+            title={t('home.featured.title')}
             action={
               <Button variant="link" size="sm" onPress={() => openShop('Coffee')}>
-                Tümünü gör
+                {t('home.featured.all')}
               </Button>
             }
           />
@@ -150,20 +143,18 @@ export default function Home() {
           keyExtractor={(p) => p.id}
           contentContainerStyle={{ paddingHorizontal: 20, gap: 14 }}
           renderItem={({ item }) => <ProductCard product={item} width={230} />}
-          ListEmptyComponent={
-            featured.isError ? <Muted>Ürünler alınamadı. Aşağı çekip yenileyin.</Muted> : null
-          }
+          ListEmptyComponent={featured.isError ? <Muted>{t('home.loadFailed')}</Muted> : null}
         />
       </View>
 
       {/* Kategoriler */}
       <View style={{ marginTop: 36, paddingHorizontal: 20, gap: 16 }}>
-        <SectionHeader title="Ne arıyorsunuz?" />
+        <SectionHeader title={t('home.categories.title')} />
         {CATEGORIES.map((category) => (
           <Pressable
             key={category}
             accessibilityRole="link"
-            accessibilityLabel={CATEGORY_NAMES[category]}
+            accessibilityLabel={t(`category.${category}`)}
             onPress={() => openShop(category)}
             style={({ pressed }) => ({
               flexDirection: 'row',
@@ -179,8 +170,8 @@ export default function Home() {
           >
             <CategoryThumb category={category} />
             <View style={{ flex: 1, gap: 2 }}>
-              <Heading size={19}>{CATEGORY_NAMES[category]}</Heading>
-              <Muted size={13}>{CATEGORY_BLURBS[category]}</Muted>
+              <Heading size={19}>{t(`category.${category}`)}</Heading>
+              <Muted size={13}>{t(`categoryBlurb.${category}`)}</Muted>
             </View>
             <ArrowRight size={18} color={color.canvas.muted} />
           </Pressable>
@@ -188,19 +179,12 @@ export default function Home() {
       </View>
 
       {/* Hikâye */}
-      <View
-        style={{
-          marginTop: 40,
-          backgroundColor: color.primary.solid,
-          padding: 24,
-          gap: 14,
-        }}
-      >
+      <View style={{ marginTop: 40, backgroundColor: color.primary.solid, padding: 24, gap: 14 }}>
         <Heading size={22} style={{ color: color.primary.solidContrast }}>
-          “İyi bir fincan kahve, çiftçiden fincana kadar her adımın özenle yapılmasıyla olur.”
+          {t('home.story.quote')}
         </Heading>
         <Text style={{ color: color.primary.solidContrast, opacity: 0.85 }}>
-          Elif Akı · Kurucu, baş kavurucu
+          {t('home.story.author')}
         </Text>
         {user ? null : (
           <Button
@@ -209,7 +193,7 @@ export default function Home() {
             onPress={() => router.push('/register')}
             style={{ backgroundColor: color.canvas.surface }}
           >
-            Hesap oluştur, alışveriş listeni kaydet
+            {t('home.story.cta')}
           </Button>
         )}
       </View>

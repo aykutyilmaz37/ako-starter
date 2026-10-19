@@ -37,12 +37,12 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 - [x] `apps/mobile` Expo iskeleti + `@mari-ui/native`, `api-client` yapılandırması (`TokenStore` SecureStore, 401'de refresh).
 - [x] Giriş/kayıt, e-posta kodu doğrulama (`(auth)` ekranları, `Stack.Protected`; katalog girişsiz açık, giriş yalnızca kişisel ekranlar için).
-- [ ] Sosyal giriş (`AuthSession` + `ako://`), `/auth/exchange`.
-- [ ] Akı Kahve ekranları: ürün listesi/detay yapıldı (sekmeler: ana sayfa, mağaza, hesap; açık/koyu/sistem tema); **alışveriş listem yok**.
-- [ ] Çoklu dil (sözlük `GET /localization/{dil}/mobile` alanı gerekir mi, karar ver).
-- [ ] Native Google/Apple girişi (`/auth/native/{provider}`).
+- [x] Sosyal giriş (`expo-web-browser` + `ako://`/`exp://`, `/auth/exchange`); **sağlayıcı ayarı olmadığından denenmedi**.
+- [x] Akı Kahve ekranları: ana sayfa, mağaza, ürün detayı, alışveriş listem (sekme + "listeye ekle"), hesap; açık/koyu/sistem tema.
+- [x] Çoklu dil: `GET /localization/{dil}/mobile` alanı eklendi (karar: DECISIONS.md), dil seçici Hesap sekmesinde.
+- [x] Native Google/Apple girişi (`/auth/native/{provider}`; SDK yoksa tarayıcı akışına düşer); **denenmedi**: Google için geliştirme derlemesi + istemci kimliği gerekir.
 
-**Bitti:** simülatörde giriş yapılıp ürün listelenir, listeye ürün eklenir.
+**Bitti:** simülatörde giriş yapılıp ürün listelenir, listeye ürün eklenir. (Telefonda/Expo Go ile elle denenecek: giriş, listeye ekleme, dil değişimi.)
 
 ## Aşama 3 — create-ako-app
 

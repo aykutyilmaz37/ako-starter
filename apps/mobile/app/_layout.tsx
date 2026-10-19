@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { OfflineScreen } from '~/components/offline-screen';
+import { I18nProvider } from '~/lib/i18n';
 import { SessionProvider, useSession } from '~/lib/session';
 import { ThemePreferenceProvider, useThemePreference } from '~/lib/theme-preference';
 import { mariTheme } from '../mari-ui-theme';
@@ -53,13 +54,15 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <SessionProvider>
-          <ThemePreferenceProvider>
-            <Themed>
-              <Routes />
-            </Themed>
-          </ThemePreferenceProvider>
-        </SessionProvider>
+        <I18nProvider>
+          <SessionProvider>
+            <ThemePreferenceProvider>
+              <Themed>
+                <Routes />
+              </Themed>
+            </ThemePreferenceProvider>
+          </SessionProvider>
+        </I18nProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
   );

@@ -12,5 +12,8 @@ public static class TranslationNamespaces
     /// <summary>Backoffice arayüzü. Varsayılanlar apps/web/backoffice/app/locales/*.json.</summary>
     public const string Backoffice = "backoffice";
 
-    public static readonly string[] All = [Api, Site, Backoffice];
+    /// <summary>Mobil uygulama. Varsayılanlar apps/mobile/locales/*.json.</summary>
+    public const string Mobile = "mobile";
+
+    public static readonly string[] All = [Api, Site, Backoffice, Mobile];
 }

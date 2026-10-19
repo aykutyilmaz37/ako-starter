@@ -1,20 +1,9 @@
 import type { ProductCategory } from '@ako/api-client/model';
 import { API_URL } from '~/lib/config';
+import type { Translate } from '~/lib/i18n';
 
 /** Web sitesiyle aynı kategori sırası ve adları. */
 export const CATEGORIES: ProductCategory[] = ['Coffee', 'Equipment', 'Accessory'];
-
-export const CATEGORY_NAMES: Record<ProductCategory, string> = {
-  Coffee: 'Kahve',
-  Equipment: 'Ekipman',
-  Accessory: 'Aksesuar',
-};
-
-export const CATEGORY_BLURBS: Record<ProductCategory, string> = {
-  Coffee: 'Tek menşeli çekirdekler ve espresso harmanımız.',
-  Equipment: 'V60, değirmen ve su ısıtıcısı: evde kafe kalitesi.',
-  Accessory: 'Terazi, filtre ve kupalar.',
-};
 
 /** Fiyatlar TL; tr-TR gösterimi (1.200,00 ₺). Hermes'te Intl yoksa elle biçimlenir. */
 export function formatPrice(value: number): string {
@@ -28,11 +17,11 @@ export function imageSource(url: string | null | undefined): string | undefined 
 }
 
 /** Stok durumu: rozet metni ve rengi (webdeki ile aynı eşikler). */
-export function stockState(stock: number) {
-  if (stock <= 0) return { label: 'Tükendi', color: 'neutral', available: false } as const;
+export function stockState(stock: number, t: Translate) {
+  if (stock <= 0) return { label: t('stock.soldOut'), color: 'neutral', available: false } as const;
   if (stock <= 10)
-    return { label: `Son ${stock} paket`, color: 'warning', available: true } as const;
-  return { label: 'Stokta', color: 'success', available: true } as const;
+    return { label: t('stock.last', { count: stock }), color: 'warning', available: true } as const;
+  return { label: t('stock.inStock'), color: 'success', available: true } as const;
 }
 
 /**

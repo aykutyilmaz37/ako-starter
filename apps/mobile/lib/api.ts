@@ -9,10 +9,17 @@ export function setSessionExpiredHandler(handler: () => void): void {
   onSessionExpired = handler;
 }
 
+let language = 'tr';
+
+/** Seçili dil API'ye Accept-Language olarak gider (hata ve doğrulama mesajları o dilde döner). */
+export function setApiLanguage(next: string): void {
+  language = next;
+}
+
 // Modül yüklenirken bir kez: ilk istekten önce hazır olsun.
 configureApiClient({
   baseUrl: API_URL,
   tokens: tokenStore,
-  getLanguage: () => 'tr', // Dil seçimi eklendiğinde (Aşama 2, çoklu dil maddesi) buradan okunur.
+  getLanguage: () => language,
   onSessionExpired: () => onSessionExpired(),
 });

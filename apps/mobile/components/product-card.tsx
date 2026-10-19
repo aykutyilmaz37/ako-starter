@@ -3,13 +3,15 @@ import { Tag, Text, useTheme } from '@mari-ui/native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Pressable, View } from 'react-native';
-import { CATEGORY_NAMES, RADIUS, formatPrice, imageSource, stockState, summary } from '~/lib/brand';
+import { RADIUS, formatPrice, imageSource, stockState, summary } from '~/lib/brand';
+import { useT } from '~/lib/i18n';
 import { Eyebrow, Heading, Muted } from '~/components/ui';
 
 /** Katalog ve ana sayfadaki ürün kartı; tamamı ürün detayına götürür. */
 export function ProductCard({ product, width }: { product: ProductResponse; width?: number }) {
   const { color } = useTheme();
-  const stock = stockState(product.stock);
+  const t = useT();
+  const stock = stockState(product.stock, t);
 
   return (
     <Pressable
@@ -43,7 +45,7 @@ export function ProductCard({ product, width }: { product: ProductResponse; widt
         ) : null}
       </View>
       <View style={{ padding: 12, gap: 4 }}>
-        <Eyebrow>{CATEGORY_NAMES[product.category]}</Eyebrow>
+        <Eyebrow>{t(`category.${product.category}`)}</Eyebrow>
         <Heading size={17}>{product.name}</Heading>
         <Muted size={13}>{summary(product.description)}</Muted>
         <Text weight="semibold" style={{ marginTop: 6 }}>

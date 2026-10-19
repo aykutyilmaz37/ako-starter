@@ -14,6 +14,7 @@
          /localization/{dil}/{alan} bunları temel alır. Uygulama yoksa (create-ako-app ile çıkarıldıysa) eşleşme olmaz. -->
     <EmbeddedResource Include="../../../web/site/app/locales/*.json" LogicalName="Locales/site/%(Filename)%(Extension)" Link="Locales/site/%(Filename)%(Extension)" />
     <EmbeddedResource Include="../../../web/backoffice/app/locales/*.json" LogicalName="Locales/backoffice/%(Filename)%(Extension)" Link="Locales/backoffice/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../../../mobile/locales/*.json" LogicalName="Locales/mobile/%(Filename)%(Extension)" Link="Locales/mobile/%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,11 @@
 import { useTheme } from '@mari-ui/native';
 import { Tabs } from 'expo-router';
-import { Coffee, Store, User } from 'lucide-react-native';
+import { Coffee, ListChecks, Store, User } from 'lucide-react-native';
+import { useT } from '~/lib/i18n';
 
 export default function TabsLayout() {
   const { color } = useTheme();
+  const t = useT();
 
   return (
     <Tabs
@@ -19,21 +21,28 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Ana sayfa',
+          title: t('tab.home'),
           tabBarIcon: ({ color: c, size }) => <Coffee color={c} size={size} />,
         }}
       />
       <Tabs.Screen
         name="shop"
         options={{
-          title: 'Mağaza',
+          title: t('tab.shop'),
           tabBarIcon: ({ color: c, size }) => <Store color={c} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="list"
+        options={{
+          title: t('tab.list'),
+          tabBarIcon: ({ color: c, size }) => <ListChecks color={c} size={size} />,
         }}
       />
       <Tabs.Screen
         name="account"
         options={{
-          title: 'Hesap',
+          title: t('tab.account'),
           tabBarIcon: ({ color: c, size }) => <User color={c} size={size} />,
         }}
       />

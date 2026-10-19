@@ -5,7 +5,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { AuthScreen } from '~/components/auth-screen';
-import { s } from '~/lib/strings';
+import { useT } from '~/lib/i18n';
 
 /** E-postaya gelen 6 haneli kodu doğrular; doğrulanınca girişe döner. */
 export default function VerifyScreen() {
@@ -14,6 +14,7 @@ export default function VerifyScreen() {
     resend?: string;
   }>();
   const { showToast } = useToast();
+  const t = useT();
   const form = useForm<{ code: string }>({ defaultValues: { code: '' } });
 
   const confirm = useConfirmEmail({
@@ -27,10 +28,10 @@ export default function VerifyScreen() {
   });
   const resend = useSendConfirmationCode({
     mutation: {
-      onSuccess: () => showToast({ title: s.verify.resent, type: 'success' }),
+      onSuccess: () => showToast({ title: t('auth.verify.resent'), type: 'success' }),
       onError: (error) =>
         showToast({
-          title: isApiError(error) ? error.message : s.verify.resendFailed,
+          title: isApiError(error) ? error.message : t('auth.verify.resendFailed'),
           type: 'error',
         }),
     },
@@ -46,13 +47,13 @@ export default function VerifyScreen() {
     void form.handleSubmit(({ code }) => confirm.mutate({ data: { email, code } }))();
 
   return (
-    <AuthScreen title={s.verify.title}>
-      <Alert color="info" description={s.verify.info(email)} />
+    <AuthScreen title={t('auth.verify.title')}>
+      <Alert color="info" description={t('auth.verify.info', { email })} />
       <Controller
         control={form.control}
         name="code"
         render={({ field, fieldState }) => (
-          <Field label={s.verify.code} required error={fieldState.error?.message}>
+          <Field label={t('auth.verify.code')} required error={fieldState.error?.message}>
             <OtpInput
               length={6}
               inputMode="numeric"
@@ -63,17 +64,17 @@ export default function VerifyScreen() {
         )}
       />
       <Button block loading={confirm.isPending} onPress={submit}>
-        {s.verify.submit}
+        {t('auth.verify.submit')}
       </Button>
       <Button
         variant="ghost"
         loading={resend.isPending}
         onPress={() => resend.mutate({ data: { email } })}
       >
-        {s.verify.resend}
+        {t('auth.verify.resend')}
       </Button>
       <Button variant="link" onPress={() => router.replace('/login')}>
-        {s.verify.back}
+        {t('auth.verify.back')}
       </Button>
     </AuthScreen>
   );

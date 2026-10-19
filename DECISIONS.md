@@ -81,6 +81,8 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - **Backoffice dili çerezde** (`ako_lang`): adresler dilsizdir, seçici başlıktadır. "Çeviriler" sayfası yalnızca site metinlerini yönetir (backoffice ve api metinleri dosyadan gelir, arayüzde düzenlenmez): arama, tek "Kaydet" ile toplu kaydetme, "yalnızca eksikler", dil sütunları, satır içi düzenleme, dil ekleme/aç-kapat, dışa aktarma.
 - Veri (ürün adı/açıklaması) çevrilmez; yalnızca arayüz metinleri çevrilir. Para birimi TL kalır, gösterim biçimi dile göre değişir.
 - **create-ako-app "Çoklu dil olsun mu?" diye sorar.** Hayırsa yalnızca varsayılan dil kalır: dil seçici, çeviri tablosu ve "Çeviriler" sayfası (`features/localization`) silinir; `t()` anahtarları tek dosyadan çözülmeye devam eder, `:lang?` segmenti ve `/localization` endpoint'leri çıkarılır.
+- **Mobil metinleri** de aynı modeldedir: dördüncü alan `mobile` (`GET /localization/{dil}/mobile`), varsayılanlar `apps/mobile/locales/*.json` (API'ye gömülür, `TranslationNamespaces.Mobile`). Uygulama aynı dosyaları paketler: ilk açılışta ve API'ye ulaşılamazken onlar, çevrimiçiyken sözlük üstüne yazar. Dil seçimi cihazda (SecureStore) tutulur, yoksa cihaz dili; `Accept-Language` buradan gider. "Çeviriler" sayfası yalnızca site metinlerini yönetir.
+- **Tema tercihi** (sistem / açık / koyu): web'de `ako_theme` çerezi ve `<head>`'de satır içi betik (`@ako/web-core/theme`; sunucuda yazılmaz, çünkü herkese açık sayfalar CDN'de ortak önbelleğe alınır), mobilde SecureStore. mari-ui teması `[data-theme]` / `prefers-color-scheme` ile zaten iki modu taşır.
 - Bilinen sınır: sosyal girişten dönüş (`/bff/external/callback`) varsayılan dildeki ana sayfaya düşer.
 
 ## Tasarım ve örnek senaryo

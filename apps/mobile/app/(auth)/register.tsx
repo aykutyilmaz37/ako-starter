@@ -7,13 +7,14 @@ import { router } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { AuthScreen } from '~/components/auth-screen';
-import { s } from '~/lib/strings';
+import { useT } from '~/lib/i18n';
 
 // API şeması + istemci kuralları. Şifre kuralları API'de; hataları forma gelir.
 const Schema = RegisterBody.extend({ email: z.email(), password: z.string().min(8) });
 type Values = z.infer<typeof Schema>;
 
 export default function RegisterScreen() {
+  const t = useT();
   const form = useForm<Values>({
     resolver: zodResolver(Schema),
     defaultValues: { email: '', password: '' },
@@ -34,7 +35,7 @@ export default function RegisterScreen() {
   const submit = () => void form.handleSubmit((data) => register.mutate({ data }))();
 
   return (
-    <AuthScreen title={s.register.title} description={s.register.description}>
+    <AuthScreen title={t('auth.register.title')} description={t('auth.register.description')}>
       {ruleErrors.map((message) => (
         <Alert key={message} color="error" description={message} />
       ))}
@@ -42,7 +43,7 @@ export default function RegisterScreen() {
         control={form.control}
         name="email"
         render={({ field, fieldState }) => (
-          <Field label={s.email} required error={fieldState.error?.message}>
+          <Field label={t('auth.email')} required error={fieldState.error?.message}>
             <Input
               type="email"
               autoComplete="email"
@@ -58,9 +59,9 @@ export default function RegisterScreen() {
         name="password"
         render={({ field, fieldState }) => (
           <Field
-            label={s.password}
+            label={t('auth.password')}
             required
-            hint={s.passwordHint}
+            hint={t('auth.passwordHint')}
             error={fieldState.error?.message}
           >
             <Input
@@ -74,10 +75,10 @@ export default function RegisterScreen() {
         )}
       />
       <Button block loading={register.isPending} onPress={submit}>
-        {s.register.submit}
+        {t('auth.register.submit')}
       </Button>
       <Button variant="link" onPress={() => router.replace('/login')}>
-        {s.register.login}
+        {t('auth.register.login')}
       </Button>
     </AuthScreen>
   );

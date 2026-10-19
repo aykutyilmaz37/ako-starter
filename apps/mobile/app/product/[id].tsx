@@ -2,30 +2,28 @@ import { useGetProduct } from '@ako/api-client/products';
 import { Button, Empty, Paragraph, Tag, Text, useTheme } from '@mari-ui/native';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, Clock, RefreshCcw, Truck } from 'lucide-react-native';
+import { ArrowLeft, Clock, Plus, RefreshCcw, Truck } from 'lucide-react-native';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Eyebrow, Heading, Muted } from '~/components/ui';
-import { CATEGORY_NAMES, RADIUS, formatPrice, imageSource, stockState } from '~/lib/brand';
+import { RADIUS, formatPrice, imageSource, stockState } from '~/lib/brand';
+import { useT } from '~/lib/i18n';
 import { useSession } from '~/lib/session';
-
-const PROMISES = [
-  { icon: Truck, text: '750 ₺ üzeri siparişlerde ücretsiz kargo' },
-  { icon: Clock, text: 'Kavrulduktan sonra 48 saat içinde kargoda' },
-  { icon: RefreshCcw, text: 'Beğenmezseniz 14 gün içinde değişim' },
-];
+import { useAddToList } from '~/lib/todos';
 
 export default function ProductDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { color } = useTheme();
   const insets = useSafeAreaInsets();
+  const t = useT();
   const { user } = useSession();
+  const addToList = useAddToList();
   const { data: product, isPending, isError } = useGetProduct(id);
 
   const back = (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Geri"
+      accessibilityLabel={t('common.back')}
       hitSlop={10}
       onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
       style={{
@@ -51,12 +49,17 @@ export default function ProductDetail() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', padding: 24 }}>
         {back}
-        {isPending ? null : <Empty title="Ürün bulunamadı" />}
+        {isPending ? null : <Empty title={t('product.notFound')} />}
       </View>
     );
   }
 
-  const stock = stockState(product.stock);
+  const stock = stockState(product.stock, t);
+  const promises = [
+    { icon: Truck, text: t('product.promise.shipping') },
+    { icon: Clock, text: t('product.promise.fast') },
+    { icon: RefreshCcw, text: t('product.promise.exchange') },
+  ];
 
   return (
     <View style={{ flex: 1 }}>
@@ -69,7 +72,7 @@ export default function ProductDetail() {
         />
         <View style={{ padding: 20, gap: 14 }}>
           <View style={{ gap: 6 }}>
-            <Eyebrow>{CATEGORY_NAMES[product.category]}</Eyebrow>
+            <Eyebrow>{t(`category.${product.category}`)}</Eyebrow>
             <Heading size={32}>{product.name}</Heading>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
@@ -82,15 +85,23 @@ export default function ProductDetail() {
           </View>
           {product.description ? <Paragraph muted>{product.description}</Paragraph> : null}
 
-          {stock.available ? (
-            user ? null : (
-              <Button block size="lg" onPress={() => router.push('/login')}>
-                Listeye eklemek için giriş yapın
-              </Button>
-            )
-          ) : (
+          {!stock.available ? (
             <Button block size="lg" disabled>
-              Şu an stokta yok
+              {t('product.unavailable')}
+            </Button>
+          ) : user ? (
+            <Button
+              block
+              size="lg"
+              loading={addToList.isPending}
+              icon={<Plus size={18} color={color.primary.solidContrast} />}
+              onPress={() => addToList.add(product)}
+            >
+              {t('product.add')}
+            </Button>
+          ) : (
+            <Button block size="lg" onPress={() => router.push('/login')}>
+              {t('product.loginToAdd')}
             </Button>
           )}
 
@@ -105,14 +116,14 @@ export default function ProductDetail() {
               borderColor: color.canvas.border,
             }}
           >
-            {PROMISES.map(({ icon: Icon, text }) => (
+            {promises.map(({ icon: Icon, text }) => (
               <View key={text} style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
                 <Icon size={18} color={color.primary.text} />
                 <Text style={{ flex: 1 }}>{text}</Text>
               </View>
             ))}
           </View>
-          <Muted size={12}>{`SKU: ${product.sku}`}</Muted>
+          <Muted size={12}>{t('product.sku', { sku: product.sku })}</Muted>
         </View>
       </ScrollView>
     </View>

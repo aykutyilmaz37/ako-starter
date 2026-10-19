@@ -7,12 +7,14 @@ import { FlatList, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ProductCard } from '~/components/product-card';
 import { Eyebrow, Heading, Muted } from '~/components/ui';
-import { CATEGORIES, CATEGORY_NAMES, RADIUS } from '~/lib/brand';
+import { CATEGORIES, RADIUS } from '~/lib/brand';
+import { useT } from '~/lib/i18n';
 
 /** Mağaza: arama + kategori çipleri + iki sütunlu ürün ızgarası. */
 export default function Shop() {
   const { color } = useTheme();
   const insets = useSafeAreaInsets();
+  const t = useT();
   const params = useLocalSearchParams<{ category?: string }>();
   const category = CATEGORIES.find((c) => c === params.category);
   const [text, setText] = useState('');
@@ -43,14 +45,14 @@ export default function Shop() {
       ListHeaderComponent={
         <View style={{ gap: 14, marginBottom: 6 }}>
           <View style={{ gap: 4 }}>
-            <Eyebrow>Mağaza</Eyebrow>
-            <Heading size={32}>{category ? CATEGORY_NAMES[category] : 'Tüm ürünler'}</Heading>
+            <Eyebrow>{t('shop.eyebrow')}</Eyebrow>
+            <Heading size={32}>{category ? t(`category.${category}`) : t('shop.all')}</Heading>
           </View>
           <SearchInput
             value={text}
             onChangeText={setText}
-            placeholder="Ürün ya da menşe ara"
-            accessibilityLabel="Ürünlerde ara"
+            placeholder={t('shop.search.placeholder')}
+            accessibilityLabel={t('shop.search.label')}
           />
           <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
             {[undefined, ...CATEGORIES].map((c) => {
@@ -78,24 +80,23 @@ export default function Shop() {
                       color: active ? color.primary.solidContrast : color.canvas.foreground,
                     }}
                   >
-                    {c ? CATEGORY_NAMES[c] : 'Tümü'}
+                    {c ? t(`category.${c}`) : t('shop.filter.all')}
                   </Text>
                 </Pressable>
               );
             })}
           </View>
-          {products.data ? <Muted size={13}>{`${products.data.totalCount} ürün`}</Muted> : null}
+          {products.data ? (
+            <Muted size={13}>{t('shop.count', { count: products.data.totalCount })}</Muted>
+          ) : null}
         </View>
       }
       renderItem={({ item }) => <ProductCard product={item} />}
       ListEmptyComponent={
         products.isPending ? null : products.isError ? (
-          <Empty
-            title="Ürünler alınamadı"
-            description="Bağlantını kontrol edip aşağı çekerek yenile."
-          />
+          <Empty title={t('shop.error.title')} description={t('shop.error.description')} />
         ) : (
-          <Empty title="Ürün bulunamadı" description="Farklı bir arama ya da kategori deneyin." />
+          <Empty title={t('shop.empty.title')} description={t('shop.empty.description')} />
         )
       }
     />
