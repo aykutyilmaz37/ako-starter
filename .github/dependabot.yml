@@ -1,0 +1,28 @@
+# Yalnızca güvenlik güncellemeleri PR açar; rutin sürüm güncellemeleri kapalıdır
+# (open-pull-requests-limit: 0). Güvenlik PR'ları ekosistem başına tek PR'da gruplanır.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 0
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ['*']
+  - package-ecosystem: nuget
+    directory: /apps/api
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 0
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ['*']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
+    open-pull-requests-limit: 0
+  - package-ecosystem: docker
+    directory: /apps/api
+    schedule: { interval: monthly }
+    open-pull-requests-limit: 0
