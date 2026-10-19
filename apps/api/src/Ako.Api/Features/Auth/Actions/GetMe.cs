@@ -8,7 +8,7 @@ namespace Ako.Api.Features.Auth;
 
 #region İş mantığı
 
-public sealed class GetMeHandler(UserManager<AppUser> users)
+public sealed class GetMeHandler(UserManager<AppUser> users, GuestAccounts guests)
 {
     /// <summary>Token'daki kullanıcıyı bulur; rollerini ve bağlı sosyal hesaplarını ekler.</summary>
     public async Task<MeResponse?> HandleAsync(ClaimsPrincipal principal)
@@ -20,6 +20,11 @@ public sealed class GetMeHandler(UserManager<AppUser> users)
         }
 
         var roles = await users.GetRolesAsync(user);
+        if (roles.Contains(Ako.Api.Common.AppRoles.Guest))
+        {
+            await guests.TouchAsync(user); // temizlik işi için "son görülme"
+        }
+
         var logins = await users.GetLoginsAsync(user);
         return new MeResponse(
             user.Id, user.Email, user.UserName!, user.EmailConfirmed,

@@ -8,7 +8,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Eyebrow, Heading, Muted } from '~/components/ui';
 import { RADIUS, formatPrice, imageSource, stockState } from '~/lib/brand';
 import { useT } from '~/lib/i18n';
-import { useSession } from '~/lib/session';
 import { useAddToList } from '~/lib/todos';
 
 export default function ProductDetail() {
@@ -16,7 +15,6 @@ export default function ProductDetail() {
   const { color } = useTheme();
   const insets = useSafeAreaInsets();
   const t = useT();
-  const { user } = useSession();
   const addToList = useAddToList();
   const { data: product, isPending, isError } = useGetProduct(id);
 
@@ -89,7 +87,7 @@ export default function ProductDetail() {
             <Button block size="lg" disabled>
               {t('product.unavailable')}
             </Button>
-          ) : user ? (
+          ) : (
             <Button
               block
               size="lg"
@@ -98,10 +96,6 @@ export default function ProductDetail() {
               onPress={() => addToList.add(product)}
             >
               {t('product.add')}
-            </Button>
-          ) : (
-            <Button block size="lg" onPress={() => router.push('/login')}>
-              {t('product.loginToAdd')}
             </Button>
           )}
 

@@ -80,13 +80,13 @@ internal static class ChangeEmail
     public static void Map(RouteGroupBuilder group)
     {
         group.MapPost("/email/change", Request).WithName("ChangeEmail")
-            .RequireAuthorization()
+            .RequireAuthorization(AppPolicies.Member) // misafirin e-postası yok; önce kayıt olur
             .WithValidation<ChangeEmailRequest>()
             .ProducesProblem(StatusCodes.Status409Conflict)
             .ProducesProblem(StatusCodes.Status429TooManyRequests);
 
         group.MapPost("/email/change/confirm", Confirm).WithName("ConfirmChangeEmail")
-            .RequireAuthorization()
+            .RequireAuthorization(AppPolicies.Member) // misafirin e-postası yok; önce kayıt olur
             .WithValidation<ConfirmChangeEmailRequest>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status429TooManyRequests);

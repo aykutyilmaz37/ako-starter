@@ -38,7 +38,7 @@ function Routes() {
       {/* Katalog herkese açık; giriş yalnızca alışveriş listesi gibi kişisel ekranlar için gerekir. */}
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="product/[id]" />
-      <Stack.Protected guard={status === 'anonymous'}>
+      <Stack.Protected guard={status === 'guest'}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
     </Stack>

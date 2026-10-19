@@ -44,14 +44,14 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 ### Misafir girişi (karar: DECISIONS.md, "Misafir ve kimlik")
 
-- [ ] API: `POST /auth/guest` (rol `Guest`, normal token), IP başına rate limit.
-- [ ] API: `AppPolicies.Member`; örnek özelliklerde policy seçimi: biri misafire açık (ör. Todos), biri yalnız üyeye. Yeni kişisel uçların varsayılanı `Member`.
-- [ ] API: misafirden üyeliğe geçiş: kayıt, e-posta kodu, sosyal ve native giriş misafir token'ıyla gelince aynı kullanıcı yükseltilir.
-- [ ] API: var olan hesaba girişte `IGuestDataMerger` (Common) ile her özelliğin misafir verisini taşıması, sonra misafirin silinmesi; ArchTests sınırları korunur.
-- [ ] API: eski misafir temizliği (arka plan işi, `Auth:Guest:RetentionDays`).
-- [ ] API testleri: misafir oluşturma, policy (misafir 403 / üye 200), yükseltme, birleştirme, temizlik.
-- [ ] Mobil: açılışta token yoksa misafir; oturum durumları `guest` / `member`; misafire kapalı ekranlarda giriş daveti; kayıt/giriş sonrası verinin korunduğunu gösteren akış; geçersiz misafir token'ında sessizce yenisi.
-- [ ] Web: misafir gerekiyor mu (BFF misafir oturumu) kararı; şimdilik web anonim + üye.
+- [x] API: `POST /auth/guest` (rol `Guest`, normal token; `/auth` grubunun IP başına rate limit'i).
+- [x] API: `AppPolicies.Member`; `Todos` misafire açık, e-posta değiştirme yalnız üye. Yeni kişisel uçların varsayılanı `Member`.
+- [x] API: misafirden üyeliğe geçiş ("claim" modeli): `POST /auth/guest/claim`; kayıt, e-posta/şifre, sosyal ve native giriş sonrası aynı uç (DECISIONS.md).
+- [x] API: `IGuestDataMerger` (Common) ile her özelliğin misafir verisini taşıması, sonra misafirin silinmesi (`Todos` örneği uygular); ArchTests sınırları korunur.
+- [x] API: eski misafir temizliği (`GuestCleanupService`, `Auth:Guest:RetentionDays`, `LastActiveAt` + migration `GuestUsers`).
+- [x] API testleri (`GuestTests`, 10 test): oluşturma, yenileme, policy, claim, idempotans, geçersiz/üye token, temizlik.
+- [x] Mobil: açılışta otomatik misafir; oturum durumları `guest` / `member`; alışveriş listesi misafirde çalışır (kayıt daveti kartı); giriş sonrası `claim`, token saklama; geçersiz oturumda sessizce yeni misafir. **Telefonda denenmedi.**
+- [x] Web: karar: gerekmez, anonim + üye kalır (SEO/CDN için herkese açık sayfalar anonim); ihtiyaç doğarsa BFF aynı uçla misafir oturumu açabilir.
 
 **Bitti:** simülatörde giriş yapılıp ürün listelenir, listeye ürün eklenir; misafir olarak listeye eklenen veri kayıt olunca kaybolmaz. (Telefonda/Expo Go ile elle denenecek: giriş, listeye ekleme, dil değişimi.)
 

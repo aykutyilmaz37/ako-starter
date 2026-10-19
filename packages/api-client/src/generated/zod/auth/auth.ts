@@ -85,6 +85,19 @@ export const GetMeResponse = zod.object({
   "logins": zod.array(zod.string())
 })
 
+export const CreateGuestResponse = zod.object({
+  "tokenType": zod.string().nullish(),
+  "accessToken": zod.string(),
+  "expiresIn": zod.int(),
+  "refreshToken": zod.string()
+})
+
+export const ClaimGuestBody = zod.object({
+  "guestRefreshToken": zod.string()
+})
+
+export const ClaimGuestResponse = zod.void()
+
 export const SendConfirmationCodeBody = zod.object({
   "email": zod.string()
 })

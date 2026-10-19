@@ -60,6 +60,7 @@ public static class AuthEndpoints
     /// - Identity'nin hazır endpoint'leri: /register, /login, /refresh, /manage/info, /manage/2fa
     /// - E-posta kodları: /email/confirm(/send), /password/forgot, /password/reset, /email/change(/confirm)
     /// - Sosyal giriş: /providers, /external/*, /exchange, /native/{provider}
+    /// - Misafir: /guest, /guest/claim
     /// - /me
     /// </summary>
     public static IEndpointRouteBuilder MapAuth(this IEndpointRouteBuilder app)
@@ -73,6 +74,7 @@ public static class AuthEndpoints
         identity.AddEndpointFilter(BlockEmailChangeViaManageInfo);
 
         GetMe.Map(group);
+        CreateGuest.Map(group);
         EmailConfirmation.Map(group);
         PasswordReset.Map(group);
         ChangeEmail.Map(group);

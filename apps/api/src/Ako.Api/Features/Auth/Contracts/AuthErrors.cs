@@ -9,6 +9,7 @@ internal static class AuthErrors
     public static Error ProviderUnavailable(string provider) => Error.NotFound("auth.provider_unavailable", provider);
     public static Error InvalidReturnUrl() => Error.Failure("auth.invalid_return_url");
     public static Error InvalidCode() => Error.Failure("auth.invalid_code");
+    public static Error InvalidGuestToken() => Error.Failure("auth.invalid_guest_token");
     public static Error InvalidIdToken() => Error.Failure("auth.invalid_id_token");
     public static Error EmailInUse() => Error.Conflict("auth.email_in_use");
     public static Error UserCreationFailed() => Error.Failure("auth.user_creation_failed");

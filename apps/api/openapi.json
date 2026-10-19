@@ -283,6 +283,67 @@
         ]
       }
     },
+    "/auth/guest": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "CreateGuest",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessTokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/guest/claim": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "ClaimGuest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimGuestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "Bearer": [ ]
+          }
+        ]
+      }
+    },
     "/auth/email/confirm/send": {
       "post": {
         "tags": [
@@ -1900,6 +1961,17 @@
         "type": "object",
         "properties": {
           "newEmail": {
+            "type": "string"
+          }
+        }
+      },
+      "ClaimGuestRequest": {
+        "required": [
+          "guestRefreshToken"
+        ],
+        "type": "object",
+        "properties": {
+          "guestRefreshToken": {
             "type": "string"
           }
         }

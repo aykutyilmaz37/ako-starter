@@ -111,12 +111,16 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
   - `AppPolicies.Member`: kayıtlı kullanıcı (`Guest` rolü değil). Yeni kişisel uçların varsayılanı budur (güvenli taraf).
   - `AppPolicies.Admin`: yönetim.
 - **Herkese açık okuma uçları anonim kalır** (token varsa kullanılır): web sitesi bu uçları SEO ve CDN önbelleği için token'sız çağırır.
-- **Misafirden üyeliğe geçiş veriyi korur:**
-  - Kayıt (ya da sosyal/native giriş) misafir token'ıyla gelirse yeni kullanıcı açılmaz; aynı kayda e-posta/şifre ya da dış giriş bağlanır, rol `User` olur, veri yerinde kalır.
-  - Misafir **var olan** bir hesaba giriş yaparsa her özellik kendi misafir verisini o hesaba taşır: `Common`'daki `IGuestDataMerger` arayüzünü özellikler uygular, Auth hepsini DI'dan alıp çalıştırır, sonra misafir kaydı silinir. Auth özellikleri, özellikler birbirini tanımaz (ArchTests). Çakışma kuralı (birleştir / üzerine yaz / at) özelliğin kendi kararıdır.
-- **Temizlik:** belirli süre işlem görmeyen misafirler arka plan işiyle silinir (`Auth:Guest:RetentionDays`, varsayılan 30). `/auth/guest` IP başına rate limit'lidir.
+- **Misafirden üyeliğe geçiş veriyi korur ("claim" modeli):**
+  - Kayıt, e-posta/şifre girişi, sosyal ve native giriş **olduğu gibi çalışır**; hiçbiri misafiri tanımaz. Misafirken alınan refresh token'ı istemci saklar; kayıtlı kullanıcı olunca `POST /auth/guest/claim { guestRefreshToken }` çağırır (yalnızca `Member`).
+  - Sunucu token'ı çözer (süre, `Guest` rolü doğrulanır), her özelliğin `IGuestDataMerger.MergeAsync(guestId, targetUserId)` kancasını çalıştırır, sonra misafiri siler. Misafirin sahibi olduğunu refresh token'ın kendisi kanıtlar; hedef her zaman çağıran kullanıcıdır.
+  - Neden filtre/kanca yerine ayrı uç: giriş yanıtı (özellikle Identity'nin hazır `/login`'i) istemciye dönmeden veri taşınmış olmalıydı; ayrı uçta yarış yoktur, kayıt → kod doğrulama → giriş arasında uygulama kapansa bile istemci token'ı saklar ve sonra talep eder, tüm giriş yolları aynı kuralı kullanır. Talep tekrarlanırsa başarılı sayılır (idempotent).
+  - `Common.IGuestDataMerger` özelliklerce uygulanır (Auth hepsini DI'dan alır, hiçbirini tanımaz; ArchTests sınırları korur). Çakışma kuralı (birleştir / üzerine yaz / at) özelliğin kendi kararıdır; `Todos` örneği görevlerin sahibini değiştirir.
+- **Temizlik:** belirli süre görülmeyen misafirler verileriyle birlikte (`IGuestDataMerger.DeleteAsync`) arka plan işiyle silinir (`Auth:Guest:RetentionDays`, varsayılan 30; "son görülme" mobilin açılışta çağırdığı `/auth/me` ile en fazla günde iki kez güncellenir). `/auth/guest` `/auth` grubunun IP başına rate limit'indedir (NAT arkasında çok kullanıcılı ağlarda gerekirse `RateLimiting:Auth:PermitLimit` yükseltilir).
 - iOS Keychain uygulama silinince temizlenmeyebilir: eski misafir token'ı geçersizse istemci sessizce yeni misafir alır.
 - **Reddedilenler:** uygulamaya gömülü anahtar / client credentials (mobil uygulamadan her sır çıkarılabilir); herkese açık uçlara token zorunluluğu (web'in önbelleğini ve SEO'sunu bozar). "İstek gerçekten bizim uygulamadan mı" sorusu misafir token'ıyla çözülmez; gerekirse App Attest (iOS) / Play Integrity (Android) eklenir.
+- Misafir hesabın e-postası/şifresi yoktur: `AppPolicies.Member` ister uçlar (ör. e-posta değiştirme) misafire 403 döner. Güvenlik varsayılanı: yeni kişisel uçlar `Member` ile başlar, misafire açmak bilinçli bir karardır (`Todos` örneği açıktır).
+- Mobil: açılışta token yoksa otomatik misafir; çıkış yeni misafir başlatır; token geçersizse (kullanıcı silinmiş) sessizce yeni misafir.
 - create-ako-app auth sorusunun altında "misafir girişi olsun mu?" diye sorar.
 
 ## Backend'siz mobil (yalnız mobil kombinasyonu)

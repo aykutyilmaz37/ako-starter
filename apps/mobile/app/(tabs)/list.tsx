@@ -22,8 +22,8 @@ export default function ShoppingList() {
   const { color } = useTheme();
   const insets = useSafeAreaInsets();
   const t = useT();
-  const { user } = useSession();
-  const list = useShoppingList(user !== null);
+  const { status } = useSession();
+  const list = useShoppingList(status === 'guest' || status === 'member');
 
   const form = useForm<z.infer<typeof Schema>>({
     resolver: zodResolver(Schema),
@@ -50,10 +50,10 @@ export default function ShoppingList() {
       <View style={{ gap: 4 }}>
         <Eyebrow>{t('list.eyebrow')}</Eyebrow>
         <Heading size={32}>{t('list.title')}</Heading>
-        {user ? <Muted>{t('list.description')}</Muted> : null}
+        <Muted>{t('list.description')}</Muted>
       </View>
 
-      {!user ? (
+      {status === 'guest' ? (
         <View
           style={{
             gap: 14,
@@ -85,63 +85,63 @@ export default function ShoppingList() {
             {t('account.register')}
           </Button>
         </View>
-      ) : (
-        <>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
-            <View style={{ flex: 1 }}>
-              <Controller
-                control={form.control}
-                name="title"
-                render={({ field, fieldState }) => (
-                  <Field label={t('list.form.label')} error={fieldState.error?.message}>
-                    <Input
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      onPressEnter={submit}
-                      placeholder={t('list.form.placeholder')}
-                    />
-                  </Field>
-                )}
-              />
-            </View>
-            <View style={{ marginTop: 28 }}>
-              <Button
-                loading={list.isAdding}
-                icon={<Plus size={18} color={color.primary.solidContrast} />}
-                accessibilityLabel={t('list.form.add')}
-                onPress={submit}
-              />
-            </View>
-          </View>
+      ) : null}
 
-          {!list.isLoading && list.todos.length === 0 ? (
-            <Empty
-              title={t('list.empty.title')}
-              description={t('list.empty.description')}
-              buttonText={t('list.empty.button')}
-              onPress={() => router.navigate({ pathname: '/shop', params: { category: 'Coffee' } })}
+      <>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
+          <View style={{ flex: 1 }}>
+            <Controller
+              control={form.control}
+              name="title"
+              render={({ field, fieldState }) => (
+                <Field label={t('list.form.label')} error={fieldState.error?.message}>
+                  <Input
+                    value={field.value}
+                    onChangeText={field.onChange}
+                    onBlur={field.onBlur}
+                    onPressEnter={submit}
+                    placeholder={t('list.form.placeholder')}
+                  />
+                </Field>
+              )}
             />
-          ) : (
-            <View style={{ gap: 24 }}>
+          </View>
+          <View style={{ marginTop: 28 }}>
+            <Button
+              loading={list.isAdding}
+              icon={<Plus size={18} color={color.primary.solidContrast} />}
+              accessibilityLabel={t('list.form.add')}
+              onPress={submit}
+            />
+          </View>
+        </View>
+
+        {!list.isLoading && list.todos.length === 0 ? (
+          <Empty
+            title={t('list.empty.title')}
+            description={t('list.empty.description')}
+            buttonText={t('list.empty.button')}
+            onPress={() => router.navigate({ pathname: '/shop', params: { category: 'Coffee' } })}
+          />
+        ) : (
+          <View style={{ gap: 24 }}>
+            <TodoSection
+              title={t('list.pending', { count: pending.length })}
+              items={pending}
+              onToggle={list.toggle}
+              onRemove={list.remove}
+            />
+            {done.length > 0 ? (
               <TodoSection
-                title={t('list.pending', { count: pending.length })}
-                items={pending}
+                title={t('list.done', { count: done.length })}
+                items={done}
                 onToggle={list.toggle}
                 onRemove={list.remove}
               />
-              {done.length > 0 ? (
-                <TodoSection
-                  title={t('list.done', { count: done.length })}
-                  items={done}
-                  onToggle={list.toggle}
-                  onRemove={list.remove}
-                />
-              ) : null}
-            </View>
-          )}
-        </>
-      )}
+            ) : null}
+          </View>
+        )}
+      </>
     </ScrollView>
   );
 }
