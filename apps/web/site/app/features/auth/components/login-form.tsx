@@ -9,6 +9,7 @@ import { Input } from '@mari-ui/components/input';
 import { useState, type ReactNode } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { SocialButton } from '~/features/auth/components/social-button';
 import { AUTH_ERROR_KEYS } from '~/features/auth/error-messages';
 import { useT } from '~/shared/i18n/i18n-provider';
 
@@ -94,10 +95,12 @@ export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormP
       {(providers.data?.external.length ?? 0) > 0 && (
         <div className="flex flex-col gap-2">
           {providers.data!.external.map((provider) => (
-            // Tam sayfa yönlendirme: OAuth akışı BFF → API → sağlayıcı → geri.
-            <Button key={provider} href={`/bff/external/${provider}`} variant="outline" block>
-              {t('auth.login.social', { provider: PROVIDER_LABELS[provider] ?? provider })}
-            </Button>
+            <SocialButton
+              key={provider}
+              provider={provider}
+              href={`/bff/external/${provider}`}
+              label={t('auth.login.social', { provider: PROVIDER_LABELS[provider] ?? provider })}
+            />
           ))}
         </div>
       )}

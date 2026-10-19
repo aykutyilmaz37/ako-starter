@@ -9,6 +9,7 @@ import { Platform, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { AuthScreen } from '~/components/auth-screen';
+import { SocialButton } from '~/components/social-button';
 import { useSession } from '~/lib/session';
 import { useT } from '~/lib/i18n';
 import { PROVIDER_LABELS, nativeSupported, useSocialLogin } from '~/lib/social-login';
@@ -100,10 +101,10 @@ export default function LoginScreen() {
               nativeSupported(provider) &&
               !(provider === 'apple' && Platform.OS !== 'ios');
             return (
-              <Button
+              <SocialButton
                 key={provider}
-                block
-                variant="outline"
+                provider={provider}
+                label={t('auth.login.social', { provider: PROVIDER_LABELS[provider] ?? provider })}
                 loading={social.pending === provider}
                 disabled={social.pending !== null}
                 onPress={() =>
@@ -111,9 +112,7 @@ export default function LoginScreen() {
                     ? social.native(provider as 'apple' | 'google')
                     : social.browser(provider))
                 }
-              >
-                {t('auth.login.social', { provider: PROVIDER_LABELS[provider] ?? provider })}
-              </Button>
+              />
             );
           })}
         </View>

@@ -11,3 +11,22 @@
     font-family: var(--mari-font-sans);
   }
 }
+
+/* Sosyal giriş düğmeleri: sağlayıcının marka renkleri (değişkenler social-button.tsx'ten gelir). */
+.social-button {
+  background: var(--sb-bg);
+  color: var(--sb-fg);
+  border-color: var(--sb-border);
+}
+[data-theme='dark'] .social-button {
+  background: var(--sb-dark-bg);
+  color: var(--sb-dark-fg);
+  border-color: var(--sb-dark-border);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .social-button {
+    background: var(--sb-dark-bg);
+    color: var(--sb-dark-fg);
+    border-color: var(--sb-dark-border);
+  }
+}

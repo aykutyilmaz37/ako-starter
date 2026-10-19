@@ -126,6 +126,9 @@ importers:
       '@ako/api-client':
         specifier: workspace:*
         version: link:../../packages/api-client
+      '@ako/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@expo-google-fonts/playfair-display':
         specifier: ^0.4.2
         version: 0.4.2
@@ -317,6 +320,9 @@ importers:
       '@ako/api-client':
         specifier: workspace:*
         version: link:../../../packages/api-client
+      '@ako/shared':
+        specifier: workspace:*
+        version: link:../../../packages/shared
       '@ako/web-core':
         specifier: workspace:*
         version: link:../../../packages/web-core

@@ -2,6 +2,7 @@ import { getDictionary, getLanguages } from '@ako/api-client/localization';
 import { useQuery } from '@tanstack/react-query';
 import { getLocales } from 'expo-localization';
 import * as SecureStore from 'expo-secure-store';
+import { z } from 'zod';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import de from '~/locales/de.json';
 import en from '~/locales/en.json';
@@ -61,6 +62,10 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => setApiLanguage(lang), [lang]);
+
+  // Form doğrulama mesajları (zod) arayüz diliyle: "Geçersiz e-posta adresi" / "Invalid email address".
+  const locales = z.locales as Record<string, () => ReturnType<typeof z.locales.en>>;
+  z.config((locales[lang] ?? z.locales.en)());
 
   const languagesQuery = useQuery({
     queryKey: ['localization', 'languages'],
