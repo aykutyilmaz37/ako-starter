@@ -16,7 +16,7 @@
     "format:check": "prettier --check .",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
-    "generate:check": "turbo run generate:check"
+    "generate:check": "turbo run generate:check --filter=@ako/api-client"
   },
   "devDependencies": {
     "prettier": "^3.6.2",
