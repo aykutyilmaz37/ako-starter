@@ -86,6 +86,12 @@ export const AdminUpdateLanguageResponse = zod.object({
   "isEnabled": zod.boolean()
 })
 
+export const AdminDeleteLanguageParams = zod.object({
+  "code": zod.string()
+})
+
+export const AdminDeleteLanguageResponse = zod.void()
+
 export const AdminExportTranslationsParams = zod.object({
   "namespace": zod.string(),
   "culture": zod.string()

@@ -24,6 +24,7 @@ public static class LocalizationEndpoints
         ListAllLanguages.Map(group);
         CreateLanguage.Map(group);
         UpdateLanguage.Map(group);
+        DeleteLanguage.Map(group);
         ExportTranslations.Map(group);
 
         return admin;

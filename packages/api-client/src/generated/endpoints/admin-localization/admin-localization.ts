@@ -501,6 +501,73 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getAdminUpdateLanguageMutationOptions(options), queryClient);
     }
+    export const getAdminDeleteLanguageUrl = (code: string,) => {
+
+
+
+
+  return `/admin/localization/languages/${code}`
+}
+
+export const adminDeleteLanguage = async (code: string, options?: Parameters<typeof apiFetch>[1]): Promise<void> => {
+
+  return apiFetch<void>(getAdminDeleteLanguageUrl(code),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getAdminDeleteLanguageMutationKey = () => ['adminDeleteLanguage'] as const;
+
+export const getAdminDeleteLanguageMutationOptions = <TError = ErrorType<void | ProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminDeleteLanguage>>, TError,AdminDeleteLanguageMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof adminDeleteLanguage>>, TError,AdminDeleteLanguageMutationVariables, TContext> => {
+
+const mutationKey = getAdminDeleteLanguageMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof adminDeleteLanguage>>, AdminDeleteLanguageMutationVariables> = (props) => {
+          const {code} = props ?? {};
+
+          return  adminDeleteLanguage(code,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AdminDeleteLanguageMutationResult = NonNullable<Awaited<ReturnType<typeof adminDeleteLanguage>>>
+
+    export type AdminDeleteLanguageMutationError = ErrorType<void | ProblemDetails>
+    export type AdminDeleteLanguageMutationVariables = {code: string}
+
+    export const useAdminDeleteLanguage = <TError = ErrorType<void | ProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof adminDeleteLanguage>>, TError,AdminDeleteLanguageMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof adminDeleteLanguage>>,
+        TError,
+        AdminDeleteLanguageMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAdminDeleteLanguageMutationOptions(options), queryClient);
+    }
     export const getAdminExportTranslationsUrl = (namespace: string,
     culture: string,) => {
 
