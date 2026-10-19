@@ -31,9 +31,8 @@ function Routes() {
 
   return (
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: surface } }}>
-      <Stack.Protected guard={status === 'authenticated'}>
-        <Stack.Screen name="(app)" />
-      </Stack.Protected>
+      {/* Katalog herkese açık; giriş yalnızca alışveriş listesi gibi kişisel ekranlar için gerekir. */}
+      <Stack.Screen name="index" />
       <Stack.Protected guard={status === 'anonymous'}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>

@@ -36,7 +36,7 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 ## Aşama 2 — Mobil
 
 - [x] `apps/mobile` Expo iskeleti + `@mari-ui/native`, `api-client` yapılandırması (`TokenStore` SecureStore, 401'de refresh).
-- [x] Giriş/kayıt, e-posta kodu doğrulama (`(auth)` ekranları, `Stack.Protected` ile oturum koruması; simülatörde denenmedi).
+- [x] Giriş/kayıt, e-posta kodu doğrulama (`(auth)` ekranları, `Stack.Protected`; katalog girişsiz açık, giriş yalnızca kişisel ekranlar için).
 - [ ] Sosyal giriş (`AuthSession` + `ako://`), `/auth/exchange`.
 - [ ] Akı Kahve ekranları: ürün listesi/detay, alışveriş listem.
 - [ ] Çoklu dil (sözlük `GET /localization/{dil}/mobile` alanı gerekir mi, karar ver).

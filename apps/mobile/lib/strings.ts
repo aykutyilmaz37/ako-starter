@@ -33,6 +33,7 @@ export const s = {
     products: (count: number) => `${count} ürün`,
     loadFailed: 'Ürünler alınamadı.',
     retry: 'Yenile',
+    login: 'Giriş yap',
     logout: 'Çıkış yap',
   },
   session: {
