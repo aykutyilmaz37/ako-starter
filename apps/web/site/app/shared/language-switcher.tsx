@@ -26,14 +26,14 @@ export function LanguageSwitcher() {
   const path = stripLanguage(location.pathname, lang) + location.search;
 
   return (
-    <Dropdown>
-      <DropdownTrigger aria-label={t('language.label')}>
-        <span className="flex items-center gap-2">
+    <Dropdown className="self-center">
+      <DropdownTrigger className="flex items-center" aria-label={t('language.label')}>
+        <span className="flex h-7 items-center gap-2 px-2">
           <Flag code={current.code} />
           <span className="hidden text-sm sm:inline">{current.name}</span>
         </span>
       </DropdownTrigger>
-      <DropdownContent>
+      <DropdownContent placement="bottom-end" className="z-mari-drawer!">
         {languages.map((l) => (
           <DropdownItem
             key={l.code}
