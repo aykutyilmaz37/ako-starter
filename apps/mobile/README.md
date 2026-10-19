@@ -1,6 +1,6 @@
 # apps/mobile
 
-Expo (SDK 58) + expo-router + `@mari-ui/native`. API'ye doğrudan bağlanır; token'lar SecureStore'da (`lib/token-store.ts`), 401'de `api-client` tek uçuşla yeniler.
+Expo (SDK 57; Expo Go uyumu için) + expo-router + `@mari-ui/native`. API'ye doğrudan bağlanır; token'lar SecureStore'da (`lib/token-store.ts`), 401'de `api-client` tek uçuşla yeniler.
 
 ```bash
 pnpm --filter @ako/mobile dev      # Expo geliştirme sunucusu (i: iOS simülatörü)

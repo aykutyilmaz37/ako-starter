@@ -7,9 +7,16 @@
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": { "bundleIdentifier": "com.ako.mobile", "supportsTablet": true },
-    "android": { "package": "com.ako.mobile" },
-    "plugins": ["expo-router", "expo-secure-store"],
-    "experiments": { "typedRoutes": true }
+    "ios": {
+      "bundleIdentifier": "com.ako.mobile",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.ako.mobile"
+    },
+    "plugins": ["expo-router", "expo-secure-store", "expo-status-bar"],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
