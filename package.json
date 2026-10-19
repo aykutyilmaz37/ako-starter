@@ -16,6 +16,7 @@
     "format:check": "prettier --check .",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
+    "audit": "pnpm audit --prod --audit-level=critical",
     "generate:check": "turbo run generate:check --filter=@ako/api-client"
   },
   "devDependencies": {

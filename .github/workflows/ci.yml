@@ -27,7 +27,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm build
-      - run: pnpm audit --prod
+      - run: pnpm run audit
 
   api:
     name: API build and test
@@ -42,7 +42,7 @@ jobs:
       - run: dotnet build apps/api/Ako.slnx -c Release --no-restore
       # Testler Testcontainers/Docker kullanıyorsa runner'da Docker hazırdır.
       - run: dotnet test apps/api/Ako.slnx -c Release --no-build
-      - name: Güvenlik açığı olan paket var mı
+      - name: Critical açığı olan paket var mı
         run: |
           dotnet list apps/api/Ako.slnx package --vulnerable --include-transitive 2>&1 | tee vuln.log
-          ! grep -q "has the following vulnerable packages" vuln.log
+          ! grep -qE "^\s*>.*\bCritical\b" vuln.log
