@@ -4,17 +4,17 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 ## Durum
 
-| Alan | Durum |
-| --- | --- |
-| API (Auth, Products, Todos, Localization, Identity, ArchTests, xUnit) | Var |
-| Web: site + backoffice (RR8 + Hono BFF + mari-ui), çoklu dil | Var |
-| api-client (Orval), web-core, shared | Var |
-| Akı Kahve senaryosu ve tasarım | Var |
-| Web testleri (Vitest/Playwright) | Yok |
-| CI (build, `generate:check`, audit) | Yok |
-| Mobil (`apps/mobile`) | Yalnızca README |
-| create-ako-app | Yok |
-| Deploy hedefi | Karar bekliyor |
+| Alan                                                                  | Durum           |
+| --------------------------------------------------------------------- | --------------- |
+| API (Auth, Products, Todos, Localization, Identity, ArchTests, xUnit) | Var             |
+| Web: site + backoffice (RR8 + Hono BFF + mari-ui), çoklu dil          | Var             |
+| api-client (Orval), web-core, shared                                  | Var             |
+| Akı Kahve senaryosu ve tasarım                                        | Var             |
+| Web testleri (Vitest/Playwright)                                      | Yok             |
+| CI (build, `generate:check`, audit)                                   | Yok             |
+| Mobil (`apps/mobile`)                                                 | Yalnızca README |
+| create-ako-app                                                        | Yok             |
+| Deploy hedefi                                                         | Karar bekliyor  |
 
 ## Aşama 0 — Backoffice sidebar responsive
 
@@ -28,7 +28,7 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 - [x] GitHub Actions (`.github/workflows/ci.yml`; ilk çalıştırma doğrulanmadı): `pnpm build`, `typecheck`, `lint`, `test`, `generate:check`, `dotnet test`, `pnpm audit`, `dotnet list package --vulnerable`.
 - [ ] Vitest: `web-core` (oturum, token yenileme) ve `api-client` (`ApiError`, `applyFieldErrors`).
 - [ ] Playwright: tek duman testi (site: ürün listesi + dil değiştirme; backoffice: admin girişi + ürün ekleme).
-- [x] Dependabot ayarı (`.github/dependabot.yml`).
+- [x] Dependabot: yalnızca güvenlik güncellemeleri, gruplu PR (`.github/dependabot.yml`). Rutin sürüm güncellemesi kapalı.
 - [ ] Temiz klonda doğrulama: `pnpm i && pnpm db:up` sonrası README adımlarıyla her şey ayağa kalkıyor mu?
 
 **Bitti:** boş bir klondan CI yeşil; README'deki komutlar birebir çalışıyor.
