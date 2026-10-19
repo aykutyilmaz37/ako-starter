@@ -159,7 +159,8 @@ Her mobil uygulamanın sunucuya ihtiyacı yoktur: veri yalnızca cihazda durabil
 - **Migration:** auth'lu set `Infrastructure/Data/Migrations`'ta, auth'suz set `variants/no-auth/` altında hazır durur (Identity tablolarını içermez); üretimde dotnet-ef gerekmez. Modeli değiştirince `pnpm --filter create-ako-app variants` ile yenilenir; `verify` betiği `has-pending-model-changes` ile bayat seti yakalar.
 - **Üretim sonrası sıra:** install → `generate` (API değiştiyse openapi.json ve Orval çıktısı yeniden) → `format` → `git init` + ilk commit; böylece `generate:check` ve `format:check` baştan temiz.
 - **Doğrulama:** `pnpm --filter create-ako-app verify` her kombinasyon için CLI'ın son adımlarını, sonra CI komutlarını (format:check, generate:check, typecheck, lint, build, test) çalıştırır.
-- Şimdilik tek iki-seçenekli ayrım: e2e paketi yalnızca iki web uygulaması birlikteyse kalır.
+- **Çoklu dil kapalı** (`--no-lang`): API'de `Features/Localization` (tablo, `/localization`, admin uçları), `Messages.en/de.resx` ve web/mobil `en`/`de` dosyaları çıkar; API metinleri yalnızca `Messages.resx`'ten, desteklenen kültür yalnızca `tr`. Web'de `:lang?` segmenti, `lang-layout`, dil seçici ve backoffice "Çeviriler" gider; `dictionary.server.ts` yalnızca gömülü varsayılan dosyayı okur (sözlük API'den gelmez). Mobil yalnızca `tr.json` paketler, dil seçici görünmez. `t()` anahtarları ve tür güvenliği aynen sürer. Dil değiştirme sınamasını içeren e2e paketi çıkar.
+- **Migration setleri** `variants/` altında (auth, dil) ikilisine göre: `no-auth`, `no-lang`, `no-auth-no-lang`. Ek iki-seçenekli ayrım: e2e paketi yalnızca iki web uygulaması birlikte ve çoklu dil açıkken kalır.
 
 ## Kurulum sırasında konuşulacaklar
 

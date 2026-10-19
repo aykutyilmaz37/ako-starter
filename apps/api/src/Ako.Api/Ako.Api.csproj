@@ -12,11 +12,13 @@
     <!-- E-posta şablonları uygulamaya gömülür (bkz. Infrastructure/Email/EmailTemplates.cs). -->
     <EmbeddedResource Include="Resources/EmailTemplates/*.html" LogicalName="EmailTemplates/%(Filename)%(Extension)" />
     <!-- ako:end auth -->
+    <!-- ako:begin lang -->
     <!-- Web arayüzlerinin varsayılan metinleri (apps/web/<uygulama>/app/locales/*.json) de gömülür; çeviri tablosu ve
          /localization/{dil}/{alan} bunları temel alır. Uygulama yoksa (create-ako-app ile çıkarıldıysa) eşleşme olmaz. -->
     <EmbeddedResource Include="../../../web/site/app/locales/*.json" LogicalName="Locales/site/%(Filename)%(Extension)" Link="Locales/site/%(Filename)%(Extension)" />
     <EmbeddedResource Include="../../../web/backoffice/app/locales/*.json" LogicalName="Locales/backoffice/%(Filename)%(Extension)" Link="Locales/backoffice/%(Filename)%(Extension)" />
     <EmbeddedResource Include="../../../mobile/locales/*.json" LogicalName="Locales/mobile/%(Filename)%(Extension)" Link="Locales/mobile/%(Filename)%(Extension)" />
+    <!-- ako:end lang -->
   </ItemGroup>
 
   <ItemGroup>

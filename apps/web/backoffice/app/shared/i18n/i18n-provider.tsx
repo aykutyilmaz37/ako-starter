@@ -1,17 +1,17 @@
-import type { LanguageResponse } from '@ako/api-client/model';
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { z } from 'zod';
 import {
   createTranslator,
   fallbackDictionary,
   type Dictionary,
+  type LanguageInfo,
   type Translate,
 } from '~/shared/i18n/i18n';
 
 interface I18nValue {
   lang: string;
   defaultLang: string;
-  languages: LanguageResponse[];
+  languages: LanguageInfo[];
   t: Translate;
 }
 
@@ -20,7 +20,7 @@ const I18nContext = createContext<I18nValue | null>(null);
 interface I18nProviderProps {
   lang: string;
   defaultLang: string;
-  languages: LanguageResponse[];
+  languages: LanguageInfo[];
   dictionary: Dictionary | undefined;
   children: ReactNode;
 }

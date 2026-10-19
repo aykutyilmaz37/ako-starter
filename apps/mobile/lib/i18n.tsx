@@ -1,11 +1,11 @@
-import { getDictionary, getLanguages } from '@ako/api-client/localization';
+import { getDictionary, getLanguages } from '@ako/api-client/localization'; // ako:lang
 import { useQuery } from '@tanstack/react-query';
 import { getLocales } from 'expo-localization';
 import * as SecureStore from 'expo-secure-store';
 import { z } from 'zod';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import de from '~/locales/de.json';
-import en from '~/locales/en.json';
+import de from '~/locales/de.json'; // ako:lang
+import en from '~/locales/en.json'; // ako:lang
 import tr from '~/locales/tr.json';
 import { setApiLanguage } from '~/lib/api';
 
@@ -24,12 +24,17 @@ const KEY = 'ako.lang';
 
 // Uygulamayla gelen metinler: API'ye ulaşılamazken ve ilk açılışta gösterilir. Çevrimiçi sözlük (API'deki
 // "mobile" alanı: dosya + backoffice'ten yapılan değişiklikler) bunların üstüne yazar.
+// ako:begin lang
 const BUNDLED: Record<string, Record<string, string>> = { tr, en, de };
 const BUNDLED_LANGUAGES: Language[] = [
   { code: 'tr', name: 'Türkçe' },
   { code: 'en', name: 'English' },
   { code: 'de', name: 'Deutsch' },
 ];
+// ako:else lang
+//~ const BUNDLED: Record<string, Record<string, string>> = { tr };
+//~ const BUNDLED_LANGUAGES: Language[] = [{ code: 'tr', name: 'Türkçe' }];
+// ako:end lang
 
 interface I18n {
   lang: string;
@@ -67,6 +72,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const locales = z.locales as Record<string, () => ReturnType<typeof z.locales.en>>;
   z.config((locales[lang] ?? z.locales.en)());
 
+  // ako:begin lang
   const languagesQuery = useQuery({
     queryKey: ['localization', 'languages'],
     queryFn: () => getLanguages(),
@@ -77,6 +83,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     queryFn: () => getDictionary(lang, 'mobile'),
     staleTime: 60_000,
   });
+  // ako:else lang
+  //~ const languagesQuery = {
+  //~   data: undefined as { code: string; name: string; isEnabled: boolean }[] | undefined,
+  //~ };
+  //~ const dictionaryQuery = { data: undefined as Record<string, string> | undefined };
+  // ako:end lang
 
   // Yalnızca API'de açık ve uygulamada paketli olan diller seçilebilir.
   const languages = useMemo<Language[]>(() => {

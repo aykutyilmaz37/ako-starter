@@ -3,6 +3,14 @@ import fallbackDictionary from '~/locales/tr.json';
 /** Çeviri anahtarları varsayılan dil dosyasından türer: olmayan anahtar yazılırsa derleme hatası verir. */
 export type TranslationKey = keyof typeof fallbackDictionary;
 export type Dictionary = Record<string, string>;
+
+/** Bir dil: kodu, görünen adı, varsayılan mı, açık mı. API'deki dil listesiyle aynı şekil. */
+export interface LanguageInfo {
+  code: string;
+  name: string;
+  isDefault: boolean;
+  isEnabled: boolean;
+}
 export type TranslationValues = Record<string, string | number>;
 export type Translate = (key: TranslationKey, values?: TranslationValues) => string;
 

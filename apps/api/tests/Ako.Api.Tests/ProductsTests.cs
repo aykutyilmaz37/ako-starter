@@ -64,8 +64,10 @@ public sealed class ProductsTests(ApiFactory factory)
         Assert.Contains("'Fiyat'", tr.Errors["price"].Single());
         Assert.Equal(["sku", "name", "price", "stock"], tr.Errors.Keys);
 
+        // ako:begin lang
         var en = await Send(body, "en-US");
         Assert.Contains("'Price'", en.Errors["price"].Single());
+        // ako:end lang
 
         async Task<HttpValidationProblemDetails> Send(CreateProductRequest request, string language)
         {

@@ -13,6 +13,7 @@ const HELP = `create-ako-app <klasör> [seçenekler]
   --auth / --no-auth           Giriş, kayıt, misafir, Todos, yönetim (varsayılan: evet; kapalıyken backoffice olamaz)
   --install / --no-install     Üretimden sonra pnpm install (varsayılan: evet)
   --no-git                     git init + ilk commit yapma
+  --lang / --no-lang           Çoklu dil: dil seçici, adres öneki, çeviri yönetimi (varsayılan: evet)
   --template=<klasör>          Şablon kaynağı (varsayılan: paketlenmiş şablon ya da depo)
   -y, --yes                    Soru sorma, belirtilmeyenlerde varsayılanı kullan
   -h, --help
@@ -36,6 +37,8 @@ export async function main(argv) {
       'no-mobile': { type: 'boolean' },
       auth: { type: 'boolean' },
       'no-auth': { type: 'boolean' },
+      lang: { type: 'boolean' },
+      'no-lang': { type: 'boolean' },
       install: { type: 'boolean' },
       'no-install': { type: 'boolean' },
       'no-git': { type: 'boolean' },
@@ -62,6 +65,9 @@ export async function main(argv) {
     if (auth === undefined)
       auth = rl ? await ask(rl, 'Auth (giriş, kayıt, misafir, yönetim) olsun mu?', true) : true;
 
+    let lang = values.lang ? true : values['no-lang'] ? false : undefined;
+    if (lang === undefined) lang = rl ? await ask(rl, 'Çoklu dil olsun mu?', true) : true;
+
     let web;
     if (values.web !== undefined) {
       web =
@@ -82,7 +88,7 @@ export async function main(argv) {
     let mobile = values.mobile ? true : values['no-mobile'] ? false : undefined;
     if (mobile === undefined) mobile = rl ? await ask(rl, 'Mobil (Expo) olsun mu?', true) : true;
 
-    const choices = normalizeChoices({ name: basename(target), web, mobile, auth });
+    const choices = normalizeChoices({ name: basename(target), web, mobile, auth, lang });
     const plan = scaffold({
       target,
       template: resolveTemplate(values.template),

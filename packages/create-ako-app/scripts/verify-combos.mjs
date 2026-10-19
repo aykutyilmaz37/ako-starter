@@ -16,6 +16,8 @@ const COMBOS = {
   backoffice: { web: ['backoffice'], mobile: false },
   'no-auth-site': { web: ['site'], mobile: false, auth: false },
   'no-auth-mobile': { web: [], mobile: true, auth: false },
+  'no-lang-both': { web: ['site', 'backoffice'], mobile: true, lang: false },
+  'no-auth-no-lang': { web: ['site'], mobile: true, auth: false, lang: false },
   'no-auth-both': { web: ['site'], mobile: true, auth: false },
 };
 

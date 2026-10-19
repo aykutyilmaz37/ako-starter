@@ -16,8 +16,6 @@ const AUTH_PATHS = [
   `${API}/Infrastructure/Email`,
   `${API}/Resources/EmailTemplates`,
   `${API}/Common/GuestDataMerger.cs`,
-  // Migration'lar Identity tablolarını içerir; auth'suz set variants/no-auth altından gelir.
-  `${API}/Infrastructure/Data/Migrations`,
   'apps/api/tests/Ako.Api.Tests/AdminTests.cs',
   'apps/api/tests/Ako.Api.Tests/AuthTests.cs',
   'apps/api/tests/Ako.Api.Tests/EmailCodeTests.cs',
@@ -43,6 +41,33 @@ const AUTH_PATHS = [
   'apps/mobile/components/offline-screen.tsx',
 ];
 
+const MIGRATIONS_DIR = `${API}/Infrastructure/Data/Migrations`;
+
+/** Çoklu dil kapalıyken silinen yollar. */
+const LANG_PATHS = [
+  `${API}/Features/Localization`,
+  `${API}/Resources/Localization/Messages.en.resx`,
+  `${API}/Resources/Localization/Messages.de.resx`,
+  'apps/api/tests/Ako.Api.Tests/LocalizationTests.cs',
+  // Dil seçici, adres öneki ve çeviri yönetimi; sözlük yalnızca varsayılan dil dosyasından gelir.
+  'apps/web/site/app/shared/i18n/lang-layout.tsx',
+  'apps/web/site/app/shared/language-switcher.tsx',
+  'apps/web/site/app/locales/en.json',
+  'apps/web/site/app/locales/de.json',
+  'apps/web/backoffice/app/features/localization',
+  'apps/web/backoffice/app/shared/language-switcher.tsx',
+  'apps/web/backoffice/app/locales/en.json',
+  'apps/web/backoffice/app/locales/de.json',
+  'apps/mobile/locales/en.json',
+  'apps/mobile/locales/de.json',
+];
+
+/** Kapalı özellik kümesinden varyant klasörü adı: 'no-auth', 'no-lang', 'no-auth-no-lang'; hiçbiri kapalıysa null. */
+export function variantName(disabled) {
+  const off = ['auth', 'lang'].filter((f) => disabled.has(f));
+  return off.length === 0 ? null : off.map((f) => `no-${f}`).join('-');
+}
+
 /** Auth kapalıyken ayar dosyalarından çıkarılan anahtarlar (noktalı yol). */
 const AUTH_JSON_KEYS = [
   {
@@ -60,7 +85,7 @@ const AUTH_JSON_KEYS = [
  * @param {{ name: string, web: string[], mobile: boolean }} choices
  * @returns {{ name: string, web: string[], mobile: boolean, auth: boolean }}
  */
-export function normalizeChoices({ name, web, mobile, auth = true }) {
+export function normalizeChoices({ name, web, mobile, auth = true, lang = true }) {
   const unknown = web.filter((app) => !WEB_APPS.includes(app));
   if (unknown.length > 0) {
     throw new Error(
@@ -80,14 +105,14 @@ export function normalizeChoices({ name, web, mobile, auth = true }) {
       'Auth kapalıyken backoffice olamaz (yönetim girişi gerekir). --web=site ya da --no-web kullanın.',
     );
   }
-  return { name, web: WEB_APPS.filter((app) => web.includes(app)), mobile, auth };
+  return { name, web: WEB_APPS.filter((app) => web.includes(app)), mobile, auth, lang };
 }
 
 /**
  * @param {{ name: string, web: string[], mobile: boolean, auth?: boolean }} choices
  */
 export function buildPlan(choices) {
-  const { web, mobile, auth } = normalizeChoices(choices);
+  const { web, mobile, auth, lang } = normalizeChoices(choices);
   const remove = [...TEMPLATE_ONLY];
 
   for (const app of WEB_APPS) {
@@ -100,7 +125,7 @@ export function buildPlan(choices) {
   if (!mobile) remove.push('apps/mobile');
 
   // Duman testi iki web uygulamasını birlikte çalıştırır; biri yoksa config'i bozulur. Şimdilik tümüyle çıkar.
-  const keepE2e = web.length === WEB_APPS.length;
+  const keepE2e = web.length === WEB_APPS.length && lang;
   if (!keepE2e) remove.push('packages/e2e');
 
   const disabled = new Set();
@@ -108,9 +133,18 @@ export function buildPlan(choices) {
   const jsonRemove = [];
   if (!auth) {
     disabled.add('auth');
-    variants.push('no-auth');
     remove.push(...AUTH_PATHS);
     jsonRemove.push(...AUTH_JSON_KEYS);
+  }
+  if (!lang) {
+    disabled.add('lang');
+    remove.push(...LANG_PATHS);
+  }
+  // Migration'lar yalnızca (auth, lang) ikilisine bağlıdır: hazır set variants/<ad>/ altında.
+  const variant = variantName(disabled);
+  if (variant) {
+    variants.push(variant);
+    remove.push(MIGRATIONS_DIR);
   }
 
   return {

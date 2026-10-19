@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { logout } from '~/shared/api'; // ako:auth
 import { LocaleLink, useLocalePath, useT } from '~/shared/i18n/i18n-provider';
-import { LanguageSwitcher } from '~/shared/language-switcher';
+import { LanguageSwitcher } from '~/shared/language-switcher'; // ako:lang
 import { ThemeSwitcher } from '~/shared/theme-switcher';
 import { Logo } from '~/shared/logo';
 import { useMe } from '~/shared/use-me'; // ako:auth
@@ -63,7 +63,7 @@ function HeaderActions() {
 
   return (
     <div className="flex items-center gap-1">
-      <LanguageSwitcher />
+      <LanguageSwitcher /> {/* ako:lang */}
       <ThemeSwitcher />
       <Button
         href={localePath('/products')}

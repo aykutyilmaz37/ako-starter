@@ -12,6 +12,7 @@ node packages/create-ako-app/bin/create-ako-app.mjs ../yeni-proje -y --web=site 
 | `--web=site,backoffice,none` | Web uygulamaları                                                  |
 | `--mobile` / `--no-mobile`   | Expo mobil                                                        |
 | `--auth` / `--no-auth`       | Giriş, kayıt, misafir, Todos, yönetim (kapalıyken backoffice yok) |
+| `--lang` / `--no-lang`       | Çoklu dil: dil seçici, adres öneki, çeviri yönetimi               |
 | `--install`                  | `pnpm install`, `generate`, `format`                              |
 | `--no-git`                   | `git init` + ilk commit yapma                                     |
 
