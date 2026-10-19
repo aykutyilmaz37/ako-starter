@@ -1,11 +1,13 @@
 import '~/lib/api';
-import { ThemeProvider } from '@mari-ui/native';
+import { ThemeProvider, ToastProvider } from '@mari-ui/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { useColorScheme } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SessionProvider, useSession } from '~/lib/session';
+import { OfflineScreen } from '~/components/offline-screen';
 import { mariTheme } from '../mari-ui-theme';
 
 function Themed({ children }: { children: React.ReactNode }) {
@@ -13,8 +15,27 @@ function Themed({ children }: { children: React.ReactNode }) {
   const insets = useSafeAreaInsets();
   return (
     <ThemeProvider theme={scheme === 'dark' ? mariTheme.dark : mariTheme.light} insets={insets}>
-      {children}
+      <ToastProvider insets={insets}>{children}</ToastProvider>
     </ThemeProvider>
+  );
+}
+
+function Routes() {
+  const { status } = useSession();
+
+  // Token okunurken / ilk /auth/me beklenirken boş ekran: giriş ekranı göz kırpmasın.
+  if (status === 'loading') return null;
+  if (status === 'offline') return <OfflineScreen />;
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Protected guard={status === 'authenticated'}>
+        <Stack.Screen name="(app)" />
+      </Stack.Protected>
+      <Stack.Protected guard={status === 'anonymous'}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
+    </Stack>
   );
 }
 
@@ -24,10 +45,12 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <Themed>
-          <StatusBar style="auto" />
-          <Stack screenOptions={{ headerShown: false }} />
-        </Themed>
+        <SessionProvider>
+          <Themed>
+            <StatusBar style="auto" />
+            <Routes />
+          </Themed>
+        </SessionProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
   );
