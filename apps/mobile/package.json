@@ -1,0 +1,39 @@
+{
+  "name": "@ako/mobile",
+  "version": "0.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "dev": "expo start",
+    "ios": "expo start --ios",
+    "android": "expo start --android",
+    "typecheck": "tsc --noEmit",
+    "theme": "mari-ui theme --yes",
+    "ai-rules": "mari-ui sync"
+  },
+  "dependencies": {
+    "@ako/api-client": "workspace:*",
+    "@mari-ui/core": "^0.3.1",
+    "@mari-ui/native": "^0.3.1",
+    "@mari-ui/tokens": "^0.3.1",
+    "@tanstack/react-query": "^5.104.4",
+    "expo": "^58.0.16",
+    "expo-constants": "^58.0.12",
+    "expo-linking": "^58.0.13",
+    "expo-router": "^58.0.24",
+    "expo-secure-store": "^58.0.2",
+    "expo-status-bar": "^58.0.3",
+    "react": "19.3.0",
+    "react-native": "^0.88.0",
+    "react-native-safe-area-context": "^5.10.1",
+    "react-native-screens": "^4.30.0",
+    "react-native-svg": "^15.16.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@ako/tsconfig": "workspace:*",
+    "@mari-ui/cli": "0.3.1",
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}
