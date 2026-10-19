@@ -1,20 +1,20 @@
-import '~/lib/api'; // ako:backend
+import '~/shared/lib/api'; // ako:backend
 import { PlayfairDisplay_700Bold, useFonts } from '@expo-google-fonts/playfair-display';
 import { ThemeProvider, ToastProvider, useTheme } from '@mari-ui/native';
 // ako:begin backend
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // ako:else backend
-//~ import { DatabaseProvider } from '~/lib/database';
+//~ import { DatabaseProvider } from '~/shared/lib/database';
 // ako:end backend
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react'; // ako:backend
 import { View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { OfflineScreen } from '~/components/offline-screen'; // ako:auth
-import { I18nProvider } from '~/lib/i18n';
-import { SessionProvider, useSession } from '~/lib/session'; // ako:auth
-import { ThemePreferenceProvider, useThemePreference } from '~/lib/theme-preference';
+import { OfflineScreen } from '~/features/auth/components/offline-screen'; // ako:auth
+import { I18nProvider } from '~/features/localization/i18n';
+import { SessionProvider, useSession } from '~/features/auth/session'; // ako:auth
+import { ThemePreferenceProvider, useThemePreference } from '~/features/theme/theme-preference';
 import { mariTheme } from '../mari-ui-theme';
 
 // Tema tercihi (sistem / açık / koyu) Hesap sekmesinden seçilir; "sistem" cihazın görünümünü izler.

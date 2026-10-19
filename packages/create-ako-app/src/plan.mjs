@@ -29,16 +29,11 @@ const AUTH_PATHS = [
   'apps/web/site/app/features/todos',
   'apps/web/site/app/features/products/hooks/use-add-to-list.ts',
   'apps/web/site/app/shared/use-me.ts',
-  // Mobil: giriş ekranları, oturum, sosyal giriş, alışveriş listesi (Todos) ve token deposu.
+  // Mobil: giriş ekranları, auth özelliği (oturum, sosyal giriş, token deposu, bileşenler) ve alışveriş listesi (Todos).
   'apps/mobile/app/(auth)',
   'apps/mobile/app/(tabs)/list.tsx',
-  'apps/mobile/lib/session.tsx',
-  'apps/mobile/lib/social-login.ts',
-  'apps/mobile/lib/todos.ts',
-  'apps/mobile/lib/token-store.ts',
-  'apps/mobile/components/auth-screen.tsx',
-  'apps/mobile/components/social-button.tsx',
-  'apps/mobile/components/offline-screen.tsx',
+  'apps/mobile/features/auth',
+  'apps/mobile/features/shopping-list',
 ];
 
 const MIGRATIONS_DIR = `${API}/Infrastructure/Data/Migrations`;
@@ -53,8 +48,8 @@ const BACKEND_PATHS = [
   'packages/shared',
   'compose.yaml',
   // API'ye bağlanan mobil dosyalar: istemci yapılandırması ve adres.
-  'apps/mobile/lib/api.ts',
-  'apps/mobile/lib/config.ts',
+  'apps/mobile/shared/lib/api.ts',
+  'apps/mobile/shared/lib/config.ts',
 ];
 
 /** Ürün görselleri API'nin wwwroot'unda durur; backend'siz mobil bunları uygulamaya paketler. */

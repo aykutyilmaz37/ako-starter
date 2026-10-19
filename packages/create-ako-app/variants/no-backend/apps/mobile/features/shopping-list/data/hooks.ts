@@ -1,8 +1,8 @@
 import { useToast } from '@mari-ui/native';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { router } from 'expo-router';
-import type { Product } from '~/lib/brand';
-import { useT } from '~/lib/i18n';
+import type { Product } from '~/features/catalog/data/schema';
+import { useT } from '~/features/localization/i18n';
 import { addItem, itemsQuery, removeItem, toggleItem } from './queries';
 
 /** Alışveriş listesi; liste değişince ekran kendiliğinden yenilenir (`useLiveQuery`). */

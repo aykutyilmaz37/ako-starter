@@ -1,19 +1,18 @@
-// ako:begin backend
-import { useListProducts } from '@ako/api-client/products';
-// ako:else backend
-//~ import { useListProducts } from '~/features/catalog/data/hooks';
-// ako:end backend
 import { Button, Paragraph, Tag, Text, useTheme } from '@mari-ui/native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { ArrowRight, BookOpen, Flame, Truck } from 'lucide-react-native';
 import { FlatList, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ProductCard } from '~/components/product-card';
-import { Heading, Muted, SectionHeader } from '~/components/ui';
-import { CATEGORIES, RADIUS, productImage, type ProductCategory } from '~/lib/brand';
-import { useT } from '~/lib/i18n';
-import { useSession } from '~/lib/session'; // ako:auth
+import { ProductCard } from '~/features/catalog/components/product-card';
+import { Heading, Muted, SectionHeader } from '~/shared/components/ui';
+import { useListProducts } from '~/features/catalog/data/hooks';
+import { productImage } from '~/features/catalog/data/images';
+import type { ProductCategory } from '~/features/catalog/data/schema';
+import { CATEGORIES } from '~/features/catalog/lib/product';
+import { RADIUS } from '~/shared/lib/brand';
+import { useT } from '~/features/localization/i18n';
+import { useSession } from '~/features/auth/session'; // ako:auth
 
 function openShop(category?: ProductCategory) {
   router.navigate({ pathname: '/shop', params: category ? { category } : {} });

@@ -63,7 +63,7 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 - [ ] Sorular: web / mobil / ikisi; backend (API / yok, yalnız mobilde); auth (+ sağlayıcılar, misafir girişi); çoklu dil; reklam + rıza; analitik; uzaktan ayar; örnek senaryo (Akı Kahve) kalsın mı.
 - [ ] Silme kuralları: seçilmeyen uygulama klasörü, `Features/Auth` (`// ako:auth` işaretleri), `features/localization` + `:lang?` + `/localization`, Todos/Products örnekleri.
 - [x] Backend'siz mobil varyantı (`--no-backend`, karar: DECISIONS.md): `expo-sqlite` + Drizzle, paketli migration'lar, Akı Kahve yerel veriyle (katalog paketli JSON, alışveriş listesi SQLite); `api-client`, oturum, sosyal giriş, API sözlüğü, compose/CI/turbo bağları temiz çıkar. `verify`: `no-backend`, `no-backend-no-lang` (Expo export dahil). **Cihazda/simülatörde elle denenmedi** (typecheck + Hermes paketleme ile doğrulandı).
-- [ ] Mobil uygulamayı feature-tabanlı yapıya taşıma (Aşama 1–2'de atlanmıştı: bugün `lib/`+`components/`; backend'siz kısım `features/` kullanıyor). Aşama 3 bitince ayrı oturumda.
+- [x] Mobil uygulama feature-tabanlı yapıya taşındı (`features/{auth,catalog,shopping-list,localization,theme}`, `shared/{components,lib}`; DECISIONS.md). Backend'siz varyantta ekranlardaki `ako:backend` işaretleri kalktı, varyant dosyaları hook'ları değiştirir. **Cihazda/simülatörde elle denenmedi** (typecheck + `verify`).
 - [ ] Reklam + rıza modülü: AdMob, iOS ATT, Google UMP; geliştirme derlemesi (EAS) yapılandırması.
 - [ ] Analitik ve uzaktan ayar modülü: Firebase (GA4, Remote Config) ya da CDN JSON ile zorunlu güncelleme kontrolü.
 - [ ] Her kombinasyon için otomatik sınama: üret → `build` + `typecheck` + `dotnet test` geçer mi.

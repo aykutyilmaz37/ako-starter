@@ -1,3 +1,5 @@
+import type { Product } from './schema';
+
 // Ürün görselleri uygulamayla paketlidir; Metro `require`'ı derleme zamanında çözer, bu yüzden liste elle yazılır.
 // Yeni ürün eklerken görseli `assets/products` altına koyup buraya da ekleyin.
 const IMAGES: Record<string, number> = {
@@ -16,6 +18,6 @@ const IMAGES: Record<string, number> = {
 };
 
 /** Ürün kaydındaki `image` anahtarının paketli görseli; bilinmeyen anahtarda `undefined`. */
-export function productImage(image: string): number | undefined {
-  return IMAGES[image];
+export function productImage(product: Product | undefined): number | undefined {
+  return product ? IMAGES[product.image] : undefined;
 }

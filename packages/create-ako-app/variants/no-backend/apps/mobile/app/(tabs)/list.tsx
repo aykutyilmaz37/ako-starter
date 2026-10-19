@@ -8,9 +8,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 import { useShoppingList } from '~/features/shopping-list/data/hooks';
 import type { ShoppingItem } from '~/features/shopping-list/data/schema';
-import { Eyebrow, Heading, Muted } from '~/components/ui';
-import { RADIUS } from '~/lib/brand';
-import { useT } from '~/lib/i18n';
+import { Eyebrow, Heading, Muted } from '~/shared/components/ui';
+import { RADIUS } from '~/shared/lib/brand';
+import { useT } from '~/features/localization/i18n';
 
 const Schema = z.object({ title: z.string().trim().min(1).max(200) });
 

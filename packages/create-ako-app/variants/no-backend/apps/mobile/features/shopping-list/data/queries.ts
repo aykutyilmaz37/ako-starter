@@ -1,5 +1,5 @@
 import { asc, eq, not } from 'drizzle-orm';
-import { db } from '~/lib/db';
+import { db } from '~/shared/lib/db';
 import { shoppingItems, type ShoppingItem } from './schema';
 
 /** `useLiveQuery` bu sorguyu izler: tablo değişince ekran kendiliğinden güncellenir. */

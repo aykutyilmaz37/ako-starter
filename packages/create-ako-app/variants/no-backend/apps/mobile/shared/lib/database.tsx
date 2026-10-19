@@ -1,7 +1,7 @@
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { Text, View } from 'react-native';
 import migrations from '~/drizzle/migrations';
-import { db } from '~/lib/db';
+import { db } from '~/shared/lib/db';
 
 /**
  * Uygulamayla paketlenen migration'ları (`drizzle/`) uygular; bitmeden ekranlar açılmaz.

@@ -6,8 +6,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import de from '~/locales/de.json'; // ako:lang
 import en from '~/locales/en.json'; // ako:lang
 import tr from '~/locales/tr.json';
-import { setApiLanguage } from '~/lib/api'; // ako:backend
-import { prefs } from '~/lib/prefs';
+import { setApiLanguage } from '~/shared/lib/api'; // ako:backend
+import { prefs } from '~/shared/lib/prefs';
 
 /** Çeviri anahtarları varsayılan dil dosyasından türer: olmayan anahtar yazılırsa derleme hatası verir. */
 export type TranslationKey = keyof typeof tr;

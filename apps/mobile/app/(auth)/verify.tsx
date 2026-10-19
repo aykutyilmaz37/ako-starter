@@ -4,8 +4,8 @@ import { Alert, Button, Field, OtpInput, useToast } from '@mari-ui/native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { AuthScreen } from '~/components/auth-screen';
-import { useT } from '~/lib/i18n';
+import { AuthScreen } from '~/features/auth/components/auth-screen';
+import { useT } from '~/features/localization/i18n';
 
 /** E-postaya gelen 6 haneli kodu doğrular; doğrulanınca girişe döner. */
 export default function VerifyScreen() {

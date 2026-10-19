@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
-import { prefs } from '~/lib/prefs';
+import { prefs } from '~/shared/lib/prefs';
 
 export type ThemePreference = 'system' | 'light' | 'dark';
 

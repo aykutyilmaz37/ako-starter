@@ -3,11 +3,11 @@ import { router } from 'expo-router';
 import { Heart } from 'lucide-react-native';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Eyebrow, Heading, Muted } from '~/components/ui';
-import { RADIUS } from '~/lib/brand';
-import { useI18n } from '~/lib/i18n';
-import { useSession } from '~/lib/session'; // ako:auth
-import { useThemePreference, type ThemePreference } from '~/lib/theme-preference';
+import { Eyebrow, Heading, Muted } from '~/shared/components/ui';
+import { RADIUS } from '~/shared/lib/brand';
+import { useI18n } from '~/features/localization/i18n';
+import { useSession } from '~/features/auth/session'; // ako:auth
+import { useThemePreference, type ThemePreference } from '~/features/theme/theme-preference';
 
 /** Hesap sekmesi: giriş isteğe bağlıdır; giriş yapılmamışsa davet, yapılmışsa profil ve çıkış. Tema ve dil burada. */
 export default function Account() {

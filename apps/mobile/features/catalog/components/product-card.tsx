@@ -2,9 +2,12 @@ import { Tag, Text, useTheme } from '@mari-ui/native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Pressable, View } from 'react-native';
-import { RADIUS, formatPrice, productImage, stockState, summary, type Product } from '~/lib/brand';
-import { useT } from '~/lib/i18n';
-import { Eyebrow, Heading, Muted } from '~/components/ui';
+import { RADIUS } from '~/shared/lib/brand';
+import { productImage } from '../data/images';
+import type { Product } from '../data/schema';
+import { formatPrice, stockState, summary } from '../lib/product';
+import { useT } from '~/features/localization/i18n';
+import { Eyebrow, Heading, Muted } from '~/shared/components/ui';
 
 /** Katalog ve ana sayfadaki ürün kartı; tamamı ürün detayına götürür. */
 export function ProductCard({ product, width }: { product: Product; width?: number }) {

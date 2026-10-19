@@ -1,6 +1,6 @@
 import { configureApiClient } from '@ako/api-client';
-import { API_URL } from '~/lib/config';
-import { tokenStore } from '~/lib/token-store'; // ako:auth
+import { API_URL } from '~/shared/lib/config';
+import { tokenStore } from '~/features/auth/token-store'; // ako:auth
 
 // ako:begin auth
 let onSessionExpired: () => void = () => {};

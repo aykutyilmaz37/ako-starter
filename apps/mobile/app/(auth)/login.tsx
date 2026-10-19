@@ -8,11 +8,11 @@ import { useState } from 'react';
 import { Platform, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { AuthScreen } from '~/components/auth-screen';
-import { SocialButton } from '~/components/social-button';
-import { useSession } from '~/lib/session';
-import { useT } from '~/lib/i18n';
-import { PROVIDER_LABELS, nativeSupported, useSocialLogin } from '~/lib/social-login';
+import { AuthScreen } from '~/features/auth/components/auth-screen';
+import { SocialButton } from '~/features/auth/components/social-button';
+import { useSession } from '~/features/auth/session';
+import { useT } from '~/features/localization/i18n';
+import { PROVIDER_LABELS, nativeSupported, useSocialLogin } from '~/features/auth/social-login';
 
 const Schema = LoginBody.pick({ email: true, password: true }).extend({ email: z.email() });
 type Values = z.infer<typeof Schema>;

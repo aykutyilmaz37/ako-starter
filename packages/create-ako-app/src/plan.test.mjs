@@ -51,8 +51,8 @@ describe("backend'siz mobil", () => {
         'packages/web-core',
         'packages/e2e',
         'compose.yaml',
-        'apps/mobile/lib/api.ts',
-        'apps/mobile/lib/session.tsx',
+        'apps/mobile/shared/lib/api.ts',
+        'apps/mobile/features/auth',
       ]),
     );
     expect(plan.variants).toEqual(['no-backend']);

@@ -1,7 +1,7 @@
 import { Text, useTheme } from '@mari-ui/native';
 import type { ReactNode } from 'react';
 import { Text as RNText, View, type TextStyle } from 'react-native';
-import { FONT_HEADING } from '~/lib/brand';
+import { FONT_HEADING } from '~/shared/lib/brand';
 
 /** Başlıklar web'deki gibi Playfair Display serif. mari-ui Title sistem fontunu kullandığı için kendi Text'imiz. */
 export function Heading({

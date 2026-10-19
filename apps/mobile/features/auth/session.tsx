@@ -12,8 +12,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import { setSessionExpiredHandler } from '~/lib/api';
-import { tokenStore } from '~/lib/token-store';
+import { setSessionExpiredHandler } from '~/shared/lib/api';
+import { tokenStore } from '~/features/auth/token-store';
 
 /**
  * Oturum durumları (karar: DECISIONS.md "Misafir ve kimlik"):

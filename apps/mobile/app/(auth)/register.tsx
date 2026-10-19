@@ -6,8 +6,8 @@ import { Alert, Button, Field, Input } from '@mari-ui/native';
 import { router } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { AuthScreen } from '~/components/auth-screen';
-import { useT } from '~/lib/i18n';
+import { AuthScreen } from '~/features/auth/components/auth-screen';
+import { useT } from '~/features/localization/i18n';
 
 // API şeması + istemci kuralları. Şifre kuralları API'de; hataları forma gelir.
 const Schema = RegisterBody.extend({ email: z.email(), password: z.string().min(8) });

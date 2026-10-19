@@ -1,24 +1,16 @@
-// ako:begin backend
-import { useGetProduct } from '@ako/api-client/products';
-// ako:else backend
-//~ import { useGetProduct } from '~/features/catalog/data/hooks';
-// ako:end backend
 import { Button, Empty, Paragraph, Tag, Text, useTheme } from '@mari-ui/native';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, Clock, Plus, RefreshCcw, Truck } from 'lucide-react-native';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Eyebrow, Heading, Muted } from '~/components/ui';
-import { RADIUS, formatPrice, productImage, stockState } from '~/lib/brand';
-import { useT } from '~/lib/i18n';
-// ako:begin list
-// ako:begin backend
-import { useAddToList } from '~/lib/todos';
-// ako:else backend
-//~ import { useAddToList } from '~/features/shopping-list/data/hooks';
-// ako:end backend
-// ako:end list
+import { Eyebrow, Heading, Muted } from '~/shared/components/ui';
+import { useGetProduct } from '~/features/catalog/data/hooks';
+import { productImage } from '~/features/catalog/data/images';
+import { formatPrice, stockState } from '~/features/catalog/lib/product';
+import { RADIUS } from '~/shared/lib/brand';
+import { useT } from '~/features/localization/i18n';
+import { useAddToList } from '~/features/shopping-list/data/hooks'; // ako:list
 
 export default function ProductDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();

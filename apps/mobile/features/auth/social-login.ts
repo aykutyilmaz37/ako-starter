@@ -3,9 +3,9 @@ import { exchangeLoginCode, nativeLogin } from '@ako/api-client/auth';
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
-import { API_URL } from '~/lib/config';
-import type { TranslationKey } from '~/lib/i18n';
-import { useSession } from '~/lib/session';
+import { API_URL } from '~/shared/lib/config';
+import type { TranslationKey } from '~/features/localization/i18n';
+import { useSession } from '~/features/auth/session';
 
 // Tarayıcı oturumu uygulamaya dönerken (Android) bekleyen sonucu tamamlar.
 WebBrowser.maybeCompleteAuthSession();

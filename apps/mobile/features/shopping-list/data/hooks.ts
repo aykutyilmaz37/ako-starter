@@ -10,7 +10,7 @@ import {
 import { useToast } from '@mari-ui/native';
 import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { useT } from '~/lib/i18n';
+import { useT } from '~/features/localization/i18n';
 
 /**
  * Alışveriş listesi: şablondaki "Todos" örnek özelliğinin bu senaryodaki karşılığı (kullanıcıya özel,

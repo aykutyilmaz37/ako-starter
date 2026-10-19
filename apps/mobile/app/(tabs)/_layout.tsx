@@ -1,7 +1,7 @@
 import { useTheme } from '@mari-ui/native';
 import { Tabs } from 'expo-router';
 import { Coffee, ListChecks, Store, User } from 'lucide-react-native';
-import { useT } from '~/lib/i18n';
+import { useT } from '~/features/localization/i18n';
 
 export default function TabsLayout() {
   const { color } = useTheme();
