@@ -29,7 +29,7 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 - [ ] Vitest: `web-core` (oturum, token yenileme) ve `api-client` (`ApiError`, `applyFieldErrors`).
 - [x] Playwright (`packages/e2e`, `pnpm --filter @ako/e2e test:e2e`): site ürün listesi + dil değiştirme, backoffice admin girişi + ürün ekleme. CI işi `e2e` (ilk çalıştırma doğrulanacak).
 - [x] Dependabot: yalnızca güvenlik güncellemeleri, gruplu PR (`.github/dependabot.yml`). Rutin sürüm güncellemesi kapalı.
-- [ ] Temiz klonda doğrulama: `pnpm i && pnpm db:up` sonrası README adımlarıyla her şey ayağa kalkıyor mu?
+- [x] Temiz klonda doğrulama: `pnpm i --frozen-lockfile` sonrası `generate:check`, `typecheck`, `lint`, `build`, `test` geçti (2026-10-19); kök `README.md` eklendi.
 
 **Bitti:** boş bir klondan CI yeşil; README'deki komutlar birebir çalışıyor.
 
