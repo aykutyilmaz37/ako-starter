@@ -1,13 +1,13 @@
-import { getDictionary, getLanguages } from '@ako/api-client/localization'; // ako:lang
-import { useQuery } from '@tanstack/react-query';
+import { getDictionary, getLanguages } from '@ako/api-client/localization'; // ako:api-lang
+import { useQuery } from '@tanstack/react-query'; // ako:api-lang
 import { getLocales } from 'expo-localization';
-import * as SecureStore from 'expo-secure-store';
 import { z } from 'zod';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import de from '~/locales/de.json'; // ako:lang
 import en from '~/locales/en.json'; // ako:lang
 import tr from '~/locales/tr.json';
-import { setApiLanguage } from '~/lib/api';
+import { setApiLanguage } from '~/lib/api'; // ako:backend
+import { prefs } from '~/lib/prefs';
 
 /** Çeviri anahtarları varsayılan dil dosyasından türer: olmayan anahtar yazılırsa derleme hatası verir. */
 export type TranslationKey = keyof typeof tr;
@@ -61,18 +61,18 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   // Kayıtlı tercih cihazın dilini ezer.
   useEffect(() => {
-    void SecureStore.getItemAsync(KEY).then((saved) => {
+    void prefs.get(KEY).then((saved) => {
       if (saved && saved in BUNDLED) setLang(saved);
     });
   }, []);
 
-  useEffect(() => setApiLanguage(lang), [lang]);
+  useEffect(() => setApiLanguage(lang), [lang]); // ako:backend
 
   // Form doğrulama mesajları (zod) arayüz diliyle: "Geçersiz e-posta adresi" / "Invalid email address".
   const locales = z.locales as Record<string, () => ReturnType<typeof z.locales.en>>;
   z.config((locales[lang] ?? z.locales.en)());
 
-  // ako:begin lang
+  // ako:begin api-lang
   const languagesQuery = useQuery({
     queryKey: ['localization', 'languages'],
     queryFn: () => getLanguages(),
@@ -83,12 +83,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     queryFn: () => getDictionary(lang, 'mobile'),
     staleTime: 60_000,
   });
-  // ako:else lang
+  // ako:else api-lang
   //~ const languagesQuery = {
   //~   data: undefined as { code: string; name: string; isEnabled: boolean }[] | undefined,
   //~ };
   //~ const dictionaryQuery = { data: undefined as Record<string, string> | undefined };
-  // ako:end lang
+  // ako:end api-lang
 
   // Yalnızca API'de açık ve uygulamada paketli olan diller seçilebilir.
   const languages = useMemo<Language[]>(() => {
@@ -98,7 +98,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   const setLanguage = useCallback((code: string) => {
     setLang(code);
-    void SecureStore.setItemAsync(KEY, code);
+    void prefs.set(KEY, code);
   }, []);
 
   const value = useMemo<I18n>(() => {

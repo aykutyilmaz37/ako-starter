@@ -1,10 +1,14 @@
-import '~/lib/api';
+import '~/lib/api'; // ako:backend
 import { PlayfairDisplay_700Bold, useFonts } from '@expo-google-fonts/playfair-display';
 import { ThemeProvider, ToastProvider, useTheme } from '@mari-ui/native';
+// ako:begin backend
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+// ako:else backend
+//~ import { DatabaseProvider } from '~/lib/database';
+// ako:end backend
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useState } from 'react'; // ako:backend
 import { View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { OfflineScreen } from '~/components/offline-screen'; // ako:auth
@@ -50,14 +54,18 @@ function Routes() {
 }
 
 export default function RootLayout() {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(() => new QueryClient()); // ako:backend
   const [fontsLoaded] = useFonts({ PlayfairDisplay_700Bold });
 
   if (!fontsLoaded) return null;
 
   return (
     <SafeAreaProvider>
+      {/* ako:begin backend */}
       <QueryClientProvider client={queryClient}>
+        {/* ako:else backend */}
+        {/*~ <DatabaseProvider> */}
+        {/* ako:end backend */}
         <I18nProvider>
           {/* ako:begin auth */}
           <SessionProvider>
@@ -71,7 +79,11 @@ export default function RootLayout() {
           </SessionProvider>
           {/* ako:end auth */}
         </I18nProvider>
+        {/* ako:begin backend */}
       </QueryClientProvider>
+      {/* ako:else backend */}
+      {/*~ </DatabaseProvider> */}
+      {/* ako:end backend */}
     </SafeAreaProvider>
   );
 }

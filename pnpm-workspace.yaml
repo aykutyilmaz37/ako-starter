@@ -5,7 +5,11 @@ packages:
 
 # Kurulum script'i çalıştırmasına izin verilen paketler (pnpm varsayılan olarak hepsini engeller).
 allowBuilds:
+  # ako:begin backend
   esbuild: true # Orval config dosyasını yüklerken kullanır
+  # ako:else backend
+  #~ esbuild: true # drizzle-kit config dosyasını yüklerken kullanır
+  # ako:end backend
 
 minimumReleaseAgeExclude:
   - '@mari-ui/cli@0.3.0 || 0.3.1'

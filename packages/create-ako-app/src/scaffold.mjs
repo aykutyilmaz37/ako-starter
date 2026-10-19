@@ -33,6 +33,27 @@ function listFilesRecursive(root, dir = '') {
 }
 
 /** Noktalı yollarla JSON anahtarı siler; yoksa sessizce geçer. */
+const SORTED_PARENTS = ['dependencies', 'devDependencies'];
+
+/** Noktalı yollarla JSON anahtarı ekler/değiştirir; ara nesneler yoksa oluşturulur, bağımlılık listeleri sıralı kalır. */
+export function setJsonKeys(text, values) {
+  const json = JSON.parse(text);
+  for (const [key, value] of Object.entries(values)) {
+    const path = key.split('.');
+    let node = json;
+    for (const part of path.slice(0, -1)) node = node[part] ??= {};
+    node[path.at(-1)] = value;
+    if (SORTED_PARENTS.includes(path.at(-2))) {
+      const sorted = Object.fromEntries(
+        Object.entries(node).sort(([a], [b]) => a.localeCompare(b)),
+      );
+      for (const k of Object.keys(node)) delete node[k];
+      Object.assign(node, sorted);
+    }
+  }
+  return `${formatJson(json)}\n`;
+}
+
 export function removeJsonKeys(text, keys) {
   const json = JSON.parse(text);
   for (const key of keys) {
@@ -90,6 +111,15 @@ export function scaffold({ target, template, choices, skipVariants = false, log 
     chmodSync(to, statSync(from).mode);
   }
 
+  // Silinecek klasörlerden alınıp yeni yere konan dosyalar (ör. backend'siz mobil ürün görselleri).
+  for (const { from, to } of plan.copy) {
+    for (const file of listTemplateFiles(template).filter((f) => f.startsWith(`${from}/`))) {
+      const dest = join(target, to, file.slice(from.length + 1));
+      mkdirSync(dirname(dest), { recursive: true });
+      copyFileSync(join(template, file), dest);
+    }
+  }
+
   // Özelliğe özel hazır dosyalar (ör. auth'suz migration seti) şablonun üstüne yazılır.
   for (const variant of skipVariants ? [] : plan.variants) {
     const root = join(VARIANTS_DIR, variant);
@@ -111,6 +141,10 @@ export function scaffold({ target, template, choices, skipVariants = false, log 
 
   for (const { file, keys } of plan.jsonRemove) {
     edit(file, (text) => removeJsonKeys(text, keys));
+  }
+
+  for (const { file, values } of plan.jsonSet) {
+    edit(file, (text) => setJsonKeys(text, values));
   }
 
   edit('package.json', (text) => {

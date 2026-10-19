@@ -1,6 +1,18 @@
-import type { ProductCategory } from '@ako/api-client/model';
-import { API_URL } from '~/lib/config';
 import type { Translate } from '~/lib/i18n';
+// ako:begin backend
+import type { ProductCategory, ProductResponse } from '@ako/api-client/model';
+import { API_URL } from '~/lib/config';
+// ako:else backend
+//~ import { productImage as catalogImage } from '~/features/catalog/data/images';
+//~ import type { Product, ProductCategory } from '~/features/catalog/data/schema';
+// ako:end backend
+
+export type { ProductCategory };
+// ako:begin backend
+export type Product = ProductResponse;
+// ako:else backend
+//~ export type { Product };
+// ako:end backend
 
 /** Web sitesiyle aynı kategori sırası ve adları. */
 export const CATEGORIES: ProductCategory[] = ['Coffee', 'Equipment', 'Accessory'];
@@ -11,10 +23,17 @@ export function formatPrice(value: number): string {
   return `${int.replace(/\B(?=(\d{3})+(?!\d))/g, '.')},${frac} ₺`;
 }
 
+// ako:begin backend
 /** API'nin görselleri ("/images/…") mutlak adrese çevrilir. */
-export function imageSource(url: string | null | undefined): string | undefined {
-  return url ? `${API_URL}${url}` : undefined;
+export function productImage(product: Product | undefined): string | undefined {
+  return product?.imageUrl ? `${API_URL}${product.imageUrl}` : undefined;
 }
+// ako:else backend
+//~ /** Ürün görselleri uygulamayla paketlidir (assets/products). */
+//~ export function productImage(product: Product | undefined) {
+//~   return product ? catalogImage(product.image) : undefined;
+//~ }
+// ako:end backend
 
 /** Stok durumu: rozet metni ve rengi (webdeki ile aynı eşikler). */
 export function stockState(stock: number, t: Translate) {

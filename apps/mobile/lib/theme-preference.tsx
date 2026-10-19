@@ -1,6 +1,6 @@
-import * as SecureStore from 'expo-secure-store';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
+import { prefs } from '~/lib/prefs';
 
 export type ThemePreference = 'system' | 'light' | 'dark';
 
@@ -21,16 +21,14 @@ export function ThemePreferenceProvider({ children }: { children: React.ReactNod
   const [preference, setState] = useState<ThemePreference>('system');
 
   useEffect(() => {
-    void SecureStore.getItemAsync(KEY).then((saved) => {
+    void prefs.get(KEY).then((saved) => {
       if (saved === 'light' || saved === 'dark') setState(saved);
     });
   }, []);
 
   const setPreference = useCallback((next: ThemePreference) => {
     setState(next);
-    void (next === 'system'
-      ? SecureStore.deleteItemAsync(KEY)
-      : SecureStore.setItemAsync(KEY, next));
+    void (next === 'system' ? prefs.remove(KEY) : prefs.set(KEY, next));
   }, []);
 
   const value = useMemo<ThemeContext>(

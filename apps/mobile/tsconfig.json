@@ -9,5 +9,5 @@
       "~/*": ["./*"]
     }
   },
-  "include": ["app", "lib", "*.ts", ".expo/types/**/*.ts", "expo-env.d.ts"]
+  "include": ["app", "lib", "features", "*.ts", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

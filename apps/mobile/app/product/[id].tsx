@@ -1,4 +1,8 @@
+// ako:begin backend
 import { useGetProduct } from '@ako/api-client/products';
+// ako:else backend
+//~ import { useGetProduct } from '~/features/catalog/data/hooks';
+// ako:end backend
 import { Button, Empty, Paragraph, Tag, Text, useTheme } from '@mari-ui/native';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -6,16 +10,22 @@ import { ArrowLeft, Clock, Plus, RefreshCcw, Truck } from 'lucide-react-native';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Eyebrow, Heading, Muted } from '~/components/ui';
-import { RADIUS, formatPrice, imageSource, stockState } from '~/lib/brand';
+import { RADIUS, formatPrice, productImage, stockState } from '~/lib/brand';
 import { useT } from '~/lib/i18n';
-import { useAddToList } from '~/lib/todos'; // ako:auth
+// ako:begin list
+// ako:begin backend
+import { useAddToList } from '~/lib/todos';
+// ako:else backend
+//~ import { useAddToList } from '~/features/shopping-list/data/hooks';
+// ako:end backend
+// ako:end list
 
 export default function ProductDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { color } = useTheme();
   const insets = useSafeAreaInsets();
   const t = useT();
-  const addToList = useAddToList(); // ako:auth
+  const addToList = useAddToList(); // ako:list
   const { data: product, isPending, isError } = useGetProduct(id);
 
   const back = (
@@ -64,7 +74,7 @@ export default function ProductDetail() {
       {back}
       <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}>
         <Image
-          source={imageSource(product.imageUrl)}
+          source={productImage(product)}
           contentFit="cover"
           style={{ width: '100%', aspectRatio: 1, backgroundColor: color.canvas.surfaceAlt }}
         />
@@ -83,7 +93,7 @@ export default function ProductDetail() {
           </View>
           {product.description ? <Paragraph muted>{product.description}</Paragraph> : null}
 
-          {/* ako:begin auth */}
+          {/* ako:begin list */}
           {!stock.available ? (
             <Button block size="lg" disabled>
               {t('product.unavailable')}
@@ -99,7 +109,7 @@ export default function ProductDetail() {
               {t('product.add')}
             </Button>
           )}
-          {/* ako:end auth */}
+          {/* ako:end list */}
 
           <View
             style={{

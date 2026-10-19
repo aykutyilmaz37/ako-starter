@@ -1,5 +1,8 @@
-import type { ProductCategory } from '@ako/api-client/model';
+// ako:begin backend
 import { useListProducts } from '@ako/api-client/products';
+// ako:else backend
+//~ import { useListProducts } from '~/features/catalog/data/hooks';
+// ako:end backend
 import { Empty, SearchInput, Text, useTheme } from '@mari-ui/native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -7,7 +10,7 @@ import { FlatList, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ProductCard } from '~/components/product-card';
 import { Eyebrow, Heading, Muted } from '~/components/ui';
-import { CATEGORIES, RADIUS } from '~/lib/brand';
+import { CATEGORIES, RADIUS, type ProductCategory } from '~/lib/brand';
 import { useT } from '~/lib/i18n';
 
 /** Mağaza: arama + kategori çipleri + iki sütunlu ürün ızgarası. */

@@ -1,5 +1,8 @@
-import type { ProductCategory } from '@ako/api-client/model';
+// ako:begin backend
 import { useListProducts } from '@ako/api-client/products';
+// ako:else backend
+//~ import { useListProducts } from '~/features/catalog/data/hooks';
+// ako:end backend
 import { Button, Paragraph, Tag, Text, useTheme } from '@mari-ui/native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
@@ -8,7 +11,7 @@ import { FlatList, Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ProductCard } from '~/components/product-card';
 import { Heading, Muted, SectionHeader } from '~/components/ui';
-import { CATEGORIES, RADIUS, imageSource } from '~/lib/brand';
+import { CATEGORIES, RADIUS, productImage, type ProductCategory } from '~/lib/brand';
 import { useT } from '~/lib/i18n';
 import { useSession } from '~/lib/session'; // ako:auth
 
@@ -72,7 +75,7 @@ export default function Home() {
           {images.map((p, i) => (
             <Image
               key={p.id}
-              source={imageSource(p.imageUrl)}
+              source={productImage(p)}
               contentFit="cover"
               style={{
                 position: 'absolute',
@@ -207,7 +210,7 @@ function CategoryThumb({ category }: { category: ProductCategory }) {
   const { data } = useListProducts({ category, pageSize: 1 });
   return (
     <Image
-      source={imageSource(data?.items[0]?.imageUrl)}
+      source={productImage(data?.items[0])}
       contentFit="cover"
       style={{ width: 64, height: 64, borderRadius: RADIUS.md }}
     />

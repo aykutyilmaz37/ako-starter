@@ -18,3 +18,5 @@ apps/api/dotnet-tools.json
 **/.cursor/rules/mari-ui.mdc
 # Expo
 **/expo-env.d.ts
+# drizzle-kit'in ürettiği migration'lar (backend'siz mobil)
+**/drizzle/**

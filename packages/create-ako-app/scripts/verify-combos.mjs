@@ -19,9 +19,13 @@ const COMBOS = {
   'no-lang-both': { web: ['site', 'backoffice'], mobile: true, lang: false },
   'no-auth-no-lang': { web: ['site'], mobile: true, auth: false, lang: false },
   'no-auth-both': { web: ['site'], mobile: true, auth: false },
+  // Backend'siz mobil: dotnet/Docker gerekmez; ek olarak Expo paketleme ve Drizzle migration'larının güncelliği sınanır.
+  'no-backend': { web: [], mobile: true, backend: false },
+  'no-backend-no-lang': { web: [], mobile: true, backend: false, lang: false },
 };
 
 const { values } = parseArgs({
+  allowPositionals: true,
   options: {
     only: { type: 'string' },
     out: { type: 'string' },
@@ -31,10 +35,30 @@ const { values } = parseArgs({
 });
 const names = values.only ? values.only.split(',') : Object.keys(COMBOS);
 const base = values.out ?? mkdtempSync(join(tmpdir(), 'ako-combos-'));
-const run = (cwd, cmd, args) => {
+const run = (cwd, cmd, args, options = {}) => {
   console.log(`  $ ${cmd} ${args.join(' ')}`);
-  execFileSync(cmd, args, { cwd, stdio: 'inherit' });
+  return execFileSync(cmd, args, { cwd, stdio: 'inherit', ...options });
 };
+
+/** Backend'siz mobil: Drizzle migration'ları şemayla uyumlu mu ve Metro/Hermes paketlemesi (sql + svg varlıkları) geçiyor mu. */
+function verifyLocalData(target) {
+  const mobile = join(target, 'apps/mobile');
+  const out = run(mobile, 'pnpm', ['exec', 'drizzle-kit', 'generate'], {
+    stdio: ['ignore', 'pipe', 'inherit'],
+  }).toString('utf8');
+  if (!out.includes('nothing to migrate'))
+    throw new Error(
+      'variants/no-backend/apps/mobile/drizzle bayat: pnpm --filter create-ako-app variants',
+    );
+  run(
+    mobile,
+    'pnpm',
+    ['exec', 'expo', 'export', '--platform', 'ios', '--output-dir', join(target, 'export')],
+    {
+      env: { ...process.env, CI: '1', EXPO_NO_TELEMETRY: '1' },
+    },
+  );
+}
 
 const failed = [];
 for (const name of names) {
@@ -47,9 +71,12 @@ for (const name of names) {
     run(target, 'pnpm', ['install', '--no-frozen-lockfile']);
     run(target, 'pnpm', ['typecheck']);
     run(target, 'pnpm', ['build']);
-    run(target, 'dotnet', ['build', 'apps/api/Ako.slnx', '-c', 'Release']);
-    if (values['dotnet-test'])
-      run(target, 'dotnet', ['test', 'apps/api/Ako.slnx', '-c', 'Release', '--no-build']);
+    if (combo.backend === false) verifyLocalData(target);
+    else {
+      run(target, 'dotnet', ['build', 'apps/api/Ako.slnx', '-c', 'Release']);
+      if (values['dotnet-test'])
+        run(target, 'dotnet', ['test', 'apps/api/Ako.slnx', '-c', 'Release', '--no-build']);
+    }
     console.log(`✔ ${name}`);
   } catch (error) {
     console.error(`✖ ${name}: ${error.message}`);

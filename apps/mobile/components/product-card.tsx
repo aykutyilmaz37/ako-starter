@@ -1,14 +1,13 @@
-import type { ProductResponse } from '@ako/api-client/model';
 import { Tag, Text, useTheme } from '@mari-ui/native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Pressable, View } from 'react-native';
-import { RADIUS, formatPrice, imageSource, stockState, summary } from '~/lib/brand';
+import { RADIUS, formatPrice, productImage, stockState, summary, type Product } from '~/lib/brand';
 import { useT } from '~/lib/i18n';
 import { Eyebrow, Heading, Muted } from '~/components/ui';
 
 /** Katalog ve ana sayfadaki ürün kartı; tamamı ürün detayına götürür. */
-export function ProductCard({ product, width }: { product: ProductResponse; width?: number }) {
+export function ProductCard({ product, width }: { product: Product; width?: number }) {
   const { color } = useTheme();
   const t = useT();
   const stock = stockState(product.stock, t);
@@ -31,7 +30,7 @@ export function ProductCard({ product, width }: { product: ProductResponse; widt
     >
       <View>
         <Image
-          source={imageSource(product.imageUrl)}
+          source={productImage(product)}
           contentFit="cover"
           transition={150}
           style={{ aspectRatio: 1, width: '100%', opacity: stock.available ? 1 : 0.55 }}

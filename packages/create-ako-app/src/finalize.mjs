@@ -18,7 +18,7 @@ const has = (cwd, cmd) => {
 export function finalize({ target, plan, install, git = true, log = console.log }) {
   if (install) {
     sh(target, 'pnpm', ['install', '--no-frozen-lockfile']);
-    if (plan.disabled.size > 0) {
+    if (plan.needsGenerate) {
       // API değişti: openapi.json ve Orval çıktısı şablondakinden farklı.
       sh(target, 'pnpm', ['generate']);
     }

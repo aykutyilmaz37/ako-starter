@@ -11,6 +11,7 @@ const HELP = `create-ako-app <klasör> [seçenekler]
   --web=site,backoffice|none   Web uygulamaları (varsayılan: ikisi)
   --mobile / --no-mobile       Expo mobil uygulaması (varsayılan: evet)
   --auth / --no-auth           Giriş, kayıt, misafir, Todos, yönetim (varsayılan: evet; kapalıyken backoffice olamaz)
+  --backend / --no-backend     API (varsayılan: evet). Hayır: veri cihazda (SQLite), yalnız mobilde; auth ve web olmaz
   --install / --no-install     Üretimden sonra pnpm install (varsayılan: evet)
   --no-git                     git init + ilk commit yapma
   --lang / --no-lang           Çoklu dil: dil seçici, adres öneki, çeviri yönetimi (varsayılan: evet)
@@ -37,6 +38,8 @@ export async function main(argv) {
       'no-mobile': { type: 'boolean' },
       auth: { type: 'boolean' },
       'no-auth': { type: 'boolean' },
+      backend: { type: 'boolean' },
+      'no-backend': { type: 'boolean' },
       lang: { type: 'boolean' },
       'no-lang': { type: 'boolean' },
       install: { type: 'boolean' },
@@ -61,12 +64,14 @@ export async function main(argv) {
     if (existsSync(target) && readdirSync(target).length > 0)
       throw new Error(`${target} boş değil.`);
 
-    let auth = values.auth ? true : values['no-auth'] ? false : undefined;
-    if (auth === undefined)
-      auth = rl ? await ask(rl, 'Auth (giriş, kayıt, misafir, yönetim) olsun mu?', true) : true;
+    const backendFlag = values.backend ? true : values['no-backend'] ? false : undefined;
+    const authFlag = values.auth ? true : values['no-auth'] ? false : undefined;
+    if (backendFlag === false && authFlag === true)
+      throw new Error(
+        '--no-backend ile --auth birlikte kullanılamaz (sunucu yoksa oturum da yok).',
+      );
 
     let lang = values.lang ? true : values['no-lang'] ? false : undefined;
-    if (lang === undefined) lang = rl ? await ask(rl, 'Çoklu dil olsun mu?', true) : true;
 
     let web;
     if (values.web !== undefined) {
@@ -77,18 +82,47 @@ export async function main(argv) {
               .split(',')
               .map((s) => s.trim())
               .filter(Boolean);
+    } else if (backendFlag === false) {
+      web = [];
     } else if (rl) {
       web = [];
       for (const app of WEB_APPS) {
-        if (app === 'backoffice' && !auth) continue; // yönetim girişi auth ister
+        if (app === 'backoffice' && authFlag === false) continue; // yönetim girişi auth ister
         if (await ask(rl, `Web: ${app} olsun mu?`, true)) web.push(app);
       }
-    } else web = auth ? WEB_APPS : WEB_APPS.filter((app) => app !== 'backoffice');
+    } else web = authFlag === false ? WEB_APPS.filter((app) => app !== 'backoffice') : WEB_APPS;
 
     let mobile = values.mobile ? true : values['no-mobile'] ? false : undefined;
     if (mobile === undefined) mobile = rl ? await ask(rl, 'Mobil (Expo) olsun mu?', true) : true;
 
-    const choices = normalizeChoices({ name: basename(target), web, mobile, auth, lang });
+    // "Yok" yalnızca yalnız-mobilde sunulur (web BFF'i API'ye bağlıdır).
+    let backend = backendFlag;
+    if (backend === undefined)
+      backend =
+        rl && web.length === 0 && mobile
+          ? await ask(rl, 'Backend (API) olsun mu? Hayır: veri yalnızca cihazda (SQLite)', true)
+          : true;
+
+    // Backend yoksa auth sorulmaz (kapalı sayılır); backoffice varsa yönetim girişi için açık kalır.
+    let auth = authFlag;
+    if (!backend) auth = false;
+    else if (auth === undefined)
+      auth = web.includes('backoffice')
+        ? true
+        : rl
+          ? await ask(rl, 'Auth (giriş, kayıt, misafir, yönetim) olsun mu?', true)
+          : true;
+
+    if (lang === undefined) lang = rl ? await ask(rl, 'Çoklu dil olsun mu?', true) : true;
+
+    const choices = normalizeChoices({
+      name: basename(target),
+      web,
+      mobile,
+      auth,
+      lang,
+      backend,
+    });
     const plan = scaffold({
       target,
       template: resolveTemplate(values.template),
@@ -109,7 +143,7 @@ export async function main(argv) {
     finalize({ target, plan, install, git: !values['no-git'] });
 
     console.log(
-      `\n✔ Hazır: ${target}\n  cd ${dir}${install ? '' : ` && pnpm install${plan.disabled.size > 0 ? ' && pnpm generate' : ''}`}`,
+      `\n✔ Hazır: ${target}\n  cd ${dir}${install ? '' : ` && pnpm install${plan.needsGenerate ? ' && pnpm generate' : ''}`}`,
     );
   } finally {
     rl?.close();

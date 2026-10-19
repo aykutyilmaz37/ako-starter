@@ -57,6 +57,7 @@
   "list.eyebrow": "Hesabım",
   "list.title": "Alışveriş listem",
   "list.description": "Aldıklarınızı işaretleyin; liste tüm cihazlarınızda aynı.",
+  "list.description.local": "Aldıklarınızı işaretleyin; liste bu cihazda saklanır.",
   "list.form.placeholder": "Ör. filtre kağıdı, süt",
   "list.form.label": "Listeye ekle",
   "list.form.add": "Ekle",
