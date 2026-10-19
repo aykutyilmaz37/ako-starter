@@ -1,27 +1,29 @@
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { AuthLayout } from '~/features/auth/components/auth-layout';
 import { RegisterForm } from '~/features/auth/components/register-form';
+import { metaTranslator } from '~/shared/i18n/i18n';
+import { LocaleLink, useLocalePath, useT } from '~/shared/i18n/i18n-provider';
+import type { Route } from './+types/register';
 
-export function meta() {
-  return [{ title: 'Hesap oluştur | Akı Kahve' }];
+export function meta({ matches }: Route.MetaArgs) {
+  return [{ title: metaTranslator(matches)('auth.register.meta') }];
 }
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const t = useT();
+  const localePath = useLocalePath();
 
   return (
-    <AuthLayout
-      title="Hesap oluşturun"
-      description="Bir dakika sürer. E-postanıza 6 haneli bir doğrulama kodu göndereceğiz."
-    >
+    <AuthLayout title={t('auth.register.title')} description={t('auth.register.description')}>
       <RegisterForm
-        onRegistered={(email) => navigate(`/verify?email=${encodeURIComponent(email)}`)}
+        onRegistered={(email) => navigate(localePath(`/verify?email=${encodeURIComponent(email)}`))}
       />
       <p className="text-sm text-mari-muted">
-        Zaten hesabınız var mı?{' '}
-        <Link to="/login" className="font-medium text-mari-primary">
-          Giriş yapın
-        </Link>
+        {t('auth.register.haveAccount')}{' '}
+        <LocaleLink to="/login" className="font-medium text-mari-primary">
+          {t('auth.register.loginLink')}
+        </LocaleLink>
       </p>
     </AuthLayout>
   );

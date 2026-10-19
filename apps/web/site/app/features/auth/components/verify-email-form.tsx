@@ -7,6 +7,7 @@ import { OtpInput } from '@mari-ui/components/input';
 import { useToast } from '@mari-ui/components/toast';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useT } from '~/shared/i18n/i18n-provider';
 
 interface VerifyEmailFormProps {
   email: string;
@@ -18,6 +19,7 @@ interface VerifyEmailFormProps {
 /** E-postaya gelen 6 haneli kodu doğrular; "tekrar gönder" butonu dahil. */
 export function VerifyEmailForm({ email, sendOnMount, onVerified }: VerifyEmailFormProps) {
   const { showToast } = useToast();
+  const t = useT();
   const form = useForm<{ code: string }>({ defaultValues: { code: '' } });
 
   const confirm = useConfirmEmail({
@@ -31,10 +33,10 @@ export function VerifyEmailForm({ email, sendOnMount, onVerified }: VerifyEmailF
   });
   const resend = useSendConfirmationCode({
     mutation: {
-      onSuccess: () => showToast({ title: 'Yeni kod gönderildi.', type: 'success' }),
+      onSuccess: () => showToast({ title: t('auth.verify.resent'), type: 'success' }),
       onError: (error) =>
         showToast({
-          title: isApiError(error) ? error.message : 'Kod gönderilemedi.',
+          title: isApiError(error) ? error.message : t('auth.verify.resendFailed'),
           type: 'error',
         }),
     },
@@ -52,12 +54,12 @@ export function VerifyEmailForm({ email, sendOnMount, onVerified }: VerifyEmailF
       className="flex flex-col gap-4"
       onSubmit={form.handleSubmit(({ code }) => confirm.mutate({ data: { email, code } }))}
     >
-      <Alert color="info" description={`${email} adresine 6 haneli bir kod gönderdik.`} />
+      <Alert color="info" description={t('auth.verify.info', { email })} />
       <Controller
         control={form.control}
         name="code"
         render={({ field, fieldState }) => (
-          <Field label="Doğrulama kodu" required error={fieldState.error?.message}>
+          <Field label={t('auth.verify.code')} required error={fieldState.error?.message}>
             <OtpInput
               length={6}
               inputMode="numeric"
@@ -68,14 +70,14 @@ export function VerifyEmailForm({ email, sendOnMount, onVerified }: VerifyEmailF
         )}
       />
       <Button htmlType="submit" color="primary" block loading={confirm.isPending}>
-        Doğrula
+        {t('auth.verify.submit')}
       </Button>
       <Button
         variant="ghost"
         loading={resend.isPending}
         onClick={() => resend.mutate({ data: { email } })}
       >
-        Kod gelmedi, tekrar gönder
+        {t('auth.verify.resend')}
       </Button>
     </form>
   );

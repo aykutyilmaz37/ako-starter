@@ -1,5 +1,6 @@
 import { Paragraph, Text, Title } from '@mari-ui/components/typography';
 import type { ReactNode } from 'react';
+import { useT } from '~/shared/i18n/i18n-provider';
 
 interface AuthLayoutProps {
   title: string;
@@ -12,6 +13,8 @@ interface AuthLayoutProps {
  * Dar ekranda marka paneli gizlenir, form tek başına kalır.
  */
 export function AuthLayout({ title, description, children }: AuthLayoutProps) {
+  const t = useT();
+
   return (
     <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 md:py-20">
       <aside className="relative hidden overflow-hidden rounded-mari-xl bg-mari-primary-solid p-10 text-mari-primary-solid-contrast md:flex md:flex-col md:justify-between">
@@ -30,14 +33,14 @@ export function AuthLayout({ title, description, children }: AuthLayoutProps) {
           />
         </svg>
         <Text weight="semibold" className="text-sm tracking-widest text-inherit opacity-80">
-          AKI KAHVE
+          {t('auth.panel.brand')}
         </Text>
         <div>
           <Title level={2} className="text-3xl font-normal leading-snug text-inherit">
-            Beğendiğiniz kahveleri listenize ekleyin, yeni hasat geldiğinde ilk siz haberdar olun.
+            {t('auth.panel.quote')}
           </Title>
           <Text className="mt-6 block text-sm text-inherit opacity-80">
-            Moda, İstanbul · 2019'dan beri
+            {t('auth.panel.place')}
           </Text>
         </div>
       </aside>

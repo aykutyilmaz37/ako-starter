@@ -9,13 +9,15 @@ import { Input } from '@mari-ui/components/input';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { AUTH_ERROR_MESSAGES } from '~/features/auth/error-messages';
+import { AUTH_ERROR_KEYS } from '~/features/auth/error-messages';
+import { useT } from '~/shared/i18n/i18n-provider';
 
 const Schema = LoginBody.pick({ email: true, password: true }).extend({ email: z.email() });
 type Values = z.infer<typeof Schema>;
 
 /** Yönetim paneli girişi: yalnızca e-posta + şifre. Admin olmayan kullanıcıyı BFF reddeder (403). */
 export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
+  const t = useT();
   const [message, setMessage] = useState<string | null>(null);
   const form = useForm<Values>({
     resolver: zodResolver(Schema),
@@ -26,11 +28,11 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
       onSuccess,
       onError: (error) => {
         if (applyFieldErrors(error, form.setError)) return;
+        const errorKey = isApiError(error) && error.code ? AUTH_ERROR_KEYS[error.code] : undefined;
         setMessage(
           isApiError(error) && error.status === 401
-            ? 'E-posta ya da şifre hatalı.'
-            : (isApiError(error) && error.code && AUTH_ERROR_MESSAGES[error.code]) ||
-                'Giriş yapılamadı.',
+            ? t('auth.invalid')
+            : t(errorKey ?? 'auth.failed'),
         );
       },
     },
@@ -48,7 +50,7 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         control={form.control}
         name="email"
         render={({ field, fieldState }) => (
-          <Field label="E-posta" required error={fieldState.error?.message}>
+          <Field label={t('auth.email')} required error={fieldState.error?.message}>
             <Input {...field} type="email" autoComplete="email" />
           </Field>
         )}
@@ -57,13 +59,13 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         control={form.control}
         name="password"
         render={({ field, fieldState }) => (
-          <Field label="Şifre" required error={fieldState.error?.message}>
+          <Field label={t('auth.password')} required error={fieldState.error?.message}>
             <Input {...field} type="password" autoComplete="current-password" visibilityToggle />
           </Field>
         )}
       />
       <Button htmlType="submit" color="primary" block loading={login.isPending}>
-        Giriş yap
+        {t('auth.submit')}
       </Button>
     </form>
   );

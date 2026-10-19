@@ -1,5 +1,8 @@
+import { useT } from '~/shared/i18n/i18n-provider';
+
 /** Akı Kahve logosu: kahve çekirdeği işareti + serif yazı. Bağlantı değildir; kullanan yer bağlantıya sarar. */
 export function Logo() {
+  const t = useT();
   return (
     <span className="flex items-center gap-2">
       <svg viewBox="0 0 32 32" className="size-8 shrink-0" aria-hidden="true">
@@ -22,7 +25,9 @@ export function Logo() {
       </svg>
       <span className="flex flex-col leading-none">
         <span className="font-heading text-xl font-bold">Akı</span>
-        <span className="text-xs font-semibold tracking-widest text-mari-muted">KAHVE</span>
+        <span className="text-xs font-semibold tracking-widest text-mari-muted">
+          {t('brand.tagline')}
+        </span>
       </span>
     </span>
   );

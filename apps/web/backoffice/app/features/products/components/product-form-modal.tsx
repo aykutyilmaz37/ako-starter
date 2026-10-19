@@ -9,28 +9,31 @@ import { Input, Textarea } from '@mari-ui/components/input';
 import { InputNumber } from '@mari-ui/components/input-number';
 import { Modal } from '@mari-ui/components/modal';
 import { Select } from '@mari-ui/components/select';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useSaveProduct } from '~/features/products/hooks/use-products';
-import { CATEGORIES, CATEGORY_LABELS, productImageSrc } from '~/shared/catalog';
+import { CATEGORIES, productImageSrc } from '~/shared/catalog';
+import { useI18n } from '~/shared/i18n/i18n-provider';
+import type { Translate } from '~/shared/i18n/i18n';
 
 // API şeması + istemci tarafı kurallar (hızlı geri bildirim için; asıl kurallar API'de).
-const Schema = AdminCreateProductBody.extend({
-  sku: z
-    .string()
-    .trim()
-    .min(1)
-    .max(64)
-    .regex(/^[A-Za-z0-9-]+$/, 'Yalnızca harf, rakam ve tire.'),
-  name: z.string().trim().min(1).max(200),
-  description: z.string().max(2000).nullish(),
-  category: z.enum(CATEGORIES as [ProductCategory, ...ProductCategory[]]),
-  imageUrl: z.string().max(500).nullish(),
-  price: z.number().positive(),
-  stock: z.number().int().min(0),
-});
-type Values = z.infer<typeof Schema>;
+const createSchema = (t: Translate) =>
+  AdminCreateProductBody.extend({
+    sku: z
+      .string()
+      .trim()
+      .min(1)
+      .max(64)
+      .regex(/^[A-Za-z0-9-]+$/, t('products.form.skuRule')),
+    name: z.string().trim().min(1).max(200),
+    description: z.string().max(2000).nullish(),
+    category: z.enum(CATEGORIES as [ProductCategory, ...ProductCategory[]]),
+    imageUrl: z.string().max(500).nullish(),
+    price: z.number().positive(),
+    stock: z.number().int().min(0),
+  });
+type Values = z.infer<ReturnType<typeof createSchema>>;
 
 const empty: Values = {
   sku: '',
@@ -51,9 +54,13 @@ interface ProductFormModalProps {
 
 /** Ürün ekleme / düzenleme. SKU yalnızca eklemede girilir; ürünün kimliği gibidir, sonradan değişmez. */
 export function ProductFormModal({ open, product, onClose }: ProductFormModalProps) {
+  const { lang, t } = useI18n();
   const isEdit = !!product;
   const [message, setMessage] = useState<string | null>(null);
-  const form = useForm<Values>({ resolver: zodResolver(Schema), defaultValues: empty });
+  const form = useForm<Values>({
+    resolver: zodResolver(useMemo(() => createSchema(t), [t])),
+    defaultValues: empty,
+  });
 
   // Modal her açılışta seçili ürünle (ya da boş) başlar.
   useEffect(() => {
@@ -69,7 +76,7 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
 
   const { create, update } = useSaveProduct(onClose, (error) => {
     if (applyFieldErrors(error, form.setError)) return;
-    setMessage(isApiError(error) ? error.message : 'Ürün kaydedilemedi.');
+    setMessage(isApiError(error) ? error.message : t('products.saveFailed'));
   });
 
   const submit = form.handleSubmit(({ sku, ...values }) => {
@@ -88,9 +95,9 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
     <Modal
       open={open}
       onClose={onClose}
-      title={isEdit ? 'Ürünü düzenle' : 'Yeni ürün'}
-      confirmButtonText="Kaydet"
-      cancelButtonText="Vazgeç"
+      title={isEdit ? t('products.form.editTitle') : t('products.form.newTitle')}
+      confirmButtonText={t('products.form.save')}
+      cancelButtonText={t('common.cancel')}
       onConfirm={submit}
       confirmLoading={create.isPending || update.isPending}
     >
@@ -102,8 +109,8 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
             name="sku"
             render={({ field, fieldState }) => (
               <Field
-                label="SKU"
-                hint="Sonradan değiştirilemez."
+                label={t('products.form.sku')}
+                hint={t('products.form.skuHint')}
                 required
                 error={fieldState.error?.message}
               >
@@ -116,7 +123,7 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
           control={form.control}
           name="name"
           render={({ field, fieldState }) => (
-            <Field label="Ad" required error={fieldState.error?.message}>
+            <Field label={t('products.form.name')} required error={fieldState.error?.message}>
               <Input {...field} />
             </Field>
           )}
@@ -125,11 +132,11 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
           control={form.control}
           name="category"
           render={({ field, fieldState }) => (
-            <Field label="Kategori" required error={fieldState.error?.message}>
+            <Field label={t('products.form.category')} required error={fieldState.error?.message}>
               <Select
                 value={field.value}
                 onChange={(value) => field.onChange(value)}
-                options={CATEGORIES.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
+                options={CATEGORIES.map((c) => ({ value: c, label: t(`category.${c}`) }))}
               />
             </Field>
           )}
@@ -139,8 +146,8 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
           name="description"
           render={({ field, fieldState }) => (
             <Field
-              label="Açıklama"
-              hint="Kahvelerde: işlem. kavrum. tadım notaları."
+              label={t('products.form.description')}
+              hint={t('products.form.descriptionHint')}
               error={fieldState.error?.message}
             >
               <Textarea
@@ -156,11 +163,15 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
             control={form.control}
             name="imageUrl"
             render={({ field, fieldState }) => (
-              <Field label="Görsel adresi" error={fieldState.error?.message} className="flex-1">
+              <Field
+                label={t('products.form.imageUrl')}
+                error={fieldState.error?.message}
+                className="flex-1"
+              >
                 <Input
                   {...field}
                   value={field.value ?? ''}
-                  placeholder="/images/products/… ya da https://…"
+                  placeholder={t('products.form.imagePlaceholder')}
                 />
               </Field>
             )}
@@ -179,13 +190,13 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
             control={form.control}
             name="price"
             render={({ field, fieldState }) => (
-              <Field label="Fiyat" required error={fieldState.error?.message}>
+              <Field label={t('products.form.price')} required error={fieldState.error?.message}>
                 <InputNumber
                   value={field.value}
                   onChange={(v) => field.onChange(v ?? 0)}
                   min={0}
                   precision={2}
-                  locale="tr-TR"
+                  locale={lang}
                   suffix="₺"
                 />
               </Field>
@@ -195,13 +206,13 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
             control={form.control}
             name="stock"
             render={({ field, fieldState }) => (
-              <Field label="Stok" required error={fieldState.error?.message}>
+              <Field label={t('products.form.stock')} required error={fieldState.error?.message}>
                 <InputNumber
                   value={field.value}
                   onChange={(v) => field.onChange(v ?? 0)}
                   min={0}
                   step={1}
-                  suffix="adet"
+                  suffix={t('products.form.unit')}
                 />
               </Field>
             )}

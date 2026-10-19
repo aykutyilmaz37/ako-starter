@@ -6,6 +6,7 @@ import { Image } from '@mari-ui/components/image';
 import { List, ListItem, ListItemMeta } from '@mari-ui/components/list';
 import { Tag } from '@mari-ui/components/tag';
 import { productImageSrc } from '~/shared/catalog';
+import { useT } from '~/shared/i18n/i18n-provider';
 
 /** Tükenen ve azalan ürünler: önce tükenenler, sonra en az kalandan başlayarak. */
 export function StockAlerts({
@@ -17,12 +18,14 @@ export function StockAlerts({
   lowStock: ProductResponse[];
   loading: boolean;
 }) {
+  const t = useT();
+
   return (
     <Card
-      title="Stok uyarıları"
+      title={t('dashboard.alerts.title')}
       extra={
         <Button href="/products" variant="link" size="sm">
-          Ürünlere git
+          {t('dashboard.alerts.go')}
         </Button>
       }
     >
@@ -31,13 +34,19 @@ export function StockAlerts({
         dataSource={[...outOfStock, ...lowStock]}
         rowKey="id"
         empty={
-          <Empty size="sm" title="Her şey stokta" description="Tükenen ya da azalan ürün yok." />
+          <Empty
+            size="sm"
+            title={t('dashboard.alerts.emptyTitle')}
+            description={t('dashboard.alerts.emptyText')}
+          />
         }
         renderItem={(p) => (
           <ListItem
             extra={
               <Tag color={p.stock <= 0 ? 'error' : 'warning'} variant="soft">
-                {p.stock <= 0 ? 'Tükendi' : `${p.stock} adet`}
+                {p.stock <= 0
+                  ? t('dashboard.alerts.soldOut')
+                  : t('dashboard.alerts.count', { count: p.stock })}
               </Tag>
             }
           >

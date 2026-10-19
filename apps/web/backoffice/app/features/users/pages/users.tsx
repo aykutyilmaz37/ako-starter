@@ -1,11 +1,14 @@
 import { SearchInput } from '@mari-ui/components/input';
 import { PageHeader } from '~/shared/page-header';
 import { useSearchParams } from 'react-router';
+import { metaTranslator } from '~/shared/i18n/i18n';
+import { useT } from '~/shared/i18n/i18n-provider';
+import type { Route } from './+types/users';
 import { UsersTable } from '~/features/users/components/users-table';
 import { useUsers } from '~/features/users/hooks/use-users';
 
-export function meta() {
-  return [{ title: 'Müşteriler | Akı Kahve Yönetim' }];
+export function meta({ matches }: Route.MetaArgs) {
+  return [{ title: metaTranslator(matches)('users.meta') }];
 }
 
 /**
@@ -14,6 +17,7 @@ export function meta() {
  */
 export default function UsersPage() {
   const [params, setParams] = useSearchParams();
+  const t = useT();
   const page = Number(params.get('page') ?? 1);
   const search = params.get('search') ?? undefined;
   const users = useUsers({ page, pageSize: 20, search });
@@ -28,11 +32,11 @@ export default function UsersPage() {
 
   return (
     <section className="flex flex-col gap-6">
-      <PageHeader title="Müşteriler" description="Kayıtlı hesaplar, roller ve giriş yöntemleri." />
+      <PageHeader title={t('users.title')} description={t('users.description')} />
       <SearchInput
-        placeholder="E-posta ile ara"
+        placeholder={t('users.search.placeholder')}
         size="sm"
-        aria-label="Müşterilerde ara"
+        aria-label={t('users.search.label')}
         defaultValue={search ?? ''}
         onSearch={(value) => setParam('search', value || undefined)}
       />

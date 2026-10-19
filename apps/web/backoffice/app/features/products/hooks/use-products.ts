@@ -8,6 +8,7 @@ import {
 import { getListProductsQueryKey, useListProducts } from '@ako/api-client/products';
 import { useToast } from '@mari-ui/components/toast';
 import { keepPreviousData, useQueryClient } from '@tanstack/react-query';
+import { useT } from '~/shared/i18n/i18n-provider';
 
 export function useProducts(params: {
   page: number;
@@ -22,15 +23,19 @@ export function useProducts(params: {
 export function useRemoveProduct() {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
+  const t = useT();
 
   return useAdminDeleteProduct({
     mutation: {
       onSuccess: () => {
-        showToast({ title: 'Ürün silindi.', type: 'success' });
+        showToast({ title: t('products.deleted'), type: 'success' });
         void queryClient.invalidateQueries({ queryKey: getListProductsQueryKey() });
       },
       onError: (error) =>
-        showToast({ title: isApiError(error) ? error.message : 'Ürün silinemedi.', type: 'error' }),
+        showToast({
+          title: isApiError(error) ? error.message : t('products.deleteFailed'),
+          type: 'error',
+        }),
     },
   });
 }
@@ -42,9 +47,10 @@ export function useRemoveProduct() {
 export function useSaveProduct(onSaved: () => void, onError: (error: unknown) => void) {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
+  const t = useT();
   const mutation = {
     onSuccess: () => {
-      showToast({ title: 'Ürün kaydedildi.', type: 'success' });
+      showToast({ title: t('products.saved'), type: 'success' });
       void queryClient.invalidateQueries({ queryKey: getListProductsQueryKey() });
       onSaved();
     },

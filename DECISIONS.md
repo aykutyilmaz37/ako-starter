@@ -72,6 +72,17 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - Hassas formlar `method="post"`: JS yüklenmezse veri URL'ye yazılmaz.
 - Next.js'in seçilmeme sebebi: sık çıkan güvenlik açıkları (RSC, Server Actions, middleware) ve düşük RPS.
 
+## Çoklu dil
+
+- Diller: **tr (varsayılan), en, de**. Yenisi backoffice'ten eklenir (kod + ad) ve açılıp kapanır; varsayılan dil kapatılamaz.
+- **Model "dosya + tablo üstüne yazar":** varsayılan metinler koddaki dosyalardır (`apps/web/<uygulama>/app/locales/<dil>.json`, düz dosya, noktalı anahtar: `home.hero.title`; API metinleri `Messages.resx`). Veritabanındaki çeviri tablosu dosyanın üstüne yazar; admin değişikliği dağıtım gerektirmez, "ezmeyi sil" dosyadaki değere döner. API dosyaları derlemede gömer. Dosyada olmayan anahtar tabloda çevrilemez (`key_not_found`): yeni anahtar önce `tr.json`'a eklenir.
+- Web metinleri de aynı tablodan gelir: `GET /localization/{dil}/{alan}` (alan: `site` | `backoffice` | `api`; ETag + Cache-Control) ve `GET /localization/languages`. Web sunucusu sözlüğü bellekte kısa süre tutar, süre dolunca ETag ile kontrol eder; API'ye ulaşılamazsa gömülü JSON'a düşer. Sözlük root loader'dan gelir, anahtarlar `tr.json`'dan türediği için olmayan anahtar derleme hatası verir.
+- **Site dili adreste:** varsayılan dil önek almaz (`/products`), diğerleri alır (`/en/products`, `/de/products`); `routes.ts`'te isteğe bağlı `:lang?` segmenti. `/tr/...` öneksiz adrese 301 yapar, bilinmeyen/kapalı dil 404 verir. `<html lang>`, `hreflang` alternatifleri ve API çağrılarında `Accept-Language` adresteki dilden gelir. Dil seçici (bayrak + ad) aynı sayfanın diğer dildeki adresine düz bağlantıdır; açık dil 1 ise görünmez.
+- **Backoffice dili çerezde** (`ako_lang`): adresler dilsizdir, seçici başlıktadır. "Çeviriler" sayfası: alan seçimi, arama, "yalnızca eksikler", dil sütunları, satır içi düzenleme, dil ekleme/aç-kapat, dışa aktarma.
+- Veri (ürün adı/açıklaması) çevrilmez; yalnızca arayüz metinleri çevrilir. Para birimi TL kalır, gösterim biçimi dile göre değişir.
+- **create-ako-app "Çoklu dil olsun mu?" diye sorar.** Hayırsa yalnızca varsayılan dil kalır: dil seçici, çeviri tablosu ve "Çeviriler" sayfası (`features/localization`) silinir; `t()` anahtarları tek dosyadan çözülmeye devam eder, `:lang?` segmenti ve `/localization` endpoint'leri çıkarılır.
+- Bilinen sınır: sosyal girişten dönüş (`/bff/external/callback`) varsayılan dildeki ana sayfaya düşer.
+
 ## Tasarım ve örnek senaryo
 
 - Şablon gerçekçi bir senaryoyla gelir: **Akı Kahve**, butik bir kahve kavurucusu. Site = vitrin (katalog, ürün detayı, alışveriş listesi); backoffice = ürün ve müşteri yönetimi. Todos örneği bu senaryoda "alışveriş listem"dir. Projeye başlarken senaryo silinir, yapı kalır.
@@ -104,6 +115,6 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 
 - ~~Form yönetimi~~ → **react-hook-form + Orval'ın ürettiği zod şemaları** (karar verildi).
 - ~~Testler~~ → **xUnit + Testcontainers** (.NET), **Vitest + Playwright** (web) (karar verildi).
-- i18n gerekecek mi?
+- ~~i18n gerekecek mi?~~ → **çoklu dil var** (bkz. "Çoklu dil"; karar verildi).
 - Deploy hedefi: VPS + Docker mı, bulut servisi mi?
-- create-ako-app'te hangi seçenekler olacak (auth sağlayıcıları, i18n…)?
+- create-ako-app'te hangi seçenekler olacak (auth sağlayıcıları…; çoklu dil sorusu aşağıdaki bölümde)?

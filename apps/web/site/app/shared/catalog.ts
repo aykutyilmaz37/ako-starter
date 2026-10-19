@@ -1,26 +1,24 @@
 import type { ProductCategory } from '@ako/api-client/model';
+import type { Translate } from '~/shared/i18n/i18n';
 
-/** Kategori adları (Türkçe). API metin olarak döner: 'Coffee' | 'Equipment' | 'Accessory'. */
-export const CATEGORY_LABELS: Record<ProductCategory, string> = {
-  Coffee: 'Kahve',
-  Equipment: 'Demleme ekipmanı',
-  Accessory: 'Aksesuar',
-};
+/** Kategoriler. API metin olarak döner: 'Coffee' | 'Equipment' | 'Accessory'; adları çeviri anahtarı "category.<ad>". */
+export const CATEGORIES: ProductCategory[] = ['Coffee', 'Equipment', 'Accessory'];
 
-export const CATEGORIES = Object.keys(CATEGORY_LABELS) as ProductCategory[];
-
-const currency = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' });
-
-export function formatPrice(value: number): string {
-  return currency.format(value);
+/** Fiyatlar TL cinsindendir; yalnızca gösterim biçimi dile göre değişir (1.200,00 ₺ / ₺1,200.00). */
+export function formatPrice(value: number, lang: string): string {
+  return new Intl.NumberFormat(lang, {
+    style: 'currency',
+    currency: 'TRY',
+    currencyDisplay: 'narrowSymbol',
+  }).format(value);
 }
 
 /** Stok durumu: rozetin metni ve rengi. Az kalan ürün aciliyet hissi verir, tükenen ürün listeye eklenemez. */
-export function stockState(stock: number) {
-  if (stock <= 0) return { label: 'Tükendi', color: 'neutral', available: false } as const;
+export function stockState(stock: number, t: Translate) {
+  if (stock <= 0) return { label: t('stock.soldOut'), color: 'neutral', available: false } as const;
   if (stock <= 10)
-    return { label: `Son ${stock} adet`, color: 'warning', available: true } as const;
-  return { label: 'Stokta', color: 'success', available: true } as const;
+    return { label: t('stock.last', { count: stock }), color: 'warning', available: true } as const;
+  return { label: t('stock.inStock'), color: 'success', available: true } as const;
 }
 
 /** API'nin kendi görselleri ("/images/…") tarayıcıda BFF üzerinden gelir ("/api/images/…"). */

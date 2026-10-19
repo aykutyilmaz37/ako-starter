@@ -7,7 +7,8 @@ import { Tag } from '@mari-ui/components/tag';
 import { Text } from '@mari-ui/components/typography';
 import { Pencil, Trash2 } from 'lucide-react';
 import { useRemoveProduct } from '~/features/products/hooks/use-products';
-import { CATEGORY_LABELS, formatPrice, productImageSrc, stockState } from '~/shared/catalog';
+import { formatPrice, productImageSrc } from '~/shared/catalog';
+import { useI18n } from '~/shared/i18n/i18n-provider';
 
 interface ProductsTableProps {
   products: PagedResponseOfProductResponse | undefined;
@@ -18,10 +19,11 @@ interface ProductsTableProps {
 
 export function ProductsTable({ products, loading, onPageChange, onEdit }: ProductsTableProps) {
   const remove = useRemoveProduct();
+  const { lang, t } = useI18n();
 
   const columns: ColumnDef<ProductResponse>[] = [
     {
-      header: 'Ürün',
+      header: t('products.col.product'),
       columnName: 'name',
       render: (_, p) => (
         <div className="flex items-center gap-3">
@@ -45,32 +47,31 @@ export function ProductsTable({ products, loading, onPageChange, onEdit }: Produ
       ),
     },
     {
-      header: 'Kategori',
+      header: t('products.col.category'),
       columnName: 'category',
       render: (_, p) => (
         <Tag variant="outline" color="neutral">
-          {CATEGORY_LABELS[p.category]}
+          {t(`category.${p.category}`)}
         </Tag>
       ),
     },
     {
-      header: 'Fiyat',
+      header: t('products.col.price'),
       columnName: 'price',
       align: 'end',
-      render: (_, p) => <span className="tabular-nums">{formatPrice(p.price)}</span>,
+      render: (_, p) => <span className="tabular-nums">{formatPrice(p.price, lang)}</span>,
     },
     {
-      header: 'Stok',
+      header: t('products.col.stock'),
       columnName: 'stock',
       align: 'end',
       render: (_, p) => {
-        const s = stockState(p.stock);
         return (
           <span className="inline-flex items-center gap-2">
             <span className="tabular-nums">{p.stock}</span>
-            {s.color !== 'success' && (
+            {p.stock <= 10 && (
               <Tag color={p.stock <= 0 ? 'error' : 'warning'} variant="soft">
-                {p.stock <= 0 ? 'Tükendi' : 'Az'}
+                {p.stock <= 0 ? t('products.soldOut') : t('products.few')}
               </Tag>
             )}
           </span>
@@ -87,14 +88,14 @@ export function ProductsTable({ products, loading, onPageChange, onEdit }: Produ
             size="sm"
             variant="ghost"
             icon={<Pencil size={16} aria-hidden />}
-            aria-label={`${product.name} düzenle`}
+            aria-label={t('products.edit', { name: product.name })}
             onClick={() => onEdit(product)}
           />
           <Popconfirm
-            title="Ürün silinsin mi?"
+            title={t('products.confirmDelete')}
             description={product.name}
-            okText="Sil"
-            cancelText="Vazgeç"
+            okText={t('products.deleteButton')}
+            cancelText={t('common.cancel')}
             color="error"
             onConfirm={() => remove.mutate({ id: product.id })}
           >
@@ -103,7 +104,7 @@ export function ProductsTable({ products, loading, onPageChange, onEdit }: Produ
               variant="ghost"
               color="error"
               icon={<Trash2 size={16} aria-hidden />}
-              aria-label={`${product.name} sil`}
+              aria-label={t('products.delete', { name: product.name })}
             />
           </Popconfirm>
         </div>
@@ -113,7 +114,7 @@ export function ProductsTable({ products, loading, onPageChange, onEdit }: Produ
 
   return (
     <Table
-      label="Ürünler"
+      label={t('products.table')}
       data={products?.items ?? []}
       columns={columns}
       skeleton={loading && !products}
@@ -125,8 +126,8 @@ export function ProductsTable({ products, loading, onPageChange, onEdit }: Produ
         onPageChange,
       }}
       emptyState={{
-        title: 'Ürün bulunamadı',
-        description: 'Farklı bir arama ya da kategori deneyin.',
+        title: t('products.empty.title'),
+        description: t('products.empty.description'),
       }}
     />
   );

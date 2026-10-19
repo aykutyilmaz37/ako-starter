@@ -9,7 +9,8 @@ export function configureApi() {
   const isServer = typeof window === 'undefined';
   configureApiClient({
     baseUrl: isServer ? (process.env.API_URL ?? 'http://localhost:5165') : '/api',
-    getLanguage: () => 'tr',
+    // İstek dili = sayfanın dili (<html lang>, root.tsx'te adresten gelir). Sunucuda loader'lar kendi başlığını ekler.
+    getLanguage: () => (isServer ? undefined : document.documentElement.lang),
     credentials: 'same-origin',
   });
 }

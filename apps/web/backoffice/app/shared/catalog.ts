@@ -1,26 +1,15 @@
 import type { ProductCategory } from '@ako/api-client/model';
 
-/** Kategori adları (Türkçe). API metin olarak döner: 'Coffee' | 'Equipment' | 'Accessory'. */
-export const CATEGORY_LABELS: Record<ProductCategory, string> = {
-  Coffee: 'Kahve',
-  Equipment: 'Demleme ekipmanı',
-  Accessory: 'Aksesuar',
-};
+/** Kategoriler. API metin olarak döner: 'Coffee' | 'Equipment' | 'Accessory'; adları çeviri anahtarı "category.<ad>". */
+export const CATEGORIES: ProductCategory[] = ['Coffee', 'Equipment', 'Accessory'];
 
-export const CATEGORIES = Object.keys(CATEGORY_LABELS) as ProductCategory[];
-
-const currency = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' });
-
-export function formatPrice(value: number): string {
-  return currency.format(value);
-}
-
-/** Stok durumu: rozetin metni ve rengi. Az kalan ürün aciliyet hissi verir, tükenen ürün listeye eklenemez. */
-export function stockState(stock: number) {
-  if (stock <= 0) return { label: 'Tükendi', color: 'neutral', available: false } as const;
-  if (stock <= 10)
-    return { label: `Son ${stock} adet`, color: 'warning', available: true } as const;
-  return { label: 'Stokta', color: 'success', available: true } as const;
+/** Fiyatlar TL cinsindendir; yalnızca gösterim biçimi dile göre değişir (1.200,00 ₺ / ₺1,200.00). */
+export function formatPrice(value: number, lang: string): string {
+  return new Intl.NumberFormat(lang, {
+    style: 'currency',
+    currency: 'TRY',
+    currencyDisplay: 'narrowSymbol',
+  }).format(value);
 }
 
 /** API'nin kendi görselleri ("/images/…") tarayıcıda BFF üzerinden gelir ("/api/images/…"). */

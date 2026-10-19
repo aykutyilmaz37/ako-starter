@@ -8,6 +8,7 @@ import { Field } from '@mari-ui/components/field';
 import { Input } from '@mari-ui/components/input';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useT } from '~/shared/i18n/i18n-provider';
 
 // API şeması (RegisterBody) + istemci tarafı kurallar. Şifre kuralları API'de; hataları forma gelir.
 const Schema = RegisterBody.extend({ email: z.email(), password: z.string().min(8) });
@@ -15,6 +16,7 @@ type Values = z.infer<typeof Schema>;
 
 /** Kayıt formu. Başarılı olunca API e-postaya 6 haneli kod gönderir. */
 export function RegisterForm({ onRegistered }: { onRegistered: (email: string) => void }) {
+  const t = useT();
   const form = useForm<Values>({
     resolver: zodResolver(Schema),
     defaultValues: { email: '', password: '' },
@@ -45,7 +47,7 @@ export function RegisterForm({ onRegistered }: { onRegistered: (email: string) =
         control={form.control}
         name="email"
         render={({ field, fieldState }) => (
-          <Field label="E-posta" required error={fieldState.error?.message}>
+          <Field label={t('auth.email')} required error={fieldState.error?.message}>
             <Input {...field} type="email" autoComplete="email" />
           </Field>
         )}
@@ -55,9 +57,9 @@ export function RegisterForm({ onRegistered }: { onRegistered: (email: string) =
         name="password"
         render={({ field, fieldState }) => (
           <Field
-            label="Şifre"
+            label={t('auth.password')}
             required
-            hint="En az 8 karakter; büyük harf, küçük harf, rakam ve özel karakter içermeli."
+            hint={t('auth.register.passwordHint')}
             error={fieldState.error?.message}
           >
             <Input {...field} type="password" autoComplete="new-password" visibilityToggle />
@@ -65,7 +67,7 @@ export function RegisterForm({ onRegistered }: { onRegistered: (email: string) =
         )}
       />
       <Button htmlType="submit" color="primary" block loading={register.isPending}>
-        Hesap oluştur
+        {t('auth.register.submit')}
       </Button>
     </form>
   );

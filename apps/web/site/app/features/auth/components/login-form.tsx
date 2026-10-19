@@ -9,7 +9,8 @@ import { Input } from '@mari-ui/components/input';
 import { useState, type ReactNode } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { AUTH_ERROR_MESSAGES } from '~/features/auth/error-messages';
+import { AUTH_ERROR_KEYS } from '~/features/auth/error-messages';
+import { useT } from '~/shared/i18n/i18n-provider';
 
 const Schema = LoginBody.pick({ email: true, password: true }).extend({ email: z.email() });
 type Values = z.infer<typeof Schema>;
@@ -33,6 +34,7 @@ interface LoginFormProps {
 
 /** E-posta + şifre girişi ve (ayarı dolu sağlayıcılar için) sosyal giriş butonları. */
 export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormProps) {
+  const t = useT();
   const [message, setMessage] = useState<string | null>(null);
   const form = useForm<Values>({
     resolver: zodResolver(Schema),
@@ -49,11 +51,11 @@ export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormP
           return;
         }
         if (applyFieldErrors(error, form.setError)) return;
+        const errorKey = isApiError(error) && error.code ? AUTH_ERROR_KEYS[error.code] : undefined;
         setMessage(
           isApiError(error) && error.status === 401
-            ? 'E-posta ya da şifre hatalı.'
-            : (isApiError(error) && error.code && AUTH_ERROR_MESSAGES[error.code]) ||
-                'Giriş yapılamadı.',
+            ? t('auth.login.invalid')
+            : t(errorKey ?? 'auth.login.failed'),
         );
       },
     },
@@ -71,7 +73,7 @@ export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormP
         control={form.control}
         name="email"
         render={({ field, fieldState }) => (
-          <Field label="E-posta" required error={fieldState.error?.message}>
+          <Field label={t('auth.email')} required error={fieldState.error?.message}>
             <Input {...field} type="email" autoComplete="email" />
           </Field>
         )}
@@ -80,13 +82,13 @@ export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormP
         control={form.control}
         name="password"
         render={({ field, fieldState }) => (
-          <Field label="Şifre" required error={fieldState.error?.message}>
+          <Field label={t('auth.password')} required error={fieldState.error?.message}>
             <Input {...field} type="password" autoComplete="current-password" visibilityToggle />
           </Field>
         )}
       />
       <Button htmlType="submit" color="primary" block loading={login.isPending}>
-        Giriş yap
+        {t('auth.login.submit')}
       </Button>
 
       {(providers.data?.external.length ?? 0) > 0 && (
@@ -94,7 +96,7 @@ export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormP
           {providers.data!.external.map((provider) => (
             // Tam sayfa yönlendirme: OAuth akışı BFF → API → sağlayıcı → geri.
             <Button key={provider} href={`/bff/external/${provider}`} variant="outline" block>
-              {PROVIDER_LABELS[provider] ?? provider} ile devam et
+              {t('auth.login.social', { provider: PROVIDER_LABELS[provider] ?? provider })}
             </Button>
           ))}
         </div>

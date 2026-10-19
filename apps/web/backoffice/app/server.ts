@@ -1,6 +1,9 @@
 import { createBff } from '@ako/web-core';
 import { createHonoServer } from 'react-router-hono-server/node';
+import { getCookie } from 'hono/cookie';
 import { env } from './env.server';
+import { resolveRequestLanguage } from './shared/i18n/dictionary.server';
+import { LANGUAGE_COOKIE, languageContext } from './shared/i18n/language-context';
 
 // Backoffice BFF'i: yalnızca Admin rolü giriş yapabilir. API_URL iç ağdaki (admin endpoint'leri açık) API'yi gösterir.
 const bff = createBff({
@@ -22,5 +25,10 @@ export default await createHonoServer({
     }
     bff.configure(app);
   },
-  getLoadContext: bff.getLoadContext,
+  // Loader'lara oturum (BFF) ve arayüz dili (ako_lang çerezi) verilir.
+  getLoadContext: async (c) => {
+    const context = await bff.getLoadContext(c);
+    context.set(languageContext, await resolveRequestLanguage(getCookie(c, LANGUAGE_COOKIE)));
+    return context;
+  },
 });

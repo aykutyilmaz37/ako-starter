@@ -5,5 +5,6 @@ export default [
   index('features/dashboard/pages/dashboard.tsx'),
   route('products', 'features/products/pages/products.tsx'),
   route('users', 'features/users/pages/users.tsx'),
+  route('translations', 'features/localization/pages/translations.tsx'),
   route('login', 'features/auth/pages/login.tsx'),
 ] satisfies RouteConfig;

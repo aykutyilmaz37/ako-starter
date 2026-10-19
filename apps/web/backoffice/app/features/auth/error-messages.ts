@@ -1,5 +1,7 @@
-/** BFF ve API'den gelen hata kodlarının kullanıcıya gösterilen karşılığı. */
-export const AUTH_ERROR_MESSAGES: Record<string, string> = {
-  'auth.role_required': 'Bu panele erişim yetkiniz yok.',
-  'auth.external_failed': 'Giriş tamamlanamadı.',
+import type { TranslationKey } from '~/shared/i18n/i18n';
+
+/** BFF ve API'den gelen hata kodlarının çeviri anahtarı. */
+export const AUTH_ERROR_KEYS: Record<string, TranslationKey> = {
+  'auth.role_required': 'auth.error.role_required',
+  'auth.external_failed': 'auth.error.external_failed',
 };

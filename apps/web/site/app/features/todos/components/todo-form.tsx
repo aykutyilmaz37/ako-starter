@@ -8,11 +8,13 @@ import { Plus } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useCreateTodoWithRefresh } from '~/features/todos/hooks/use-todos';
+import { useT } from '~/shared/i18n/i18n-provider';
 
 const Schema = CreateTodoBody.extend({ title: z.string().trim().min(1).max(200) });
 
 /** Listeye elle madde ekleme (ör. "Süt", "Filtre kağıdı"). Ürün sayfasından da eklenebilir. */
 export function TodoForm() {
+  const t = useT();
   const form = useForm<z.infer<typeof Schema>>({
     resolver: zodResolver(Schema),
     defaultValues: { title: '' },
@@ -34,8 +36,8 @@ export function TodoForm() {
         control={form.control}
         name="title"
         render={({ field, fieldState }) => (
-          <Field label="Listeye ekle" error={fieldState.error?.message} className="flex-1">
-            <Input {...field} placeholder="Ör. filtre kağıdı, süt" />
+          <Field label={t('todos.form.label')} error={fieldState.error?.message} className="flex-1">
+            <Input {...field} placeholder={t('todos.form.placeholder')} />
           </Field>
         )}
       />
@@ -46,7 +48,7 @@ export function TodoForm() {
         icon={<Plus size={18} aria-hidden />}
         className="mt-7"
       >
-        Ekle
+        {t('todos.form.add')}
       </Button>
     </form>
   );

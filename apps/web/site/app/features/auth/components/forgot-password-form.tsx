@@ -6,6 +6,7 @@ import { Field } from '@mari-ui/components/field';
 import { Input, OtpInput } from '@mari-ui/components/input';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useT } from '~/shared/i18n/i18n-provider';
 
 /** İki adım: e-posta → kod + yeni şifre. E-posta doğrulamayla aynı 6 haneli kod akışı. */
 export function ForgotPasswordForm({ onReset }: { onReset: () => void }) {
@@ -18,6 +19,7 @@ export function ForgotPasswordForm({ onReset }: { onReset: () => void }) {
 }
 
 function RequestCodeStep({ onSent }: { onSent: (email: string) => void }) {
+  const t = useT();
   const form = useForm<{ email: string }>({ defaultValues: { email: '' } });
   const forgot = useForgotPassword({
     mutation: {
@@ -36,19 +38,20 @@ function RequestCodeStep({ onSent }: { onSent: (email: string) => void }) {
         control={form.control}
         name="email"
         render={({ field, fieldState }) => (
-          <Field label="E-posta" required error={fieldState.error?.message}>
+          <Field label={t('auth.email')} required error={fieldState.error?.message}>
             <Input {...field} type="email" autoComplete="email" />
           </Field>
         )}
       />
       <Button htmlType="submit" color="primary" block loading={forgot.isPending}>
-        Kod gönder
+        {t('auth.forgot.send')}
       </Button>
     </form>
   );
 }
 
 function ResetStep({ email, onReset }: { email: string; onReset: () => void }) {
+  const t = useT();
   const form = useForm<{ code: string; newPassword: string }>({
     defaultValues: { code: '', newPassword: '' },
   });
@@ -68,15 +71,12 @@ function ResetStep({ email, onReset }: { email: string; onReset: () => void }) {
       className="flex flex-col gap-4"
       onSubmit={form.handleSubmit((values) => reset.mutate({ data: { email, ...values } }))}
     >
-      <Alert
-        color="info"
-        description={`Hesap varsa ${email} adresine 6 haneli bir kod gönderdik.`}
-      />
+      <Alert color="info" description={t('auth.forgot.info', { email })} />
       <Controller
         control={form.control}
         name="code"
         render={({ field, fieldState }) => (
-          <Field label="Kod" required error={fieldState.error?.message}>
+          <Field label={t('auth.forgot.code')} required error={fieldState.error?.message}>
             <OtpInput
               length={6}
               inputMode="numeric"
@@ -90,13 +90,13 @@ function ResetStep({ email, onReset }: { email: string; onReset: () => void }) {
         control={form.control}
         name="newPassword"
         render={({ field, fieldState }) => (
-          <Field label="Yeni şifre" required error={fieldState.error?.message}>
+          <Field label={t('auth.forgot.newPassword')} required error={fieldState.error?.message}>
             <Input {...field} type="password" autoComplete="new-password" visibilityToggle />
           </Field>
         )}
       />
       <Button htmlType="submit" color="primary" block loading={reset.isPending}>
-        Şifreyi değiştir
+        {t('auth.forgot.submit')}
       </Button>
     </form>
   );

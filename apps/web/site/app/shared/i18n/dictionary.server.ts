@@ -1,0 +1,77 @@
+import { getGetDictionaryUrl, getGetLanguagesUrl } from '@ako/api-client/localization';
+import type { LanguageResponse } from '@ako/api-client/model';
+import { env } from '~/env.server';
+import type { Dictionary } from '~/shared/i18n/i18n';
+import type { RequestLanguage } from '~/shared/i18n/language-context';
+
+// Gömülü yedek: app/locales/*.json. API kapalıyken ya da yeni anahtar henüz tabloya yansımadıysa bunlar kullanılır.
+const bundled = Object.fromEntries(
+  Object.entries(
+    import.meta.glob<Dictionary>('/app/locales/*.json', { eager: true, import: 'default' }),
+  ).map(([path, dictionary]) => [path.match(/([^/]+)\.json$/)![1]!, dictionary]),
+);
+
+const DEFAULT_LANGUAGES: LanguageResponse[] = [
+  { code: 'tr', name: 'Türkçe', isDefault: true, isEnabled: true },
+];
+
+// Her istekte API'ye gitmemek için bellekte tutulur; süre dolunca ETag ile (If-None-Match) kontrol edilir,
+// değişmediyse 304 döner ve yük taşınmaz. Süre dolduğunda eski değer hemen sunulur, yenileme arkada yapılır.
+const TTL_MS = 30_000;
+const REQUEST_TIMEOUT_MS = 3_000;
+
+interface Entry {
+  value: unknown;
+  etag: string | null;
+  checkedAt: number;
+  refresh: Promise<void> | null;
+}
+
+const store = new Map<string, Entry>();
+
+async function revalidate(path: string, entry: Entry) {
+  try {
+    const response = await fetch(env.apiUrl + path, {
+      headers: entry.etag ? { 'If-None-Match': entry.etag } : {},
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
+    if (response.ok) {
+      entry.value = await response.json();
+      entry.etag = response.headers.get('etag');
+    }
+  } catch {
+    // API'ye ulaşılamadı: eldeki değer (yoksa gömülü yedek) kullanılır, bir sonraki süre dolumunda yeniden denenir.
+  }
+  entry.checkedAt = Date.now();
+}
+
+async function cached<T>(path: string): Promise<T | undefined> {
+  const entry = store.get(path) ?? { value: undefined, etag: null, checkedAt: 0, refresh: null };
+  store.set(path, entry);
+  if (Date.now() - entry.checkedAt >= TTL_MS) {
+    entry.refresh ??= revalidate(path, entry).finally(() => (entry.refresh = null));
+    if (entry.value === undefined) await entry.refresh; // ilk yüklemede beklenir
+  }
+  return entry.value as T | undefined;
+}
+
+/** Açık diller; varsayılan dil ilk sırada. */
+export async function getLanguages(): Promise<LanguageResponse[]> {
+  const languages = await cached<LanguageResponse[]>(getGetLanguagesUrl());
+  return languages?.length ? languages : DEFAULT_LANGUAGES;
+}
+
+/** Dilin site sözlüğü: gömülü dosya + tablodaki (admin düzenlemeli) değerler üstüne yazar. */
+export async function getDictionary(lang: string, defaultLang: string): Promise<Dictionary> {
+  const remote = await cached<Dictionary>(getGetDictionaryUrl(lang, 'site'));
+  return { ...bundled[defaultLang], ...bundled[lang], ...remote };
+}
+
+/** İsteğin dili: adresin ilk parçası açık ve varsayılan olmayan bir dilse o, değilse varsayılan dil. */
+export async function resolveRequestLanguage(pathname: string): Promise<RequestLanguage> {
+  const languages = await getLanguages();
+  const defaultLang = (languages.find((l) => l.isDefault) ?? languages[0]!).code;
+  const first = pathname.split('/')[1];
+  const lang = languages.find((l) => l.code === first && l.code !== defaultLang)?.code;
+  return { lang: lang ?? defaultLang, defaultLang };
+}

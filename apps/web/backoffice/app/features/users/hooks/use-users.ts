@@ -7,6 +7,7 @@ import {
 import type { AdminUserResponse } from '@ako/api-client/model';
 import { useToast } from '@mari-ui/components/toast';
 import { keepPreviousData, useQueryClient } from '@tanstack/react-query';
+import { useT } from '~/shared/i18n/i18n-provider';
 
 export const ADMIN_ROLE = 'Admin';
 
@@ -19,16 +20,17 @@ export function useUsers(params: { page: number; pageSize: number; search?: stri
 export function useToggleAdmin() {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
+  const t = useT();
 
   const setRoles = useAdminSetUserRoles({
     mutation: {
       onSuccess: () => {
-        showToast({ title: 'Roller güncellendi.', type: 'success' });
+        showToast({ title: t('users.rolesUpdated'), type: 'success' });
         void queryClient.invalidateQueries({ queryKey: getAdminListUsersQueryKey() });
       },
       onError: (error) =>
         showToast({
-          title: isApiError(error) ? error.message : 'Roller güncellenemedi.',
+          title: isApiError(error) ? error.message : t('users.rolesFailed'),
           type: 'error',
         }),
     },

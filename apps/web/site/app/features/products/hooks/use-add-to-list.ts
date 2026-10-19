@@ -3,6 +3,7 @@ import type { ProductResponse } from '@ako/api-client/model';
 import { getListTodosQueryKey, useCreateTodo } from '@ako/api-client/todos';
 import { useToast } from '@mari-ui/components/toast';
 import { useQueryClient } from '@tanstack/react-query';
+import { useLocalePath, useT } from '~/shared/i18n/i18n-provider';
 
 /**
  * Ürünü kullanıcının alışveriş listesine ekler. Alışveriş listesi, şablondaki "Todos" örnek özelliğinin bu
@@ -11,19 +12,24 @@ import { useQueryClient } from '@tanstack/react-query';
 export function useAddToList() {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
+  const t = useT();
+  const localePath = useLocalePath();
   const create = useCreateTodo({
     mutation: {
       onSuccess: () => {
         void queryClient.invalidateQueries({ queryKey: getListTodosQueryKey() });
         showToast({
-          title: 'Listenize eklendi.',
+          title: t('products.addedToList'),
           type: 'success',
-          action: { label: 'Listeyi aç', onClick: () => window.location.assign('/list') },
+          action: {
+            label: t('products.openList'),
+            onClick: () => window.location.assign(localePath('/list')),
+          },
         });
       },
       onError: (error) =>
         showToast({
-          title: isApiError(error) ? error.message : 'Listeye eklenemedi.',
+          title: isApiError(error) ? error.message : t('products.addFailed'),
           type: 'error',
         }),
     },

@@ -1,6 +1,5 @@
 import { isApiError } from '@ako/api-client';
 import { getProduct, listProducts } from '@ako/api-client/products';
-import { sessionContext, serverRequestInit } from '@ako/web-core';
 import { Breadcrumb } from '@mari-ui/components/breadcrumb';
 import { Button } from '@mari-ui/components/button';
 import { Image } from '@mari-ui/components/image';
@@ -11,13 +10,16 @@ import { ListPlus, Package, RefreshCw, Truck } from 'lucide-react';
 import { data } from 'react-router';
 import { ProductGrid } from '~/features/products/components/product-card';
 import { useAddToList } from '~/features/products/hooks/use-add-to-list';
-import { CATEGORY_LABELS, formatPrice, productImageSrc, stockState } from '~/shared/catalog';
+import { formatPrice, productImageSrc, stockState } from '~/shared/catalog';
+import { apiInit } from '~/shared/i18n/api-init.server';
+import { metaTranslator } from '~/shared/i18n/i18n';
+import { useI18n, useLocalePath } from '~/shared/i18n/i18n-provider';
 import { SectionHeading } from '~/shared/section-heading';
 import { useMe } from '~/shared/use-me';
 import type { Route } from './+types/product-detail';
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
-  const init = serverRequestInit(context.get(sessionContext), request);
+  const init = apiInit(context, request);
   const product = await getProduct(params.id, init).catch((error: unknown) => {
     if (isApiError(error) && error.status === 404) throw data(null, { status: 404 });
     throw error;
@@ -26,26 +28,28 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
   return { product, related: related.items.filter((p) => p.id !== product.id).slice(0, 4) };
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
-  if (!loaderData) return [{ title: 'Ürün bulunamadı | Akı Kahve' }];
+export function meta({ loaderData, matches }: Route.MetaArgs) {
+  const t = metaTranslator(matches);
+  if (!loaderData) return [{ title: t('products.detail.notFound') }];
   const { product } = loaderData;
   return [
-    { title: `${product.name} | Akı Kahve` },
+    { title: t('products.meta.title', { title: product.name }) },
     { name: 'description', content: product.description ?? '' },
     { property: 'og:title', content: product.name },
     { property: 'og:image', content: productImageSrc(product.imageUrl) ?? '' },
   ];
 }
 
-const promises = [
-  { icon: Truck, text: '750 ₺ üzeri siparişlerde ücretsiz kargo' },
-  { icon: Package, text: 'Kavrulduktan sonra 48 saat içinde kargoda' },
-  { icon: RefreshCw, text: 'Beğenmezseniz 14 gün içinde değişim' },
-];
-
 export default function ProductDetailPage({ loaderData }: Route.ComponentProps) {
   const { product, related } = loaderData;
-  const stock = stockState(product.stock);
+  const { lang, t } = useI18n();
+  const localePath = useLocalePath();
+  const stock = stockState(product.stock, t);
+  const promises = [
+    { icon: Truck, text: t('products.detail.promise.shipping') },
+    { icon: Package, text: t('products.detail.promise.fast') },
+    { icon: RefreshCw, text: t('products.detail.promise.exchange') },
+  ];
   const me = useMe();
   const list = useAddToList();
 
@@ -53,10 +57,10 @@ export default function ProductDetailPage({ loaderData }: Route.ComponentProps) 
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <Breadcrumb
         items={[
-          { title: 'Mağaza', href: '/products' },
+          { title: t('products.detail.shop'), href: localePath('/products') },
           {
-            title: CATEGORY_LABELS[product.category],
-            href: `/products?category=${product.category}`,
+            title: t(`category.${product.category}`),
+            href: localePath(`/products?category=${product.category}`),
           },
           { title: product.name },
         ]}
@@ -75,14 +79,14 @@ export default function ProductDetailPage({ loaderData }: Route.ComponentProps) 
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-3">
             <Text muted className="text-sm font-semibold uppercase tracking-wider">
-              {CATEGORY_LABELS[product.category]}
+              {t(`category.${product.category}`)}
             </Text>
             <Title level={1} className="text-4xl leading-tight">
               {product.name}
             </Title>
             <div className="flex items-center gap-3">
               <Text weight="semibold" className="text-2xl">
-                {formatPrice(product.price)}
+                {formatPrice(product.price, lang)}
               </Text>
               <Tag color={stock.color} variant="soft">
                 {stock.label}
@@ -101,23 +105,23 @@ export default function ProductDetailPage({ loaderData }: Route.ComponentProps) 
               disabled={!stock.available}
               onClick={() => list.add(product)}
             >
-              {stock.available ? 'Alışveriş listeme ekle' : 'Şu an stokta yok'}
+              {stock.available ? t('products.detail.add') : t('products.detail.unavailable')}
             </Button>
           ) : (
             <Button
               color="primary"
               size="lg"
-              href="/login"
+              href={localePath('/login')}
               icon={<ListPlus size={20} aria-hidden />}
             >
-              Listeye eklemek için giriş yapın
+              {t('products.detail.loginToAdd')}
             </Button>
           )}
 
           <List
             size="sm"
             split={false}
-            aria-label="Teslimat ve iade"
+            aria-label={t('products.detail.promisesLabel')}
             className="border-t border-mari-border pt-4"
             dataSource={promises}
             rowKey="text"
@@ -131,14 +135,14 @@ export default function ProductDetailPage({ loaderData }: Route.ComponentProps) 
             )}
           />
           <Text muted className="text-xs">
-            SKU: {product.sku}
+            {t('products.detail.sku', { sku: product.sku })}
           </Text>
         </div>
       </div>
 
       {related.length > 0 && (
         <section className="mt-20 flex flex-col gap-6" aria-labelledby="benzer">
-          <SectionHeading id="benzer" title="Bunları da sevebilirsiniz" />
+          <SectionHeading id="benzer" title={t('products.detail.related')} />
           <ProductGrid products={related} />
         </section>
       )}

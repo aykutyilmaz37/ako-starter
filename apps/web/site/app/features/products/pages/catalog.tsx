@@ -1,7 +1,6 @@
 import { listProducts } from '@ako/api-client/products';
 import type { ProductCategory } from '@ako/api-client/model';
-import { CATEGORIES, CATEGORY_LABELS } from '~/shared/catalog';
-import { sessionContext, serverRequestInit } from '@ako/web-core';
+import { sessionContext } from '@ako/web-core';
 import { Empty } from '@mari-ui/components/empty';
 import { SearchInput } from '@mari-ui/components/input';
 import { Pagination } from '@mari-ui/components/pagination';
@@ -9,6 +8,10 @@ import { Text } from '@mari-ui/components/typography';
 import { data, useNavigation, useSearchParams } from 'react-router';
 import { CategoryFilter } from '~/features/products/components/category-filter';
 import { ProductGrid } from '~/features/products/components/product-card';
+import { CATEGORIES } from '~/shared/catalog';
+import { apiInit } from '~/shared/i18n/api-init.server';
+import { metaTranslator } from '~/shared/i18n/i18n';
+import { useT } from '~/shared/i18n/i18n-provider';
 import { SectionHeading } from '~/shared/section-heading';
 import type { Route } from './+types/catalog';
 
@@ -20,12 +23,13 @@ function readCategory(value: string | null): ProductCategory | undefined {
   return CATEGORIES.find((c) => c === value);
 }
 
-export function meta({ location }: Route.MetaArgs) {
+export function meta({ location, matches }: Route.MetaArgs) {
+  const t = metaTranslator(matches);
   const category = readCategory(new URLSearchParams(location.search).get('category'));
-  const title = category ? CATEGORY_LABELS[category] : 'Tüm ürünler';
+  const title = category ? t(`category.${category}`) : t('products.all');
   return [
-    { title: `${title} | Akı Kahve` },
-    { name: 'description', content: 'Taze kavrulmuş nitelikli kahveler ve demleme ekipmanı.' },
+    { title: t('products.meta.title', { title }) },
+    { name: 'description', content: t('products.meta.description') },
   ];
 }
 
@@ -41,7 +45,7 @@ export async function loader({ request, context }: Route.LoaderArgs) {
   const session = context.get(sessionContext);
   const products = await listProducts(
     { page, pageSize: PAGE_SIZE, search, category },
-    serverRequestInit(session, request),
+    apiInit(context, request),
   );
   const cacheControl = session
     ? 'private, no-store'
@@ -57,6 +61,7 @@ export default function CatalogPage({ loaderData }: Route.ComponentProps) {
   const { products, category } = loaderData;
   const [params, setParams] = useSearchParams();
   const loading = useNavigation().state === 'loading';
+  const t = useT();
 
   // Süzgeçler URL'de durur: paylaşılabilir, geri tuşu çalışır, loader sunucuda yeniden çalışır.
   const setParam = (changes: Record<string, string | undefined>) => {
@@ -72,9 +77,9 @@ export default function CatalogPage({ loaderData }: Route.ComponentProps) {
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
       <SectionHeading
         level={1}
-        eyebrow="MAĞAZA"
-        title={category ? CATEGORY_LABELS[category] : 'Tüm ürünler'}
-        description="Her paket siparişinizden önceki hafta kavrulur. Beğendiklerinizi alışveriş listenize ekleyip daha sonra kolayca bulabilirsiniz."
+        eyebrow={t('products.eyebrow')}
+        title={category ? t(`category.${category}`) : t('products.all')}
+        description={t('products.description')}
       />
 
       <div className="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -84,21 +89,21 @@ export default function CatalogPage({ loaderData }: Route.ComponentProps) {
         />
         <div className="w-full md:max-w-xs">
           <SearchInput
-            placeholder="Ürün ya da menşe ara"
+            placeholder={t('products.search.placeholder')}
             defaultValue={params.get('search') ?? ''}
             onSearch={(value) => setParam({ search: value || undefined, page: undefined })}
-            aria-label="Ürünlerde ara"
+            aria-label={t('products.search.label')}
           />
         </div>
       </div>
 
       <Text muted className="mt-6 block text-sm" aria-live="polite">
-        {products.totalCount} ürün
+        {t('products.count', { count: products.totalCount })}
       </Text>
 
       <div className={`mt-4 transition-opacity ${loading ? 'opacity-60' : ''}`}>
         {products.items.length === 0 ? (
-          <Empty title="Ürün bulunamadı" description="Farklı bir arama ya da kategori deneyin." />
+          <Empty title={t('products.empty.title')} description={t('products.empty.description')} />
         ) : (
           <ProductGrid products={products.items} />
         )}

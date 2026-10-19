@@ -6,39 +6,48 @@ import { Plus } from 'lucide-react';
 import { RecentUsers } from '~/features/dashboard/components/recent-users';
 import { StockAlerts } from '~/features/dashboard/components/stock-alerts';
 import { useDashboard } from '~/features/dashboard/hooks/use-dashboard';
+import { metaTranslator } from '~/shared/i18n/i18n';
+import { useI18n } from '~/shared/i18n/i18n-provider';
 import { PageHeader } from '~/shared/page-header';
 import { useMe } from '~/shared/use-me';
+import type { Route } from './+types/dashboard';
 
-export function meta() {
-  return [{ title: 'Genel bakış | Akı Kahve Yönetim' }];
+export function meta({ matches }: Route.MetaArgs) {
+  return [{ title: metaTranslator(matches)('dashboard.meta') }];
 }
 
 export default function DashboardPage() {
   const me = useMe();
+  const { lang, t } = useI18n();
   const d = useDashboard();
   const name = (me?.email ?? '').split('@')[0];
 
   const stats = [
-    { key: 'products', title: 'Ürünler', value: d.productCount },
-    { key: 'out', title: 'Tükenen', value: d.outOfStock.length },
-    { key: 'low', title: 'Azalan stok', value: d.lowStock.length, description: '10 adet ve altı' },
-    { key: 'users', title: 'Müşteriler', value: d.userCount },
+    { key: 'products', title: t('dashboard.stat.products'), value: d.productCount },
+    { key: 'out', title: t('dashboard.stat.out'), value: d.outOfStock.length },
+    {
+      key: 'low',
+      title: t('dashboard.stat.low'),
+      value: d.lowStock.length,
+      description: t('dashboard.stat.lowHint'),
+    },
+    { key: 'users', title: t('dashboard.stat.users'), value: d.userCount },
   ];
 
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={`Merhaba${name ? `, ${name}` : ''}`}
-        description="Mağazanın bugünkü durumu."
+        title={name ? t('dashboard.greeting', { name }) : t('dashboard.greetingAnon')}
+        description={t('dashboard.description')}
         actions={
           <Button href="/products?new=1" color="primary" icon={<Plus size={16} aria-hidden />}>
-            Yeni ürün
+            {t('dashboard.newProduct')}
           </Button>
         }
       />
 
       <List
-        aria-label="Özet"
+        aria-label={t('dashboard.summary')}
         dataSource={stats}
         rowKey="key"
         grid={{ columns: { base: 1, sm: 2, xl: 4 }, gap: 'md' }}
@@ -56,12 +65,12 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-6">
           <Card skeleton={d.isLoading}>
             <Statistic
-              title="Stok değeri"
+              title={t('dashboard.stockValue')}
               value={d.stockValue}
               precision={2}
-              locale="tr-TR"
+              locale={lang}
               suffix="₺"
-              description="Satış fiyatıyla"
+              description={t('dashboard.stockValueHint')}
             />
           </Card>
           <RecentUsers users={d.recentUsers} loading={d.isLoading} />

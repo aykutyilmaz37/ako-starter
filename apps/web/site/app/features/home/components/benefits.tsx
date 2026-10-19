@@ -1,27 +1,29 @@
 import { List, ListItem, ListItemMeta } from '@mari-ui/components/list';
 import { BookOpen, Flame, Truck } from 'lucide-react';
-
-const items = [
-  {
-    icon: Flame,
-    title: 'Haftada iki kez kavurma',
-    text: 'Pazartesi ve perşembe kavurur, aynı gün paketleriz.',
-  },
-  {
-    icon: Truck,
-    title: '750 ₺ üzeri ücretsiz kargo',
-    text: 'İstanbul içi ertesi gün, diğer şehirlere 2 iş günü.',
-  },
-  {
-    icon: BookOpen,
-    title: 'Her pakette demleme rehberi',
-    text: 'Oran, öğütme ve süre: o kahve için denediğimiz tarif.',
-  },
-];
+import { useT } from '~/shared/i18n/i18n-provider';
 
 export function Benefits() {
+  const t = useT();
+  const items = [
+    {
+      icon: Flame,
+      title: t('home.benefits.roast.title'),
+      text: t('home.benefits.roast.text'),
+    },
+    {
+      icon: Truck,
+      title: t('home.benefits.shipping.title'),
+      text: t('home.benefits.shipping.text'),
+    },
+    {
+      icon: BookOpen,
+      title: t('home.benefits.guide.title'),
+      text: t('home.benefits.guide.text'),
+    },
+  ];
+
   return (
-    <section aria-label="Neden Akı" className="border-y border-mari-border">
+    <section aria-label={t('home.benefits.label')} className="border-y border-mari-border">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <List
           dataSource={items}

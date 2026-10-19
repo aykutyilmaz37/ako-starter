@@ -5,8 +5,7 @@ import { Popconfirm } from '@mari-ui/components/popconfirm';
 import { Table, type ColumnDef } from '@mari-ui/components/table';
 import { Tag } from '@mari-ui/components/tag';
 import { ADMIN_ROLE, useToggleAdmin } from '~/features/users/hooks/use-users';
-
-const date = new Intl.DateTimeFormat('tr-TR', { dateStyle: 'medium' });
+import { useI18n } from '~/shared/i18n/i18n-provider';
 
 interface UsersTableProps {
   users: PagedResponseOfAdminUserResponse | undefined;
@@ -16,10 +15,12 @@ interface UsersTableProps {
 
 export function UsersTable({ users, loading, onPageChange }: UsersTableProps) {
   const admin = useToggleAdmin();
+  const { lang, t } = useI18n();
+  const date = new Intl.DateTimeFormat(lang, { dateStyle: 'medium' });
 
   const columns: ColumnDef<AdminUserResponse>[] = [
     {
-      header: 'Müşteri',
+      header: t('users.col.customer'),
       columnName: 'email',
       render: (_, user) => {
         const email = user.email ?? user.userName;
@@ -32,7 +33,7 @@ export function UsersTable({ users, loading, onPageChange }: UsersTableProps) {
       },
     },
     {
-      header: 'Roller',
+      header: t('users.col.roles'),
       columnName: 'roles',
       render: (_, user) => (
         <div className="flex gap-1">
@@ -45,28 +46,28 @@ export function UsersTable({ users, loading, onPageChange }: UsersTableProps) {
       ),
     },
     {
-      header: 'Durum',
+      header: t('users.col.status'),
       columnName: 'emailConfirmed',
       render: (_, user) =>
         user.lockedOut ? (
-          <Tag color="error">Kilitli</Tag>
+          <Tag color="error">{t('users.status.locked')}</Tag>
         ) : user.emailConfirmed ? (
           <Tag color="success" variant="soft">
-            Doğrulandı
+            {t('users.status.verified')}
           </Tag>
         ) : (
           <Tag color="warning" variant="soft">
-            Doğrulanmadı
+            {t('users.status.unverified')}
           </Tag>
         ),
     },
     {
-      header: 'Giriş',
+      header: t('users.col.login'),
       columnName: 'logins',
-      render: (_, user) => (user.logins.length ? user.logins.join(', ') : 'E-posta'),
+      render: (_, user) => (user.logins.length ? user.logins.join(', ') : t('users.loginEmail')),
     },
     {
-      header: 'Kayıt',
+      header: t('users.col.created'),
       columnName: 'createdAt',
       render: (_, user) => date.format(new Date(user.createdAt)),
     },
@@ -78,14 +79,14 @@ export function UsersTable({ users, loading, onPageChange }: UsersTableProps) {
         const isAdmin = user.roles.includes(ADMIN_ROLE);
         return (
           <Popconfirm
-            title={isAdmin ? 'Admin rolü kaldırılsın mı?' : 'Admin yapılsın mı?'}
+            title={isAdmin ? t('users.confirm.remove') : t('users.confirm.make')}
             description={user.email ?? user.userName}
-            okText="Evet"
-            cancelText="Vazgeç"
+            okText={t('users.confirm.yes')}
+            cancelText={t('common.cancel')}
             onConfirm={() => admin.toggle(user)}
           >
             <Button size="sm" variant="ghost" loading={admin.isPending}>
-              {isAdmin ? 'Admin rolünü al' : 'Admin yap'}
+              {isAdmin ? t('users.removeAdmin') : t('users.makeAdmin')}
             </Button>
           </Popconfirm>
         );
@@ -95,7 +96,7 @@ export function UsersTable({ users, loading, onPageChange }: UsersTableProps) {
 
   return (
     <Table
-      label="Kullanıcılar"
+      label={t('users.table')}
       data={users?.items ?? []}
       columns={columns}
       skeleton={loading && !users}
@@ -106,7 +107,7 @@ export function UsersTable({ users, loading, onPageChange }: UsersTableProps) {
         total: users?.totalCount ?? 0,
         onPageChange,
       }}
-      emptyState={{ title: 'Kullanıcı bulunamadı' }}
+      emptyState={{ title: t('users.empty') }}
     />
   );
 }

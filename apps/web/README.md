@@ -5,10 +5,10 @@ Her web ürünü ayrı bir uygulamadır (ayrı build, ayrı domain, ayrı deploy
 
 Örnek senaryo **Akı Kahve** (butik kahve kavurucusu); tasarım kararları kök `DECISIONS.md` → "Tasarım ve örnek senaryo".
 
-| Uygulama      | Port | Kimler girer   | Not                                                                   |
-| ------------- | ---- | -------------- | --------------------------------------------------------------------- |
-| `site/`       | 5173 | herkes         | herkese açık ürünler (SSR + CDN önbelleği), giriş, kayıt, görevler    |
-| `backoffice/` | 5174 | yalnızca Admin | kullanıcılar (rol atama), ürünler (ekle/düzenle/sil); iç ağda çalışır |
+| Uygulama      | Port | Kimler girer   | Not                                                                              |
+| ------------- | ---- | -------------- | -------------------------------------------------------------------------------- |
+| `site/`       | 5173 | herkes         | herkese açık ürünler (SSR + CDN önbelleği), giriş, kayıt, görevler               |
+| `backoffice/` | 5174 | yalnızca Admin | kullanıcılar (rol atama), ürünler (ekle/düzenle/sil), çeviriler; iç ağda çalışır |
 
 Yeni bir ürün (ör. `investment`): `backoffice` ya da `site` klasörünü kopyalayın, `package.json` adını, portu
 (`vite.config.ts`, `env.server.ts`) ve `cookieName`'i (`app/server.ts`) değiştirin.
@@ -38,7 +38,8 @@ app/
   routes.ts         adres → sayfa eşlemesi (tüm adresler tek yerde)
   server.ts         Hono sunucusu: BFF route'ları (/api/*, /bff/*) + React Router
   env.server.ts     ortam ayarları (.server: tarayıcı paketine asla girmez)
-  shared/           uygulama geneli: layout (başlık/menü), useMe
+  shared/           uygulama geneli: layout (başlık/menü), useMe, i18n/ (çeviri altyapısı), dil seçici
+  locales/          varsayılan metinler: tr.json, en.json, de.json (düz dosya, noktalı anahtar)
   features/
     <özellik>/
       pages/        sayfa: loader + meta + bileşenlerin yerleşimi (ince)
@@ -84,6 +85,33 @@ tarayıcı ──/api/*──▶ Hono BFF ──Bearer token──▶ .NET API
 - Backoffice: `requiredRole: 'Admin'`; Admin olmayan kullanıcı girişte 403 alır.
 - Gerçek istemci IP'si `X-Forwarded-For` ile API'ye iletilir (rate limiting için). API bu başlığa yalnızca
   güvendiği proxy'lerden inanır: varsayılan aynı makine, diğerleri `ForwardedHeaders:KnownNetworks` ile.
+
+## Çoklu dil (i18n)
+
+Diller tr (varsayılan), en, de. Karar ve model için kök `DECISIONS.md` → "Çoklu dil".
+
+```tsx
+const t = useT(); // ~/shared/i18n/i18n-provider
+t('home.hero.title'); // düz metin
+t('products.count', { count: 12 }); // "{count} ürün" yer tutucusu
+const lp = useLocalePath(); // yalnızca site: lp('/products') → "/en/products"
+<LocaleLink to="/login">…</LocaleLink>; // react-router Link'inin dil öneki ekleyen hâli
+```
+
+- **Yeni metin:** önce `app/locales/tr.json`'a anahtar eklenir (anahtarlar buradan türer, olmayan anahtar derleme
+  hatası verir), sonra `en.json` ve `de.json`'a. API dosyadaki anahtarları derlemede gömer; **dosyada olmayan anahtar
+  "Çeviriler" sayfasında çevrilemez.** Yeni dosya değişikliği API'nin yeniden derlenmesiyle görünür.
+- **Sözlük:** root loader'da gelir (`app/shared/i18n/dictionary.server.ts`): API'den `GET /localization/{dil}/{alan}`,
+  sunucuda 30 sn bellekte (süre dolunca ETag ile kontrol); API kapalıysa gömülü JSON. `meta` fonksiyonlarında
+  `metaTranslator(matches)` kullanılır.
+- **Site:** dil adreste. Varsayılan dilde önek yok (`/products`), diğerlerinde `/en/products`; `routes.ts`'teki
+  `:lang?` segmenti `shared/i18n/lang-layout.tsx`'te doğrulanır (`/tr/…` → 301, bilinmeyen dil → 404). Loader'larda
+  API çağrısına `apiInit(context, request)` verilir (token + adresteki dil). `<html lang>` ve `hreflang` root'ta.
+- **Backoffice:** dil `ako_lang` çerezinde, adresler dilsiz. Başlıktaki seçici çerezi yazıp sayfayı yeniler.
+  "Çeviriler" (`features/localization`): alan, arama, "yalnızca eksikler", dil sütunları, satır içi düzenleme
+  (kaydet / ezmeyi sil), dil ekleme ve aç-kapat, dışa aktarma.
+- Dil seçici bayrakları `public/flags/<kod>.png`; açık dil tek ise seçici görünmez.
+- Çoklu dil istenmiyorsa (create-ako-app "hayır"): seçici, `:lang?` segmenti ve `features/localization` silinir.
 
 ## Tema ve mari-ui
 
