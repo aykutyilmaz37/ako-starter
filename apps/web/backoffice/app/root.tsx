@@ -9,6 +9,7 @@ import {
   isRouteErrorResponse,
   redirect,
   useRouteLoaderData,
+  type ShouldRevalidateFunctionArgs,
 } from 'react-router';
 import type { Route } from './+types/root';
 import { configureApi } from '~/shared/api';
@@ -47,6 +48,14 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     throw redirect('/login');
   }
   return { me, lang, defaultLang, languages, dictionary };
+}
+
+/**
+ * Root verisi (oturum, sözlük, diller) sayfa içi gezinmede (arama, sayfalama, menü) yeniden çekilmez;
+ * yalnızca bir form gönderiminden (giriş/çıkış gibi) sonra tazelenir.
+ */
+export function shouldRevalidate({ formMethod }: ShouldRevalidateFunctionArgs) {
+  return formMethod !== undefined && formMethod !== 'GET';
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
