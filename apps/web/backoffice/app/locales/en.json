@@ -5,6 +5,7 @@
   "category.Equipment": "Brewing equipment",
   "category.Accessory": "Accessories",
   "layout.menu.label": "Admin menu",
+  "layout.menu.open": "Open menu",
   "layout.menu.dashboard": "Overview",
   "layout.menu.products": "Products",
   "layout.menu.users": "Customers",
