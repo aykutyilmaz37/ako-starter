@@ -1,11 +1,7 @@
 @import 'tailwindcss';
 @import '@mari-ui/components/tailwind.css';
-@import '@fontsource-variable/inter';
-/* Backoffice teması: aynı marka rengi, yoğun (compact) düzen. packages/ui/themes/backoffice/mari-ui.config.json */
-@import '@ako/ui/themes/backoffice.css';
-@import '@ako/ui/themes/warm-neutrals.css';
-
-@source '../../../../packages/ui/src';
+/* Backoffice mari-ui'ın varsayılan temasını (iris) kullanır; fontlar paketin kendi yerel dosyaları (Geist, Manrope). */
+@import '@mari-ui/tokens/fonts.css';
 
 @layer base {
   body {

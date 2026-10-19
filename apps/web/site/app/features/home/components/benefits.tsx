@@ -1,3 +1,4 @@
+import { List, ListItem, ListItemMeta } from '@mari-ui/components/list';
 import { BookOpen, Flame, Truck } from 'lucide-react';
 
 const items = [
@@ -21,19 +22,27 @@ const items = [
 export function Benefits() {
   return (
     <section aria-label="Neden Akı" className="border-y border-mari-border">
-      <ul className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3">
-        {items.map(({ icon: Icon, title, text }) => (
-          <li key={title} className="flex gap-4">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-mari-full bg-mari-primary-subtle text-mari-primary-subtle-contrast">
-              <Icon size={20} aria-hidden />
-            </span>
-            <div>
-              <h2 className="font-sans text-base font-semibold">{title}</h2>
-              <p className="mt-1 text-sm text-mari-muted">{text}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <List
+          dataSource={items}
+          rowKey="title"
+          split={false}
+          grid={{ columns: { base: 1, md: 3 }, gap: 'lg' }}
+          renderItem={({ icon: Icon, title, text }) => (
+            <ListItem>
+              <ListItemMeta
+                avatar={
+                  <span className="flex size-11 items-center justify-center rounded-mari-full bg-mari-primary-subtle text-mari-primary-subtle-contrast">
+                    <Icon size={20} aria-hidden />
+                  </span>
+                }
+                title={title}
+                description={text}
+              />
+            </ListItem>
+          )}
+        />
+      </div>
     </section>
   );
 }

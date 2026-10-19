@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from 'react-router';
-import { AuthLayout } from '../components/auth-layout';
-import { VerifyEmailForm } from '../components/verify-email-form';
+import { AuthLayout } from '~/features/auth/components/auth-layout';
+import { VerifyEmailForm } from '~/features/auth/components/verify-email-form';
 
 export function meta() {
   return [{ title: 'E-posta doğrulama | Akı Kahve' }];

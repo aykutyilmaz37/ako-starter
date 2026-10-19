@@ -1,8 +1,9 @@
-import { AUTH_ERROR_MESSAGES, LoginForm } from '@ako/ui';
+import { LoginForm } from '~/features/auth/components/login-form';
+import { AUTH_ERROR_MESSAGES } from '~/features/auth/error-messages';
 import { sessionContext } from '@ako/web-core';
 import { Alert } from '@mari-ui/components/alert';
 import { Link, redirect, useNavigate, useSearchParams } from 'react-router';
-import { AuthLayout } from '../components/auth-layout';
+import { AuthLayout } from '~/features/auth/components/auth-layout';
 import type { Route } from './+types/login';
 
 export function meta() {

@@ -1,18 +1,21 @@
 import { applyFieldErrors, isApiError } from '@ako/api-client';
 import type { ProductCategory, ProductResponse } from '@ako/api-client/model';
 import { AdminCreateProductBody } from '@ako/api-client/zod/admin-products';
-import { CATEGORIES, CATEGORY_LABELS, productImageSrc, TextField } from '@ako/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert } from '@mari-ui/components/alert';
 import { Field } from '@mari-ui/components/field';
-import { Select } from '@mari-ui/components/select';
+import { Image } from '@mari-ui/components/image';
+import { Input, Textarea } from '@mari-ui/components/input';
+import { InputNumber } from '@mari-ui/components/input-number';
 import { Modal } from '@mari-ui/components/modal';
+import { Select } from '@mari-ui/components/select';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useSaveProduct } from '../hooks/use-products';
+import { useSaveProduct } from '~/features/products/hooks/use-products';
+import { CATEGORIES, CATEGORY_LABELS, productImageSrc } from '~/shared/catalog';
 
-// API şeması + istemci tarafı kurallar (API'deki FluentValidation kurallarının kopyası değil, hızlı geri bildirim için).
+// API şeması + istemci tarafı kurallar (hızlı geri bildirim için; asıl kurallar API'de).
 const Schema = AdminCreateProductBody.extend({
   sku: z
     .string()
@@ -79,6 +82,8 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
     else create.mutate({ data: { sku, ...data } });
   });
 
+  const imageUrl = form.watch('imageUrl');
+
   return (
     <Modal
       open={open}
@@ -92,15 +97,30 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
       <form method="post" className="flex flex-col gap-4" onSubmit={submit}>
         {message && <Alert color="error" description={message} />}
         {!isEdit && (
-          <TextField
+          <Controller
             control={form.control}
             name="sku"
-            label="SKU"
-            hint="Sonradan değiştirilemez."
-            required
+            render={({ field, fieldState }) => (
+              <Field
+                label="SKU"
+                hint="Sonradan değiştirilemez."
+                required
+                error={fieldState.error?.message}
+              >
+                <Input {...field} />
+              </Field>
+            )}
           />
         )}
-        <TextField control={form.control} name="name" label="Ad" required />
+        <Controller
+          control={form.control}
+          name="name"
+          render={({ field, fieldState }) => (
+            <Field label="Ad" required error={fieldState.error?.message}>
+              <Input {...field} />
+            </Field>
+          )}
+        />
         <Controller
           control={form.control}
           name="category"
@@ -114,33 +134,78 @@ export function ProductFormModal({ open, product, onClose }: ProductFormModalPro
             </Field>
           )}
         />
-        <TextField
+        <Controller
           control={form.control}
           name="description"
-          label="Açıklama"
-          hint="Kahvelerde: işlem. kavrum. tadım notaları."
+          render={({ field, fieldState }) => (
+            <Field
+              label="Açıklama"
+              hint="Kahvelerde: işlem. kavrum. tadım notaları."
+              error={fieldState.error?.message}
+            >
+              <Textarea
+                {...field}
+                value={field.value ?? ''}
+                autoSize={{ minRows: 3, maxRows: 6 }}
+              />
+            </Field>
+          )}
         />
         <div className="flex items-end gap-3">
-          <div className="flex-1">
-            <TextField
-              control={form.control}
-              name="imageUrl"
-              label="Görsel adresi"
-              placeholder="/images/products/… ya da https://…"
-            />
-          </div>
-          {/* Girilen adresin önizlemesi */}
-          <img
-            src={productImageSrc(form.watch('imageUrl')) ?? ''}
+          <Controller
+            control={form.control}
+            name="imageUrl"
+            render={({ field, fieldState }) => (
+              <Field label="Görsel adresi" error={fieldState.error?.message} className="flex-1">
+                <Input
+                  {...field}
+                  value={field.value ?? ''}
+                  placeholder="/images/products/… ya da https://…"
+                />
+              </Field>
+            )}
+          />
+          <Image
+            src={productImageSrc(imageUrl)}
             alt=""
             width={56}
             height={56}
-            className="mb-0.5 size-14 shrink-0 rounded-mari-md border border-mari-border bg-mari-surface-alt object-cover"
+            fit="cover"
+            wrapperClassName="mb-0.5 shrink-0 overflow-hidden rounded-mari-md border border-mari-border"
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <TextField control={form.control} name="price" label="Fiyat (₺)" type="number" required />
-          <TextField control={form.control} name="stock" label="Stok" type="number" required />
+          <Controller
+            control={form.control}
+            name="price"
+            render={({ field, fieldState }) => (
+              <Field label="Fiyat" required error={fieldState.error?.message}>
+                <InputNumber
+                  value={field.value}
+                  onChange={(v) => field.onChange(v ?? 0)}
+                  min={0}
+                  precision={2}
+                  locale="tr-TR"
+                  suffix="₺"
+                />
+              </Field>
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="stock"
+            render={({ field, fieldState }) => (
+              <Field label="Stok" required error={fieldState.error?.message}>
+                <InputNumber
+                  value={field.value}
+                  onChange={(v) => field.onChange(v ?? 0)}
+                  min={0}
+                  step={1}
+                  suffix="adet"
+                />
+              </Field>
+            )}
+          />
         </div>
         {/* Enter ile gönderim için */}
         <button type="submit" hidden />

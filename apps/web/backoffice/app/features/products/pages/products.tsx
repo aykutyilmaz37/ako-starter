@@ -1,15 +1,15 @@
 import type { ProductCategory, ProductResponse } from '@ako/api-client/model';
-import { CATEGORIES, CATEGORY_LABELS } from '@ako/ui';
 import { Button } from '@mari-ui/components/button';
 import { SearchInput } from '@mari-ui/components/input';
 import { Segmented } from '@mari-ui/components/segmented';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { PageHeader } from '../../../shared/page-header';
-import { ProductFormModal } from '../components/product-form-modal';
-import { ProductsTable } from '../components/products-table';
-import { useProducts } from '../hooks/use-products';
+import { PageHeader } from '~/shared/page-header';
+import { CATEGORIES, CATEGORY_LABELS } from '~/shared/catalog';
+import { ProductFormModal } from '~/features/products/components/product-form-modal';
+import { ProductsTable } from '~/features/products/components/products-table';
+import { useProducts } from '~/features/products/hooks/use-products';
 
 // ÖRNEK SAYFA: yönetim tablosu; ekleme/düzenleme (modal), silme. Tüm yazma işlemleri /admin/products'a gider.
 // Projede gerekmiyorsa features/products'ı silin.

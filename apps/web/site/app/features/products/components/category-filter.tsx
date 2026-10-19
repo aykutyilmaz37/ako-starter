@@ -1,5 +1,5 @@
 import type { ProductCategory } from '@ako/api-client/model';
-import { CATEGORIES, CATEGORY_LABELS } from '@ako/ui';
+import { CATEGORIES, CATEGORY_LABELS } from '~/shared/catalog';
 import { Segmented } from '@mari-ui/components/segmented';
 
 const ALL = 'all';

@@ -1,8 +1,8 @@
 import { SearchInput } from '@mari-ui/components/input';
-import { PageHeader } from '../../../shared/page-header';
+import { PageHeader } from '~/shared/page-header';
 import { useSearchParams } from 'react-router';
-import { UsersTable } from '../components/users-table';
-import { useUsers } from '../hooks/use-users';
+import { UsersTable } from '~/features/users/components/users-table';
+import { useUsers } from '~/features/users/hooks/use-users';
 
 export function meta() {
   return [{ title: 'Müşteriler | Akı Kahve Yönetim' }];

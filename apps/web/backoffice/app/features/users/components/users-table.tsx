@@ -4,7 +4,7 @@ import { Button } from '@mari-ui/components/button';
 import { Popconfirm } from '@mari-ui/components/popconfirm';
 import { Table, type ColumnDef } from '@mari-ui/components/table';
 import { Tag } from '@mari-ui/components/tag';
-import { ADMIN_ROLE, useToggleAdmin } from '../hooks/use-users';
+import { ADMIN_ROLE, useToggleAdmin } from '~/features/users/hooks/use-users';
 
 const date = new Intl.DateTimeFormat('tr-TR', { dateStyle: 'medium' });
 

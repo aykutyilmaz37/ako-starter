@@ -1,7 +1,10 @@
-import { AUTH_ERROR_MESSAGES, LoginForm } from '@ako/ui';
 import { sessionContext } from '@ako/web-core';
 import { Alert } from '@mari-ui/components/alert';
+import { Card } from '@mari-ui/components/card';
+import { Paragraph, Title } from '@mari-ui/components/typography';
 import { redirect, useSearchParams } from 'react-router';
+import { LoginForm } from '~/features/auth/components/login-form';
+import { AUTH_ERROR_MESSAGES } from '~/features/auth/error-messages';
 import type { Route } from './+types/login';
 
 export function meta() {
@@ -18,22 +21,19 @@ export default function LoginPage() {
   const error = params.get('error');
 
   return (
-    <div className="w-full max-w-sm rounded-mari-lg border border-mari-border bg-mari-surface p-8 shadow-mari-sm">
-      <div className="mb-6 flex flex-col items-center gap-3 text-center">
-        <span className="flex size-11 items-center justify-center rounded-mari-md bg-mari-primary-solid text-lg font-bold text-mari-primary-solid-contrast">
-          A
-        </span>
-        <div>
-          <h1 className="text-xl font-semibold">Yönetim paneli</h1>
-          <p className="mt-1 text-sm text-mari-muted">Akı Kahve ekibi için</p>
+    <Card className="w-full max-w-sm">
+      <div className="flex flex-col gap-6">
+        <div className="text-center">
+          <Title level={1} className="text-xl">
+            Yönetim paneli
+          </Title>
+          <Paragraph className="text-sm text-mari-muted">Akı Kahve ekibi için</Paragraph>
         </div>
-      </div>
-      <div className="flex flex-col gap-4">
         {error && (
           <Alert color="error" description={AUTH_ERROR_MESSAGES[error] ?? 'Giriş yapılamadı.'} />
         )}
         <LoginForm onSuccess={() => window.location.assign('/')} />
       </div>
-    </div>
+    </Card>
   );
 }

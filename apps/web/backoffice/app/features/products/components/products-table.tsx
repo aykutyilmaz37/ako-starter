@@ -1,11 +1,13 @@
 import type { PagedResponseOfProductResponse, ProductResponse } from '@ako/api-client/model';
-import { CATEGORY_LABELS, formatPrice, productImageSrc, stockState } from '@ako/ui';
 import { Button } from '@mari-ui/components/button';
+import { Image } from '@mari-ui/components/image';
 import { Popconfirm } from '@mari-ui/components/popconfirm';
 import { Table, type ColumnDef } from '@mari-ui/components/table';
 import { Tag } from '@mari-ui/components/tag';
+import { Text } from '@mari-ui/components/typography';
 import { Pencil, Trash2 } from 'lucide-react';
-import { useRemoveProduct } from '../hooks/use-products';
+import { useRemoveProduct } from '~/features/products/hooks/use-products';
+import { CATEGORY_LABELS, formatPrice, productImageSrc, stockState } from '~/shared/catalog';
 
 interface ProductsTableProps {
   products: PagedResponseOfProductResponse | undefined;
@@ -23,16 +25,21 @@ export function ProductsTable({ products, loading, onPageChange, onEdit }: Produ
       columnName: 'name',
       render: (_, p) => (
         <div className="flex items-center gap-3">
-          <img
+          <Image
             src={productImageSrc(p.imageUrl)}
             alt=""
             width={40}
             height={40}
-            className="size-10 shrink-0 rounded-mari-md bg-mari-surface-alt object-cover"
+            fit="cover"
+            wrapperClassName="shrink-0 overflow-hidden rounded-mari-md"
           />
           <div className="min-w-0">
-            <p className="truncate font-medium">{p.name}</p>
-            <p className="text-xs text-mari-muted">{p.sku}</p>
+            <Text weight="medium" ellipsis className="block">
+              {p.name}
+            </Text>
+            <Text muted className="block text-xs">
+              {p.sku}
+            </Text>
           </div>
         </div>
       ),

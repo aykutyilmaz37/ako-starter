@@ -1,12 +1,13 @@
-import { formatPrice } from '@ako/ui';
 import { Button } from '@mari-ui/components/button';
-import { AlertTriangle, Coins, Package, PackageX, Plus, Users } from 'lucide-react';
-import { PageHeader } from '../../../shared/page-header';
-import { useMe } from '../../../shared/use-me';
-import { RecentUsers } from '../components/recent-users';
-import { StatCard } from '../components/stat-card';
-import { StockAlerts } from '../components/stock-alerts';
-import { useDashboard } from '../hooks/use-dashboard';
+import { Card } from '@mari-ui/components/card';
+import { List } from '@mari-ui/components/list';
+import { Statistic } from '@mari-ui/components/statistic';
+import { Plus } from 'lucide-react';
+import { RecentUsers } from '~/features/dashboard/components/recent-users';
+import { StockAlerts } from '~/features/dashboard/components/stock-alerts';
+import { useDashboard } from '~/features/dashboard/hooks/use-dashboard';
+import { PageHeader } from '~/shared/page-header';
+import { useMe } from '~/shared/use-me';
 
 export function meta() {
   return [{ title: 'Genel bakış | Akı Kahve Yönetim' }];
@@ -16,6 +17,13 @@ export default function DashboardPage() {
   const me = useMe();
   const d = useDashboard();
   const name = (me?.email ?? '').split('@')[0];
+
+  const stats = [
+    { key: 'products', title: 'Ürünler', value: d.productCount },
+    { key: 'out', title: 'Tükenen', value: d.outOfStock.length },
+    { key: 'low', title: 'Azalan stok', value: d.lowStock.length, description: '10 adet ve altı' },
+    { key: 'users', title: 'Müşteriler', value: d.userCount },
+  ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -29,45 +37,34 @@ export default function DashboardPage() {
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          label="Ürünler"
-          value={d.productCount}
-          icon={Package}
-          tone="primary"
-          loading={d.isLoading}
-        />
-        <StatCard
-          label="Tükenen"
-          value={d.outOfStock.length}
-          icon={PackageX}
-          tone={d.outOfStock.length ? 'error' : 'neutral'}
-          loading={d.isLoading}
-        />
-        <StatCard
-          label="Azalan stok"
-          value={d.lowStock.length}
-          hint="10 adet ve altı"
-          icon={AlertTriangle}
-          tone={d.lowStock.length ? 'warning' : 'neutral'}
-          loading={d.isLoading}
-        />
-        <StatCard label="Müşteriler" value={d.userCount} icon={Users} loading={d.isLoading} />
-      </div>
+      <List
+        aria-label="Özet"
+        dataSource={stats}
+        rowKey="key"
+        grid={{ columns: { base: 1, sm: 2, xl: 4 }, gap: 'md' }}
+        renderItem={(s) => (
+          <Card skeleton={d.isLoading}>
+            <Statistic title={s.title} value={s.value} description={s.description} animated />
+          </Card>
+        )}
+      />
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <StockAlerts outOfStock={d.outOfStock} lowStock={d.lowStock} />
+          <StockAlerts outOfStock={d.outOfStock} lowStock={d.lowStock} loading={d.isLoading} />
         </div>
         <div className="flex flex-col gap-6">
-          <StatCard
-            label="Stok değeri"
-            value={formatPrice(d.stockValue)}
-            hint="Satış fiyatıyla"
-            icon={Coins}
-            loading={d.isLoading}
-          />
-          <RecentUsers users={d.recentUsers} />
+          <Card skeleton={d.isLoading}>
+            <Statistic
+              title="Stok değeri"
+              value={d.stockValue}
+              precision={2}
+              locale="tr-TR"
+              suffix="₺"
+              description="Satış fiyatıyla"
+            />
+          </Card>
+          <RecentUsers users={d.recentUsers} loading={d.isLoading} />
         </div>
       </div>
     </div>

@@ -1,6 +1,8 @@
 import type { AdminUserResponse } from '@ako/api-client/model';
 import { Avatar } from '@mari-ui/components/avatar';
-import { Link } from 'react-router';
+import { Button } from '@mari-ui/components/button';
+import { Card } from '@mari-ui/components/card';
+import { List, ListItem, ListItemMeta } from '@mari-ui/components/list';
 
 const relative = new Intl.RelativeTimeFormat('tr', { numeric: 'auto' });
 
@@ -9,32 +11,33 @@ function ago(date: string) {
   return days === 0 ? 'bugün' : relative.format(days, 'day');
 }
 
-export function RecentUsers({ users }: { users: AdminUserResponse[] }) {
+export function RecentUsers({ users, loading }: { users: AdminUserResponse[]; loading: boolean }) {
   return (
-    <section
-      className="rounded-mari-lg border border-mari-border bg-mari-surface"
-      aria-labelledby="son-musteriler"
-    >
-      <header className="flex items-center justify-between border-b border-mari-border px-5 py-4">
-        <h2 id="son-musteriler" className="font-semibold">
-          Son kayıt olanlar
-        </h2>
-        <Link to="/users" className="text-sm font-medium text-mari-primary">
+    <Card
+      title="Son kayıt olanlar"
+      extra={
+        <Button href="/users" variant="link" size="sm">
           Tümü
-        </Link>
-      </header>
-      <ul className="divide-y divide-mari-border">
-        {users.map((u) => {
+        </Button>
+      }
+    >
+      <List
+        loading={loading}
+        dataSource={users}
+        rowKey="id"
+        renderItem={(u) => {
           const email = u.email ?? u.userName;
           return (
-            <li key={u.id} className="flex items-center gap-3 px-5 py-3">
-              <Avatar size="sm" src={email.slice(0, 2).toUpperCase()} alt={email} />
-              <span className="min-w-0 flex-1 truncate text-sm">{email}</span>
-              <span className="shrink-0 text-xs text-mari-muted">{ago(u.createdAt)}</span>
-            </li>
+            <ListItem>
+              <ListItemMeta
+                avatar={<Avatar size="sm" src={email.slice(0, 2).toUpperCase()} alt={email} />}
+                title={email}
+                description={ago(u.createdAt)}
+              />
+            </ListItem>
           );
-        })}
-      </ul>
-    </section>
+        }}
+      />
+    </Card>
   );
 }

@@ -1,28 +1,37 @@
-import { logout } from '@ako/ui';
 import { Button } from '@mari-ui/components/button';
+import { BasicMenu } from '@mari-ui/components/menu';
+import { Text } from '@mari-ui/components/typography';
 import { ListChecks, LogOut, Search } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { Link, NavLink } from 'react-router';
-import { Logo } from './logo';
-import { useMe } from './use-me';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { logout } from '~/shared/api';
+import { Logo } from '~/shared/logo';
+import { useMe } from '~/shared/use-me';
 
-const nav = [
-  { to: '/products?category=Coffee', label: 'Kahveler' },
-  { to: '/products?category=Equipment', label: 'Ekipman' },
-  { to: '/products?category=Accessory', label: 'Aksesuar' },
+const menu = [
+  { key: 'coffee', title: 'Kahveler', route: '/products?category=Coffee' },
+  { key: 'equipment', title: 'Ekipman', route: '/products?category=Equipment' },
+  { key: 'accessory', title: 'Aksesuar', route: '/products?category=Accessory' },
 ];
 
-/** Başlık + içerik + alt bilgi. Menüye yeni bölümler buradan eklenir. */
+/** Başlık + içerik + alt bilgi. Menüye yeni bölümler `menu` dizisinden eklenir. */
 export function SiteLayout({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   return (
     <div className="flex min-h-screen flex-col">
-      <a
-        href="#icerik"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
-      >
-        İçeriğe geç
-      </a>
-      <SiteHeader />
+      <BasicMenu
+        aria-label="Ana menü"
+        data={menu}
+        logo={<Logo />}
+        logoHref="/"
+        logoLabel="Akı Kahve ana sayfa"
+        menuPosition="sticky"
+        currentPath={location.pathname + location.search}
+        onNavigate={(route) => navigate(route)}
+        actions={<HeaderActions />}
+      />
       <main id="icerik" className="flex-1">
         {children}
       </main>
@@ -31,123 +40,100 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   );
 }
 
-function SiteHeader() {
+function HeaderActions() {
   const me = useMe();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-mari-border bg-mari-surface/85 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-8 px-4 sm:px-6">
-        <Logo />
-        <nav aria-label="Ana menü" className="hidden gap-6 text-sm font-medium md:flex">
-          {nav.map((item) => (
-            <NavLink
-              key={item.label}
-              to={item.to}
-              className="transition-colors hover:text-mari-primary"
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="ml-auto flex items-center gap-1">
+    <div className="flex items-center gap-1">
+      <Button
+        href="/products"
+        variant="ghost"
+        size="sm"
+        icon={<Search size={18} aria-hidden />}
+        aria-label="Ürünlerde ara"
+      />
+      {me ? (
+        <>
           <Button
-            href="/products"
+            href="/list"
             variant="ghost"
             size="sm"
-            icon={<Search size={18} aria-hidden />}
-            aria-label="Ürünlerde ara"
+            icon={<ListChecks size={18} aria-hidden />}
+          >
+            Listem
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            icon={<LogOut size={18} aria-hidden />}
+            onClick={() => logout('/')}
+            aria-label="Çıkış yap"
           />
-          {me ? (
-            <>
-              <Button
-                href="/list"
-                variant="ghost"
-                size="sm"
-                icon={<ListChecks size={18} aria-hidden />}
-              >
-                <span className="hidden sm:inline">Listem</span>
-              </Button>
-              <span className="hidden max-w-40 truncate px-2 text-sm text-mari-muted lg:inline">
-                {me.email ?? me.userName}
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                icon={<LogOut size={18} aria-hidden />}
-                onClick={() => logout('/')}
-                aria-label="Çıkış yap"
-              />
-            </>
-          ) : (
-            <Button href="/login" size="sm" color="primary">
-              Giriş yap
-            </Button>
-          )}
-        </div>
-      </div>
-      {/* Dar ekranda kategori menüsü başlığın altında, yatay kaydırılabilir. */}
-      <nav
-        aria-label="Kategoriler"
-        className="flex gap-5 overflow-x-auto px-4 pb-3 text-sm font-medium md:hidden"
-      >
-        {nav.map((item) => (
-          <NavLink key={item.label} to={item.to} className="shrink-0 hover:text-mari-primary">
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
-    </header>
+        </>
+      ) : (
+        <Button href="/login" size="sm" color="primary">
+          Giriş yap
+        </Button>
+      )}
+    </div>
   );
 }
+
+const footerLinks = [
+  {
+    title: 'Mağaza',
+    links: [
+      { to: '/products?category=Coffee', label: 'Kahveler' },
+      { to: '/products?category=Equipment', label: 'Demleme ekipmanı' },
+      { to: '/products?category=Accessory', label: 'Aksesuar' },
+    ],
+  },
+  {
+    title: 'Hesap',
+    links: [
+      { to: '/login', label: 'Giriş yap' },
+      { to: '/register', label: 'Hesap oluştur' },
+      { to: '/list', label: 'Alışveriş listem' },
+    ],
+  },
+];
 
 function SiteFooter() {
   return (
     <footer className="mt-24 border-t border-mari-border bg-mari-surface-alt">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
-        <div className="md:col-span-2">
-          <Logo />
-          <p className="mt-4 max-w-sm text-sm leading-relaxed text-mari-muted">
+        <div className="flex flex-col gap-4 md:col-span-2">
+          <Link to="/" aria-label="Akı Kahve ana sayfa" className="w-fit">
+            <Logo />
+          </Link>
+          <Text muted className="max-w-sm text-sm leading-relaxed">
             Moda'da küçük bir kavurma atölyesi. Çekirdekleri çiftlik bazında seçiyor, haftada iki
             kez kavuruyor ve kavrulduğu hafta kapınıza gönderiyoruz.
-          </p>
+          </Text>
         </div>
-        <FooterLinks
-          title="Mağaza"
-          links={[
-            { to: '/products?category=Coffee', label: 'Kahveler' },
-            { to: '/products?category=Equipment', label: 'Demleme ekipmanı' },
-            { to: '/products?category=Accessory', label: 'Aksesuar' },
-          ]}
-        />
-        <FooterLinks
-          title="Hesap"
-          links={[
-            { to: '/login', label: 'Giriş yap' },
-            { to: '/register', label: 'Hesap oluştur' },
-            { to: '/list', label: 'Alışveriş listem' },
-          ]}
-        />
-      </div>
-      <div className="border-t border-mari-border py-6 text-center text-xs text-mari-muted">
-        © {new Date().getFullYear()} Akı Kahve · Bu bir örnek mağazadır, sipariş alınmaz.
-      </div>
-    </footer>
-  );
-}
-
-function FooterLinks({ title, links }: { title: string; links: { to: string; label: string }[] }) {
-  return (
-    <div>
-      <h2 className="font-sans text-sm font-semibold">{title}</h2>
-      <ul className="mt-4 space-y-3 text-sm text-mari-muted">
-        {links.map((link) => (
-          <li key={link.to}>
-            <Link to={link.to} className="transition-colors hover:text-mari-foreground">
-              {link.label}
-            </Link>
-          </li>
+        {footerLinks.map((group) => (
+          <nav key={group.title} aria-label={group.title}>
+            <Text weight="semibold" className="text-sm">
+              {group.title}
+            </Text>
+            <ul className="mt-4 space-y-3 text-sm">
+              {group.links.map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="text-mari-muted transition-colors hover:text-mari-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         ))}
-      </ul>
-    </div>
+      </div>
+      <Text muted className="block border-t border-mari-border py-6 text-center text-xs">
+        © {new Date().getFullYear()} Akı Kahve · Bu bir örnek mağazadır, sipariş alınmaz.
+      </Text>
+    </footer>
   );
 }

@@ -1,3 +1,4 @@
+import { Paragraph, Text, Title } from '@mari-ui/components/typography';
 import type { ReactNode } from 'react';
 
 interface AuthLayoutProps {
@@ -28,19 +29,25 @@ export function AuthLayout({ title, description, children }: AuthLayoutProps) {
             fill="currentColor"
           />
         </svg>
-        <p className="text-sm font-semibold tracking-widest opacity-80">AKI KAHVE</p>
+        <Text weight="semibold" className="text-sm tracking-widest text-inherit opacity-80">
+          AKI KAHVE
+        </Text>
         <div>
-          <p className="font-heading text-3xl leading-snug">
+          <Title level={2} className="text-3xl font-normal leading-snug text-inherit">
             Beğendiğiniz kahveleri listenize ekleyin, yeni hasat geldiğinde ilk siz haberdar olun.
-          </p>
-          <p className="mt-6 text-sm opacity-80">Moda, İstanbul · 2019'dan beri</p>
+          </Title>
+          <Text className="mt-6 block text-sm text-inherit opacity-80">
+            Moda, İstanbul · 2019'dan beri
+          </Text>
         </div>
       </aside>
 
       <section className="mx-auto flex w-full max-w-sm flex-col justify-center gap-6">
         <header className="flex flex-col gap-2">
-          <h1 className="font-heading text-3xl font-bold">{title}</h1>
-          {description && <p className="text-mari-muted">{description}</p>}
+          <Title level={1} className="text-3xl">
+            {title}
+          </Title>
+          {description && <Paragraph className="text-mari-muted">{description}</Paragraph>}
         </header>
         {children}
       </section>

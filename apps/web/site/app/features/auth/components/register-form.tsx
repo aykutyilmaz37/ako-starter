@@ -1,11 +1,12 @@
 import { applyFieldErrors } from '@ako/api-client';
 import { useRegister } from '@ako/api-client/auth';
 import { RegisterBody } from '@ako/api-client/zod/auth';
-import { TextField } from '@ako/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert } from '@mari-ui/components/alert';
 import { Button } from '@mari-ui/components/button';
-import { useForm } from 'react-hook-form';
+import { Field } from '@mari-ui/components/field';
+import { Input } from '@mari-ui/components/input';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 // API şeması (RegisterBody) + istemci tarafı kurallar. Şifre kuralları API'de; hataları forma gelir.
@@ -40,22 +41,28 @@ export function RegisterForm({ onRegistered }: { onRegistered: (email: string) =
       {passwordRuleErrors.map((message) => (
         <Alert key={message} color="error" description={message} />
       ))}
-      <TextField
+      <Controller
         control={form.control}
         name="email"
-        label="E-posta"
-        type="email"
-        autoComplete="email"
-        required
+        render={({ field, fieldState }) => (
+          <Field label="E-posta" required error={fieldState.error?.message}>
+            <Input {...field} type="email" autoComplete="email" />
+          </Field>
+        )}
       />
-      <TextField
+      <Controller
         control={form.control}
         name="password"
-        label="Şifre"
-        type="password"
-        autoComplete="new-password"
-        hint="En az 8 karakter; büyük harf, küçük harf, rakam ve özel karakter içermeli."
-        required
+        render={({ field, fieldState }) => (
+          <Field
+            label="Şifre"
+            required
+            hint="En az 8 karakter; büyük harf, küçük harf, rakam ve özel karakter içermeli."
+            error={fieldState.error?.message}
+          >
+            <Input {...field} type="password" autoComplete="new-password" visibilityToggle />
+          </Field>
+        )}
       />
       <Button htmlType="submit" color="primary" block loading={register.isPending}>
         Hesap oluştur

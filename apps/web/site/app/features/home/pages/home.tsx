@@ -1,15 +1,16 @@
 import type { ProductCategory } from '@ako/api-client/model';
 import { listProducts } from '@ako/api-client/products';
-import { CATEGORIES } from '@ako/ui';
 import { sessionContext, serverRequestInit } from '@ako/web-core';
 import { Button } from '@mari-ui/components/button';
 import { data } from 'react-router';
-import { ProductGrid } from '../../products/components/product-card';
-import { useMe } from '../../../shared/use-me';
-import { Benefits } from '../components/benefits';
-import { CategoryTiles } from '../components/category-tiles';
-import { Hero } from '../components/hero';
-import { Story } from '../components/story';
+import { Benefits } from '~/features/home/components/benefits';
+import { CategoryTiles } from '~/features/home/components/category-tiles';
+import { Hero } from '~/features/home/components/hero';
+import { Story } from '~/features/home/components/story';
+import { ProductGrid } from '~/features/products/components/product-card';
+import { CATEGORIES } from '~/shared/catalog';
+import { SectionHeading } from '~/shared/section-heading';
+import { useMe } from '~/shared/use-me';
 import type { Route } from './+types/home';
 
 export function meta() {
@@ -54,32 +55,25 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
       <Hero images={featured.map((p) => p.imageUrl)} />
       <Benefits />
 
-      <section className="mx-auto mt-20 max-w-6xl px-4 sm:px-6" aria-labelledby="bu-hafta">
+      <section
+        className="mx-auto mt-20 flex max-w-6xl flex-col gap-8 px-4 sm:px-6"
+        aria-labelledby="bu-hafta"
+      >
         <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold tracking-widest text-mari-primary">
-              TADIM MASASINDAN
-            </p>
-            <h2 id="bu-hafta" className="mt-2 font-heading text-3xl font-bold">
-              Bu haftanın kahveleri
-            </h2>
-          </div>
+          <SectionHeading id="bu-hafta" eyebrow="TADIM MASASINDAN" title="Bu haftanın kahveleri" />
           <Button href="/products?category=Coffee" variant="link" className="shrink-0">
             Tümünü gör
           </Button>
         </div>
-        <div className="mt-8">
-          <ProductGrid products={featured} />
-        </div>
+        <ProductGrid products={featured} />
       </section>
 
-      <section className="mx-auto mt-20 max-w-6xl px-4 sm:px-6" aria-labelledby="kategoriler">
-        <h2 id="kategoriler" className="font-heading text-3xl font-bold">
-          Ne arıyorsunuz?
-        </h2>
-        <div className="mt-8">
-          <CategoryTiles tiles={tiles} />
-        </div>
+      <section
+        className="mx-auto mt-20 flex max-w-6xl flex-col gap-8 px-4 sm:px-6"
+        aria-labelledby="kategoriler"
+      >
+        <SectionHeading id="kategoriler" title="Ne arıyorsunuz?" />
+        <CategoryTiles tiles={tiles} />
       </section>
 
       <div className="mt-24">

@@ -126,27 +126,21 @@ importers:
       '@ako/api-client':
         specifier: workspace:*
         version: link:../../../packages/api-client
-      '@ako/ui':
-        specifier: workspace:*
-        version: link:../../../packages/ui
       '@ako/web-core':
         specifier: workspace:*
         version: link:../../../packages/web-core
-      '@fontsource-variable/inter':
-        specifier: ^5.3.0
-        version: 5.3.0
       '@hookform/resolvers':
         specifier: ^5.9.2
         version: 5.9.2(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
       '@mari-ui/components':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: ^0.3.0
+        version: 0.3.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@mari-ui/core':
-        specifier: ^0.2.0
-        version: 0.2.0(react@19.3.1)
+        specifier: ^0.3.0
+        version: 0.3.0(react@19.3.1)
       '@mari-ui/tokens':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.0
+        version: 0.3.0
       '@react-router/node':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
@@ -190,6 +184,9 @@ importers:
       '@ako/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/tsconfig
+      '@mari-ui/cli':
+        specifier: ^0.3.0
+        version: 0.3.0
       '@react-router/dev':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
@@ -220,9 +217,6 @@ importers:
       '@ako/api-client':
         specifier: workspace:*
         version: link:../../../packages/api-client
-      '@ako/ui':
-        specifier: workspace:*
-        version: link:../../../packages/ui
       '@ako/web-core':
         specifier: workspace:*
         version: link:../../../packages/web-core
@@ -236,14 +230,14 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
       '@mari-ui/components':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: ^0.3.0
+        version: 0.3.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@mari-ui/core':
-        specifier: ^0.2.0
-        version: 0.2.0(react@19.3.1)
+        specifier: ^0.3.0
+        version: 0.3.0(react@19.3.1)
       '@mari-ui/tokens':
-        specifier: ^0.2.0
-        version: 0.2.0
+        specifier: ^0.3.0
+        version: 0.3.0
       '@react-router/node':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
@@ -287,6 +281,9 @@ importers:
       '@ako/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/tsconfig
+      '@mari-ui/cli':
+        specifier: ^0.3.0
+        version: 0.3.0
       '@react-router/dev':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
@@ -346,55 +343,6 @@ importers:
         version: link:../tsconfig
 
   packages/tsconfig: {}
-
-  packages/ui:
-    dependencies:
-      '@ako/api-client':
-        specifier: workspace:*
-        version: link:../api-client
-    devDependencies:
-      '@ako/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@hookform/resolvers':
-        specifier: ^5.9.2
-        version: 5.9.2(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(valibot@1.5.0(typescript@5.9.3))(zod@4.6.7)
-      '@mari-ui/components':
-        specifier: ^0.2.0
-        version: 0.2.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@mari-ui/core':
-        specifier: ^0.2.0
-        version: 0.2.0(react@19.3.1)
-      '@mari-ui/tokens':
-        specifier: ^0.2.0
-        version: 0.2.0
-      '@tanstack/react-query':
-        specifier: ^5.104.4
-        version: 5.104.4(@types/react@19.3.0)(react@19.3.1)
-      '@types/node':
-        specifier: ^26.6.5
-        version: 26.6.5
-      '@types/react':
-        specifier: ^19.3.0
-        version: 19.3.0
-      '@types/react-dom':
-        specifier: ^19.3.0
-        version: 19.3.0(@types/react@19.3.0)
-      react:
-        specifier: ^19.3.1
-        version: 19.3.1
-      react-dom:
-        specifier: ^19.3.1
-        version: 19.3.1(react@19.3.1)
-      react-hook-form:
-        specifier: ^7.90.0
-        version: 7.90.0(@types/react@19.3.0)(react@19.3.1)
-      react-router:
-        specifier: ^8.4.0
-        version: 8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      zod:
-        specifier: ^4.6.7
-        version: 4.6.7
 
   packages/web-core:
     dependencies:
@@ -486,6 +434,14 @@ packages:
   '@babel/types@7.29.8':
     resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
     engines: {node: '>=6.9.0'}
+
+  '@clack/core@1.5.1':
+    resolution: {integrity: sha512-iHTrHA8MtVuLl2TfZySmcKv1qO2PoyC9Z7pfSDozEuV5vtY3/wcOPKJXlqJ5Oq2Cx5DDGQGAMVx6HZfRRoVEbQ==}
+    engines: {node: '>= 20.12.0'}
+
+  '@clack/prompts@1.8.1':
+    resolution: {integrity: sha512-dlT1m5e/0yUL0kRNcQn7yGLVThkgbB0Ga/1AmfDDC/8ik6AIiSf2QLQO2zPYvefsHP0aFgxO93cVLCCfDp7kzQ==}
+    engines: {node: '>= 20.12.0'}
 
   '@commander-js/extra-typings@15.0.0':
     resolution: {integrity: sha512-yeJlba62xqmkgELUsn7356MEnzLLu/fw2x4lofFqGnXh6YysRdEs2BaLeLtg1+KU0AXvMeqQvTTp+3hBEBK+EA==}
@@ -782,8 +738,12 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@mari-ui/components@0.2.0':
-    resolution: {integrity: sha512-SyWWljTUukTPvpsIbVMMhcWdQ/dCwQG7nCnoU1RvE0dp61E1L1wzUV10bGD/eLQkkva6tRDYHkaz5uUHDPFa8Q==}
+  '@mari-ui/cli@0.3.0':
+    resolution: {integrity: sha512-StwdCQ6Y8ff1o5hnxtKyE3IbFFyYpZn4KtLI7eZUZqTnubbf/qPTtpGpWx+sSH+/Y0tIhPlquFfHKY4UvFqrLA==}
+    hasBin: true
+
+  '@mari-ui/components@0.3.0':
+    resolution: {integrity: sha512-hT3i4FsZObd2U0MFjLc1uCSNNN7rrNmQouGnh8Ctq30Xc053kB1MZoHsdYhz9r3OEWPQ3T9nqAP/JyZr3Ejknw==}
     peerDependencies:
       embla-carousel-autoplay: ^8.0.0
       embla-carousel-react: ^8.0.0
@@ -795,13 +755,13 @@ packages:
       embla-carousel-react:
         optional: true
 
-  '@mari-ui/core@0.2.0':
-    resolution: {integrity: sha512-SaHL8Fc8wAZBRXJFPipw83tVnpNKrIdUn0vKDGPlzCuSS1Rp4hG9YGIt8li+kaSFiJi8nI+jB8Ae2k3kUH7oSQ==}
+  '@mari-ui/core@0.3.0':
+    resolution: {integrity: sha512-5Ty2J6kF1eKRab4T+1Tdn3uRX7UNidsmBIt9kQ5q6mJL1RKu6XgU1ZbNLYfMmLiyoiEWMonG4QD5L/U/2VFO1w==}
     peerDependencies:
       react: '>=18'
 
-  '@mari-ui/tokens@0.2.0':
-    resolution: {integrity: sha512-t6fcQjjnZyCcV2TO4Z6BWMu8RJW3tc3meU4djBFR1Rz3hvCOqgIseBXuylJTRmjYcViEbOl+mo6HPg4R0Hl37w==}
+  '@mari-ui/tokens@0.3.0':
+    resolution: {integrity: sha512-djBXZl2oR2qFjFU4a7DYZ1TbRfTD/mrnSLqCgVvDDP6aGW1Kt9YbJrJSEkbqNAnSfxSz8UiOGu+3NLewv6gQlA==}
 
   '@orval/angular@8.43.0':
     resolution: {integrity: sha512-IxDrLrm2lORBsIQt01f4fDM8P/qXuDC8qB66FABxFy8znUXre+bNZBAIeB9IwwH0A4tnPgIKM67uqaXne8qahQ==}
@@ -1582,8 +1542,17 @@ packages:
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
+  fast-string-truncated-width@3.0.3:
+    resolution: {integrity: sha512-0jjjIEL6+0jag3l2XWWizO64/aZVtpiGE3t0Zgqxv0DPuxiMjvB3M24fCyhZUO4KomJQPj3LTSUnDP3GpdwC0g==}
+
+  fast-string-width@3.0.2:
+    resolution: {integrity: sha512-gX8LrtNEI5hq8DVUfRQMbr5lpaS4nMIWV+7XEbXk2b8kiQIizgnlr12B4dA3ZEx3308ze0O4Q1R+cHts8kyUJg==}
+
   fast-uri@3.1.8:
     resolution: {integrity: sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg==}
+
+  fast-wrap-ansi@0.2.2:
+    resolution: {integrity: sha512-7F2Fl+TjRSenLqlU3UjSH0iyqopqoZIu7eZVpEirP2g1GtWa2G/ecEmBdgz31+Mxr+ELclgg6sokpSFIQiZ02Q==}
 
   fdir@6.5.0:
     resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
@@ -2024,6 +1993,9 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
+  sisteransi@1.0.5:
+    resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
+
   source-map-js@1.2.2:
     resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
     engines: {node: '>=0.10.0'}
@@ -2319,6 +2291,18 @@ snapshots:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
+  '@clack/core@1.5.1':
+    dependencies:
+      fast-wrap-ansi: 0.2.2
+      sisteransi: 1.0.5
+
+  '@clack/prompts@1.8.1':
+    dependencies:
+      '@clack/core': 1.5.1
+      fast-string-width: 3.0.2
+      fast-wrap-ansi: 0.2.2
+      sisteransi: 1.0.5
+
   '@commander-js/extra-typings@15.0.0(commander@15.0.0)':
     dependencies:
       commander: 15.0.0
@@ -2425,15 +2409,6 @@ snapshots:
       hono: 4.13.13
       minimatch: 9.0.9
 
-  '@hookform/resolvers@5.9.2(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(valibot@1.5.0(typescript@5.9.3))(zod@4.6.7)':
-    dependencies:
-      '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.90.0(@types/react@19.3.0)(react@19.3.1)
-    optionalDependencies:
-      ajv: 8.20.0
-      valibot: 1.5.0(typescript@5.9.3)
-      zod: 4.6.7
-
   '@hookform/resolvers@5.9.2(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)':
     dependencies:
       '@standard-schema/utils': 0.3.0
@@ -2462,10 +2437,15 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@mari-ui/components@0.2.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@mari-ui/cli@0.3.0':
     dependencies:
-      '@mari-ui/core': 0.2.0(react@19.3.1)
-      '@mari-ui/tokens': 0.2.0
+      '@clack/prompts': 1.8.1
+      '@mari-ui/tokens': 0.3.0
+
+  '@mari-ui/components@0.3.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+    dependencies:
+      '@mari-ui/core': 0.3.0(react@19.3.1)
+      '@mari-ui/tokens': 0.3.0
       '@react-input/mask': 2.0.4(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       lucide-react: 0.511.0(react@19.3.1)
       qrcode-generator: 1.5.2
@@ -2477,14 +2457,14 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@mari-ui/core@0.2.0(react@19.3.1)':
+  '@mari-ui/core@0.3.0(react@19.3.1)':
     dependencies:
-      '@mari-ui/tokens': 0.2.0
+      '@mari-ui/tokens': 0.3.0
       clsx: 2.1.1
       react: 19.3.1
       tailwind-merge: 3.7.0
 
-  '@mari-ui/tokens@0.2.0': {}
+  '@mari-ui/tokens@0.3.0': {}
 
   '@orval/angular@8.43.0':
     dependencies:
@@ -3123,7 +3103,17 @@ snapshots:
 
   fast-deep-equal@3.1.3: {}
 
+  fast-string-truncated-width@3.0.3: {}
+
+  fast-string-width@3.0.2:
+    dependencies:
+      fast-string-truncated-width: 3.0.3
+
   fast-uri@3.1.8: {}
+
+  fast-wrap-ansi@0.2.2:
+    dependencies:
+      fast-string-width: 3.0.2
 
   fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
@@ -3475,6 +3465,8 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
+  sisteransi@1.0.5: {}
+
   source-map-js@1.2.2: {}
 
   std-env@4.3.0: {}
@@ -3549,11 +3541,6 @@ snapshots:
       browserslist: 4.29.3
       escalade: 3.2.0
       picocolors: 1.1.1
-
-  valibot@1.5.0(typescript@5.9.3):
-    optionalDependencies:
-      typescript: 5.9.3
-    optional: true
 
   valibot@1.5.0(typescript@7.0.2):
     optionalDependencies:

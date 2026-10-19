@@ -4,10 +4,12 @@ import { LoginBody } from '@ako/api-client/zod/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert } from '@mari-ui/components/alert';
 import { Button } from '@mari-ui/components/button';
+import { Field } from '@mari-ui/components/field';
+import { Input } from '@mari-ui/components/input';
 import { useState, type ReactNode } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { TextField } from './form';
+import { AUTH_ERROR_MESSAGES } from '~/features/auth/error-messages';
 
 const Schema = LoginBody.pick({ email: true, password: true }).extend({ email: z.email() });
 type Values = z.infer<typeof Schema>;
@@ -21,50 +23,28 @@ const PROVIDER_LABELS: Record<string, string> = {
   linkedin: 'LinkedIn',
 };
 
-// Sosyal girişte ve BFF'te dönen hata kodlarının kullanıcıya gösterilen karşılığı.
-export const AUTH_ERROR_MESSAGES: Record<string, string> = {
-  'auth.email_in_use':
-    'Bu e-posta ile kayıtlı bir hesap var. Önce e-posta ve şifrenizle giriş yapın.',
-  'auth.external_failed': 'Sosyal giriş tamamlanamadı.',
-  'auth.provider_unavailable': 'Bu giriş yöntemi etkin değil.',
-  'auth.role_required': 'Bu uygulamaya erişim yetkiniz yok.',
-};
-
 interface LoginFormProps {
   /** Başarılı girişten sonra (oturum çerezi yazıldı). */
   onSuccess: () => void;
   /** Doğrulanmamış e-posta ile giriş denenince (Identity "NotAllowed" döner). */
-  onEmailNotConfirmed?: (email: string) => void;
-  /** Sosyal giriş butonları gösterilsin mi? */
-  social?: boolean;
-  /** Form altındaki bağlantılar (kayıt ol, şifremi unuttum…). */
+  onEmailNotConfirmed: (email: string) => void;
   footer?: ReactNode;
 }
 
-/** E-posta + şifre girişi ve (ayarlı sağlayıcılar için) sosyal giriş butonları. Site ve backoffice ortak. */
-export function LoginForm({
-  onSuccess,
-  onEmailNotConfirmed,
-  social = true,
-  footer,
-}: LoginFormProps) {
+/** E-posta + şifre girişi ve (ayarı dolu sağlayıcılar için) sosyal giriş butonları. */
+export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormProps) {
   const [message, setMessage] = useState<string | null>(null);
   const form = useForm<Values>({
     resolver: zodResolver(Schema),
     defaultValues: { email: '', password: '' },
   });
-  const providers = useGetAuthProviders({ query: { enabled: social } });
+  const providers = useGetAuthProviders();
 
   const login = useLogin({
     mutation: {
       onSuccess,
       onError: (error, { data }) => {
-        if (
-          isApiError(error) &&
-          error.status === 401 &&
-          error.message === 'NotAllowed' &&
-          onEmailNotConfirmed
-        ) {
+        if (isApiError(error) && error.status === 401 && error.message === 'NotAllowed') {
           onEmailNotConfirmed(data.email);
           return;
         }
@@ -87,27 +67,29 @@ export function LoginForm({
       noValidate
     >
       {message && <Alert color="error" description={message} />}
-      <TextField
+      <Controller
         control={form.control}
         name="email"
-        label="E-posta"
-        type="email"
-        autoComplete="email"
-        required
+        render={({ field, fieldState }) => (
+          <Field label="E-posta" required error={fieldState.error?.message}>
+            <Input {...field} type="email" autoComplete="email" />
+          </Field>
+        )}
       />
-      <TextField
+      <Controller
         control={form.control}
         name="password"
-        label="Şifre"
-        type="password"
-        autoComplete="current-password"
-        required
+        render={({ field, fieldState }) => (
+          <Field label="Şifre" required error={fieldState.error?.message}>
+            <Input {...field} type="password" autoComplete="current-password" visibilityToggle />
+          </Field>
+        )}
       />
       <Button htmlType="submit" color="primary" block loading={login.isPending}>
         Giriş yap
       </Button>
 
-      {social && (providers.data?.external.length ?? 0) > 0 && (
+      {(providers.data?.external.length ?? 0) > 0 && (
         <div className="flex flex-col gap-2">
           {providers.data!.external.map((provider) => (
             // Tam sayfa yönlendirme: OAuth akışı BFF → API → sağlayıcı → geri.
@@ -121,10 +103,4 @@ export function LoginForm({
       {footer}
     </form>
   );
-}
-
-/** Çıkış: BFF çerezi siler; sayfa yenilenince oturum yok. */
-export async function logout(redirectTo = '/') {
-  await fetch('/bff/logout', { method: 'POST' });
-  window.location.assign(redirectTo);
 }

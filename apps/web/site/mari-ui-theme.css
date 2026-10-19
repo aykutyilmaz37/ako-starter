@@ -46,21 +46,21 @@
   --mari-color-info-subtle: #e0f2fe;
   --mari-color-info-subtle-contrast: #0369a1;
   --mari-color-info-border: #0284c7;
-  --mari-color-neutral: #696579;
-  --mari-color-neutral-solid: #696579;
+  --mari-color-neutral: #6e5e50;
+  --mari-color-neutral-solid: #6e5e50;
   --mari-color-neutral-solid-contrast: #ffffff;
-  --mari-color-neutral-solid-hover: #403b54;
-  --mari-color-neutral-subtle: #f1effa;
-  --mari-color-neutral-subtle-contrast: #696579;
-  --mari-color-neutral-border: #696579;
-  --mari-color-surface: #f8f8fc;
-  --mari-color-surface-alt: #f1effa;
-  --mari-color-border: #e2dfef;
-  --mari-color-input: #898398;
+  --mari-color-neutral-solid-hover: #4f4136;
+  --mari-color-neutral-subtle: #f3ece2;
+  --mari-color-neutral-subtle-contrast: #5c4c3f;
+  --mari-color-neutral-border: #6e5e50;
+  --mari-color-surface: #fbf8f3;
+  --mari-color-surface-alt: #f3ece2;
+  --mari-color-border: #e7dccd;
+  --mari-color-input: #9a8878;
   --mari-color-ring: #78340b;
   --mari-color-scrim: rgb(25 24 34 / 0.45);
-  --mari-color-foreground: #242331;
-  --mari-color-muted: #696579;
+  --mari-color-foreground: #2b1d14;
+  --mari-color-muted: #6b5a4c;
   --mari-color-disabled: #bcb5cf;
   --mari-color-rating: #facc15;
   --mari-color-rating-stroke: #facc15;
@@ -128,12 +128,12 @@
   --mari-easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
   --mari-easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
   --mari-motion-scale: 1.4;
-  --mari-font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --mari-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-  --mari-font-heading: 'Playfair Display Variable', 'Playfair Display', Georgia, serif;
+  --mari-font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --mari-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --mari-font-heading: "Playfair Display Variable", "Playfair Display", Georgia, serif;
 }
 
-[data-theme='light'] {
+[data-theme="light"] {
   --mari-color-primary: #78340b;
   --mari-color-primary-solid: #78340b;
   --mari-color-primary-solid-contrast: #ffffff;
@@ -176,21 +176,21 @@
   --mari-color-info-subtle: #e0f2fe;
   --mari-color-info-subtle-contrast: #0369a1;
   --mari-color-info-border: #0284c7;
-  --mari-color-neutral: #696579;
-  --mari-color-neutral-solid: #696579;
+  --mari-color-neutral: #6e5e50;
+  --mari-color-neutral-solid: #6e5e50;
   --mari-color-neutral-solid-contrast: #ffffff;
-  --mari-color-neutral-solid-hover: #403b54;
-  --mari-color-neutral-subtle: #f1effa;
-  --mari-color-neutral-subtle-contrast: #696579;
-  --mari-color-neutral-border: #696579;
-  --mari-color-surface: #f8f8fc;
-  --mari-color-surface-alt: #f1effa;
-  --mari-color-border: #e2dfef;
-  --mari-color-input: #898398;
+  --mari-color-neutral-solid-hover: #4f4136;
+  --mari-color-neutral-subtle: #f3ece2;
+  --mari-color-neutral-subtle-contrast: #5c4c3f;
+  --mari-color-neutral-border: #6e5e50;
+  --mari-color-surface: #fbf8f3;
+  --mari-color-surface-alt: #f3ece2;
+  --mari-color-border: #e7dccd;
+  --mari-color-input: #9a8878;
   --mari-color-ring: #78340b;
   --mari-color-scrim: rgb(25 24 34 / 0.45);
-  --mari-color-foreground: #242331;
-  --mari-color-muted: #696579;
+  --mari-color-foreground: #2b1d14;
+  --mari-color-muted: #6b5a4c;
   --mari-color-disabled: #bcb5cf;
   --mari-color-rating: #facc15;
   --mari-color-rating-stroke: #facc15;
@@ -202,12 +202,12 @@
   --mari-color-chart-6: #008300;
   --mari-color-chart-7: #2a78d6;
   --mari-color-chart-8: #e34948;
-  --mari-font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --mari-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-  --mari-font-heading: 'Playfair Display Variable', 'Playfair Display', Georgia, serif;
+  --mari-font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --mari-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --mari-font-heading: "Playfair Display Variable", "Playfair Display", Georgia, serif;
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --mari-color-primary: #ed8342;
   --mari-color-primary-solid: #d65e15;
   --mari-color-primary-solid-contrast: #000000;
@@ -276,9 +276,9 @@
   --mari-color-chart-6: #008300;
   --mari-color-chart-7: #3987e5;
   --mari-color-chart-8: #e66767;
-  --mari-font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --mari-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-  --mari-font-heading: 'Playfair Display Variable', 'Playfair Display', Georgia, serif;
+  --mari-font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --mari-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --mari-font-heading: "Playfair Display Variable", "Playfair Display", Georgia, serif;
 }
 
 :root:not([data-density]) {
@@ -355,8 +355,8 @@
     --mari-color-chart-6: #008300;
     --mari-color-chart-7: #3987e5;
     --mari-color-chart-8: #e66767;
-    --mari-font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --mari-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
-    --mari-font-heading: 'Playfair Display Variable', 'Playfair Display', Georgia, serif;
+    --mari-font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+    --mari-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    --mari-font-heading: "Playfair Display Variable", "Playfair Display", Georgia, serif;
   }
 }

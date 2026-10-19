@@ -11,3 +11,8 @@ apps/api/dotnet-tools.json
 **/EmailTemplates/**
 # React Router'ın ürettiği tipler
 **/.react-router/**
+# mari-ui CLI'ın ürettiği dosyalar (tema ve AI kuralları)
+**/mari-ui-theme.css
+**/mari-ui-theme.ts
+**/.claude/skills/mari-ui/**
+**/.cursor/rules/mari-ui.mdc

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router';
-import { AuthLayout } from '../components/auth-layout';
-import { RegisterForm } from '../components/register-form';
+import { AuthLayout } from '~/features/auth/components/auth-layout';
+import { RegisterForm } from '~/features/auth/components/register-form';
 
 export function meta() {
   return [{ title: 'Hesap oluştur | Akı Kahve' }];

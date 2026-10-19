@@ -1,58 +1,63 @@
 import type { ProductResponse } from '@ako/api-client/model';
-import { productImageSrc } from '@ako/ui';
+import { Button } from '@mari-ui/components/button';
+import { Card } from '@mari-ui/components/card';
 import { Empty } from '@mari-ui/components/empty';
+import { Image } from '@mari-ui/components/image';
+import { List, ListItem, ListItemMeta } from '@mari-ui/components/list';
 import { Tag } from '@mari-ui/components/tag';
-import { Link } from 'react-router';
+import { productImageSrc } from '~/shared/catalog';
 
 /** Tükenen ve azalan ürünler: önce tükenenler, sonra en az kalandan başlayarak. */
 export function StockAlerts({
   outOfStock,
   lowStock,
+  loading,
 }: {
   outOfStock: ProductResponse[];
   lowStock: ProductResponse[];
+  loading: boolean;
 }) {
-  const rows = [...outOfStock, ...lowStock];
-
   return (
-    <section
-      className="rounded-mari-lg border border-mari-border bg-mari-surface"
-      aria-labelledby="stok-uyarilari"
-    >
-      <header className="flex items-center justify-between border-b border-mari-border px-5 py-4">
-        <h2 id="stok-uyarilari" className="font-semibold">
-          Stok uyarıları
-        </h2>
-        <Link to="/products" className="text-sm font-medium text-mari-primary">
+    <Card
+      title="Stok uyarıları"
+      extra={
+        <Button href="/products" variant="link" size="sm">
           Ürünlere git
-        </Link>
-      </header>
-      {rows.length === 0 ? (
-        <div className="p-6">
+        </Button>
+      }
+    >
+      <List
+        loading={loading}
+        dataSource={[...outOfStock, ...lowStock]}
+        rowKey="id"
+        empty={
           <Empty size="sm" title="Her şey stokta" description="Tükenen ya da azalan ürün yok." />
-        </div>
-      ) : (
-        <ul className="divide-y divide-mari-border">
-          {rows.map((p) => (
-            <li key={p.id} className="flex items-center gap-3 px-5 py-3">
-              <img
-                src={productImageSrc(p.imageUrl)}
-                alt=""
-                width={40}
-                height={40}
-                className="size-10 rounded-mari-md object-cover"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{p.name}</p>
-                <p className="text-xs text-mari-muted">{p.sku}</p>
-              </div>
+        }
+        renderItem={(p) => (
+          <ListItem
+            extra={
               <Tag color={p.stock <= 0 ? 'error' : 'warning'} variant="soft">
                 {p.stock <= 0 ? 'Tükendi' : `${p.stock} adet`}
               </Tag>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+            }
+          >
+            <ListItemMeta
+              avatar={
+                <Image
+                  src={productImageSrc(p.imageUrl)}
+                  alt=""
+                  width={40}
+                  height={40}
+                  fit="cover"
+                  wrapperClassName="overflow-hidden rounded-mari-md"
+                />
+              }
+              title={p.name}
+              description={p.sku}
+            />
+          </ListItem>
+        )}
+      />
+    </Card>
   );
 }

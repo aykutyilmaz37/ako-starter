@@ -1,6 +1,5 @@
 import { getMe } from '@ako/api-client/auth';
 import { sessionContext, serverRequestInit } from '@ako/web-core';
-import { AppProviders, configureWebApiClient } from '@ako/ui';
 import {
   Links,
   Meta,
@@ -11,11 +10,19 @@ import {
   redirect,
 } from 'react-router';
 import type { Route } from './+types/root';
-import { AdminLayout } from './shared/admin-layout';
-import './app.css';
+import { configureApi } from '~/shared/api';
+import { AdminLayout } from '~/shared/admin-layout';
+import { AppProviders } from '~/shared/providers';
+import appCss from './app.css?url';
 
 // Tarayıcıda "/api" (BFF), sunucuda doğrudan API (iç ağdaki, admin endpoint'leri açık örnek).
-configureWebApiClient(typeof process !== 'undefined' ? process.env.API_URL : undefined);
+configureApi();
+
+/** CSS <head>'e <link> olarak girer: sayfa stil yüklenmeden çizilmez (yan etki importu titremeye yol açıyordu). */
+export const links: Route.LinksFunction = () => [
+  { rel: 'stylesheet', href: appCss },
+  { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+];
 
 /**
  * Backoffice'te giriş sayfası dışındaki her sayfa oturum ister: yoksa /login'e yönlendirilir.
@@ -38,7 +45,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         {/* Backoffice arama motorlarında görünmesin. */}
         <meta name="robots" content="noindex, nofollow" />
         <Meta />

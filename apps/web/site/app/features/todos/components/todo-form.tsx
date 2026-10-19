@@ -1,12 +1,13 @@
 import { applyFieldErrors } from '@ako/api-client';
 import { CreateTodoBody } from '@ako/api-client/zod/todos';
-import { TextField } from '@ako/ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mari-ui/components/button';
+import { Field } from '@mari-ui/components/field';
+import { Input } from '@mari-ui/components/input';
 import { Plus } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useCreateTodoWithRefresh } from '../hooks/use-todos';
+import { useCreateTodoWithRefresh } from '~/features/todos/hooks/use-todos';
 
 const Schema = CreateTodoBody.extend({ title: z.string().trim().min(1).max(200) });
 
@@ -29,14 +30,15 @@ export function TodoForm() {
       className="flex items-start gap-2"
       onSubmit={form.handleSubmit((data) => create.mutate({ data }))}
     >
-      <div className="flex-1">
-        <TextField
-          control={form.control}
-          name="title"
-          label="Listeye ekle"
-          placeholder="Ör. filtre kağıdı, süt"
-        />
-      </div>
+      <Controller
+        control={form.control}
+        name="title"
+        render={({ field, fieldState }) => (
+          <Field label="Listeye ekle" error={fieldState.error?.message} className="flex-1">
+            <Input {...field} placeholder="Ör. filtre kağıdı, süt" />
+          </Field>
+        )}
+      />
       <Button
         htmlType="submit"
         color="primary"

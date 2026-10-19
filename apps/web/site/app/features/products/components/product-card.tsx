@@ -1,7 +1,10 @@
 import type { ProductResponse } from '@ako/api-client/model';
-import { CATEGORY_LABELS, formatPrice, productImageSrc, stockState } from '@ako/ui';
+import { Card } from '@mari-ui/components/card';
+import { Image } from '@mari-ui/components/image';
+import { List } from '@mari-ui/components/list';
 import { Tag } from '@mari-ui/components/tag';
-import { Link } from 'react-router';
+import { Text, Title } from '@mari-ui/components/typography';
+import { CATEGORY_LABELS, formatPrice, productImageSrc, stockState } from '~/shared/catalog';
 
 /**
  * Kartta gösterilecek kısa özet. Kahve açıklamaları "işlem. kavrum. tadım notaları." düzenindedir; satın alma
@@ -13,50 +16,61 @@ function summary(description: string | null): string {
   return (sentences[2] ?? sentences[0] ?? '').replace(/\.$/, '');
 }
 
-/** Katalog ve ana sayfadaki ürün kartı. Kartın tamamı ürün detayına götürür. */
+/** Katalog ve ana sayfadaki ürün kartı; kartın tamamı ürün detayına götürür. */
 export function ProductCard({ product }: { product: ProductResponse }) {
   const stock = stockState(product.stock);
 
   return (
-    <Link
-      to={`/products/${product.id}`}
-      className="group flex flex-col overflow-hidden rounded-mari-lg border border-mari-border bg-mari-surface transition-shadow duration-200 hover:shadow-mari-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mari-ring"
+    <Card
+      href={`/products/${product.id}`}
+      hoverable
+      className="h-full"
+      cover={
+        <div className="relative">
+          <Image
+            src={productImageSrc(product.imageUrl)}
+            alt=""
+            aspectRatio={1}
+            fit="cover"
+            loading="lazy"
+            // Tükenen ürün soluk: sarmalayıcıya verilir, Image'ın kendi yükleme geçişiyle (opacity) çakışmasın.
+            wrapperClassName={stock.available ? undefined : 'opacity-60 grayscale'}
+          />
+          {stock.color !== 'success' && (
+            <Tag color={stock.color} variant="solid" className="absolute left-3 top-3">
+              {stock.label}
+            </Tag>
+          )}
+        </div>
+      }
     >
-      <div className="relative aspect-square overflow-hidden bg-mari-surface-alt">
-        <img
-          src={productImageSrc(product.imageUrl)}
-          alt=""
-          loading="lazy"
-          width={800}
-          height={800}
-          className={`size-full object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none ${stock.available ? '' : 'opacity-60 grayscale'}`}
-        />
-        {stock.color !== 'success' && (
-          <Tag color={stock.color} variant="solid" className="absolute left-3 top-3">
-            {stock.label}
-          </Tag>
-        )}
-      </div>
-      <div className="flex flex-1 flex-col gap-1 p-4">
-        <span className="text-xs font-semibold uppercase tracking-wider text-mari-muted">
+      <div className="flex h-full flex-col gap-1">
+        <Text muted className="text-xs font-semibold uppercase tracking-wider">
           {CATEGORY_LABELS[product.category]}
-        </span>
-        <h3 className="font-heading text-lg font-semibold leading-snug">{product.name}</h3>
-        <p className="line-clamp-2 text-sm text-mari-muted">{summary(product.description)}</p>
-        <p className="mt-auto pt-3 text-base font-semibold">{formatPrice(product.price)}</p>
+        </Text>
+        <Title level={3} className="text-lg leading-snug">
+          {product.name}
+        </Title>
+        <Text muted className="line-clamp-2 text-sm">
+          {summary(product.description)}
+        </Text>
+        <Text weight="semibold" className="mt-auto pt-3">
+          {formatPrice(product.price)}
+        </Text>
       </div>
-    </Link>
+    </Card>
   );
 }
 
+/** Ürün ızgarası: dar ekranda 2, geniş ekranda 4 sütun. */
 export function ProductGrid({ products }: { products: ProductResponse[] }) {
   return (
-    <ul className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-      {products.map((product) => (
-        <li key={product.id} className="flex">
-          <ProductCard product={product} />
-        </li>
-      ))}
-    </ul>
+    <List
+      aria-label="Ürünler"
+      dataSource={products}
+      rowKey="id"
+      grid={{ columns: { base: 2, lg: 4 }, gap: 'md' }}
+      renderItem={(product) => <ProductCard product={product} />}
+    />
   );
 }

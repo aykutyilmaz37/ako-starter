@@ -12,7 +12,6 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
   apps/web/<ürün>       her web ürünü ayrı uygulama: React Router 8 + Hono (ör. backoffice, investment, deposit)
   apps/mobile           Expo
   packages/api-client   OpenAPI'den üretilen kod
-  packages/ui           web uygulamalarının ortak bileşenleri (mari-ui üstüne)
   packages/web-core     ortak BFF (Hono) kurulumu: session cookie, auth, API'ye token ekleme
   packages/shared       ortak TS yardımcıları
   ```
@@ -65,7 +64,7 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - **Node 24 LTS** (adaptör 24.19+ istiyor). Bun daha sonra düşünülebilir; Hono'da bu yalnızca adaptör değişikliğidir.
 - mari-ui (`@mari-ui/components`) npm'den gelir; Tailwind v4 ile. `@mari-ui/modules` henüz npm'de yok, adapter deseni bekliyor.
 - Uygulama içi yapı özellik bazlı: `app/features/<özellik>/{pages,components,hooks}`, adresler `app/routes.ts`'te tek yerde (Next tarzı klasör = adres yerine; API'deki Features yapısıyla aynı mantık).
-- Ortak web bileşenleri `packages/ui` (form alanları, giriş formu, sağlayıcılar).
+- Ortak bir UI paketi yok: her uygulama mari-ui'ı doğrudan kullanır. Formlar `Controller` + mari-ui `Field`'ı kendi içinde kurar; uygulamaya özel yardımcılar `app/shared`'da. Importlar `~/…` alias'ıyla (app/); üst klasöre çıkan (`../`) import yok.
 - Cache: herkese açık sayfalarda `Cache-Control` + CDN (`stale-while-revalidate`), oturum açıksa `private, no-store`.
 - Veri: herkese açık/SEO → loader; kullanıcıya özel/etkileşimli → TanStack Query.
 - **Kural:** iş mantığı loader'lara yazılmaz. Mantık .NET'te, çağrılar `api-client` üzerinden yapılır. Böylece web framework'ü yapının en ince ve en kolay değiştirilen katmanı olarak kalır.
@@ -75,10 +74,12 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 ## Tasarım ve örnek senaryo
 
 - Şablon gerçekçi bir senaryoyla gelir: **Akı Kahve**, butik bir kahve kavurucusu. Site = vitrin (katalog, ürün detayı, alışveriş listesi); backoffice = ürün ve müşteri yönetimi. Todos örneği bu senaryoda "alışveriş listem"dir. Projeye başlarken senaryo silinir, yapı kalır.
-- Stil: "Nature Distilled" (toprak tonları, yumuşak gölge, el yapımı sıcaklık). Renk: kahve `#92400E` + terracotta vurgu `#C67B5C`, krem yüzeyler. Tipografi: başlık Playfair Display, gövde Inter (backoffice'te ikisi de Inter). Seçimler ui-ux-pro-max tasarım veritabanından (Bakery/Cafe paleti, artisan stil).
-- Tema mari-ui'ın kendi sistemiyle: `packages/ui/themes/<uygulama>/mari-ui.config.json` → `pnpm --filter @ako/ui theme` → tema CSS'i (kontrastlar AA'ya göre otomatik). mari-ui yapılandırması nötr renkleri değiştiremediği için sıcak nötrler `themes/warm-neutrals.css` ile ezilir (kontrastlar dosyada belgeli).
-- Site `editorial` kişilik, rahat boşluk, büyük köşe; backoffice `corporate`, sıkı boşluk (yoğun tablolar).
-- Fontlar `@fontsource` ile uygulamaya gömülü (Google Fonts'a istek yok). İkonlar lucide (emoji yok).
+- Stil: "Nature Distilled" (toprak tonları, yumuşak gölge, el yapımı sıcaklık). Renk: kahve `#92400E` + terracotta vurgu `#C67B5C`, krem yüzeyler. Tipografi: başlık Playfair Display, gövde Inter (yalnız sitede). Seçimler ui-ux-pro-max tasarım veritabanından (Bakery/Cafe paleti, artisan stil).
+- Tema mari-ui CLI'ıyla: her uygulamanın kökünde `mari-ui.config.json` → `pnpm theme` → `mari-ui-theme.css` (kontrastlar AA'ya göre otomatik). Sıcak nötrler config'te `color.tokens` ile (mari-ui 0.3.0); ayrı ezme dosyası yok. Backoffice mari-ui'ın varsayılan temasında (iris).
+- AI kuralları mari-ui CLI'ından (`init`/`sync`): her uygulamada `CLAUDE.md`, `.claude/skills/mari-ui`, `AGENTS.md`, `GEMINI.md`, Cursor ve Copilot dosyaları. Elle düzenlenmez; mari-ui güncellenince `pnpm ai-rules`.
+- Site `editorial` kişilik, rahat boşluk, büyük köşe; backoffice varsayılan tema.
+- Fontlar yerel: site `@fontsource`, backoffice mari-ui'ın kendi font dosyaları (Google Fonts'a istek yok). İkonlar lucide (emoji yok).
+- CSS `links()` ile `<head>`'e `<link>` olarak girer (yan etki importu geliştirmede sayfanın bir an stilsiz görünmesine, titremeye yol açıyordu).
 - Ürün modeli: kategori (enum, JSON'da metin) + görsel adresi. Örnek görseller API'nin `wwwroot/images`'ında (SVG); web'de BFF üzerinden `/api/images/...`. Gerçek projede yüklenen fotoğraflar gelir.
 
 ## Mobil: `apps/mobile`

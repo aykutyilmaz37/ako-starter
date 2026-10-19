@@ -1,15 +1,19 @@
-import { getProduct, listProducts } from '@ako/api-client/products';
 import { isApiError } from '@ako/api-client';
-import { CATEGORY_LABELS, formatPrice, productImageSrc, stockState } from '@ako/ui';
+import { getProduct, listProducts } from '@ako/api-client/products';
 import { sessionContext, serverRequestInit } from '@ako/web-core';
 import { Breadcrumb } from '@mari-ui/components/breadcrumb';
 import { Button } from '@mari-ui/components/button';
+import { Image } from '@mari-ui/components/image';
+import { List, ListItem, ListItemMeta } from '@mari-ui/components/list';
 import { Tag } from '@mari-ui/components/tag';
+import { Paragraph, Text, Title } from '@mari-ui/components/typography';
 import { ListPlus, Package, RefreshCw, Truck } from 'lucide-react';
 import { data } from 'react-router';
-import { useMe } from '../../../shared/use-me';
-import { ProductGrid } from '../components/product-card';
-import { useAddToList } from '../hooks/use-add-to-list';
+import { ProductGrid } from '~/features/products/components/product-card';
+import { useAddToList } from '~/features/products/hooks/use-add-to-list';
+import { CATEGORY_LABELS, formatPrice, productImageSrc, stockState } from '~/shared/catalog';
+import { SectionHeading } from '~/shared/section-heading';
+import { useMe } from '~/shared/use-me';
 import type { Route } from './+types/product-detail';
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -59,31 +63,34 @@ export default function ProductDetailPage({ loaderData }: Route.ComponentProps) 
       />
 
       <div className="mt-8 grid gap-10 md:grid-cols-2 lg:gap-16">
-        <div className="overflow-hidden rounded-mari-xl bg-mari-surface-alt">
-          <img
-            src={productImageSrc(product.imageUrl)}
-            alt={product.name}
-            width={800}
-            height={800}
-            className="aspect-square size-full object-cover"
-          />
-        </div>
+        <Image
+          src={productImageSrc(product.imageUrl)}
+          alt={product.name}
+          aspectRatio={1}
+          fit="cover"
+          priority
+          wrapperClassName="overflow-hidden rounded-mari-xl"
+        />
 
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-3">
-            <span className="text-sm font-semibold uppercase tracking-wider text-mari-muted">
+            <Text muted className="text-sm font-semibold uppercase tracking-wider">
               {CATEGORY_LABELS[product.category]}
-            </span>
-            <h1 className="font-heading text-4xl font-bold leading-tight">{product.name}</h1>
+            </Text>
+            <Title level={1} className="text-4xl leading-tight">
+              {product.name}
+            </Title>
             <div className="flex items-center gap-3">
-              <span className="text-2xl font-semibold">{formatPrice(product.price)}</span>
+              <Text weight="semibold" className="text-2xl">
+                {formatPrice(product.price)}
+              </Text>
               <Tag color={stock.color} variant="soft">
                 {stock.label}
               </Tag>
             </div>
           </div>
 
-          <p className="leading-relaxed text-mari-muted">{product.description}</p>
+          <Paragraph className="leading-relaxed text-mari-muted">{product.description}</Paragraph>
 
           {me ? (
             <Button
@@ -107,26 +114,32 @@ export default function ProductDetailPage({ loaderData }: Route.ComponentProps) 
             </Button>
           )}
 
-          <ul className="flex flex-col gap-3 border-t border-mari-border pt-6 text-sm">
-            {promises.map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-center gap-3">
-                <Icon size={18} className="shrink-0 text-mari-primary" aria-hidden />
-                {text}
-              </li>
-            ))}
-          </ul>
-          <p className="text-xs text-mari-muted">SKU: {product.sku}</p>
+          <List
+            size="sm"
+            split={false}
+            aria-label="Teslimat ve iade"
+            className="border-t border-mari-border pt-4"
+            dataSource={promises}
+            rowKey="text"
+            renderItem={({ icon: Icon, text }) => (
+              <ListItem>
+                <ListItemMeta
+                  avatar={<Icon size={18} className="text-mari-primary" aria-hidden />}
+                  title={text}
+                />
+              </ListItem>
+            )}
+          />
+          <Text muted className="text-xs">
+            SKU: {product.sku}
+          </Text>
         </div>
       </div>
 
       {related.length > 0 && (
-        <section className="mt-20" aria-labelledby="benzer">
-          <h2 id="benzer" className="font-heading text-2xl font-bold">
-            Bunları da sevebilirsiniz
-          </h2>
-          <div className="mt-6">
-            <ProductGrid products={related} />
-          </div>
+        <section className="mt-20 flex flex-col gap-6" aria-labelledby="benzer">
+          <SectionHeading id="benzer" title="Bunları da sevebilirsiniz" />
+          <ProductGrid products={related} />
         </section>
       )}
     </div>

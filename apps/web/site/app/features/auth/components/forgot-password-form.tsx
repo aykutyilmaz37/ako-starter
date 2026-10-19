@@ -1,10 +1,11 @@
 import { applyFieldErrors } from '@ako/api-client';
 import { useForgotPassword, useResetPassword } from '@ako/api-client/auth';
-import { CodeField, TextField } from '@ako/ui';
 import { Alert } from '@mari-ui/components/alert';
 import { Button } from '@mari-ui/components/button';
+import { Field } from '@mari-ui/components/field';
+import { Input, OtpInput } from '@mari-ui/components/input';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 /** İki adım: e-posta → kod + yeni şifre. E-posta doğrulamayla aynı 6 haneli kod akışı. */
 export function ForgotPasswordForm({ onReset }: { onReset: () => void }) {
@@ -31,13 +32,14 @@ function RequestCodeStep({ onSent }: { onSent: (email: string) => void }) {
       className="flex flex-col gap-4"
       onSubmit={form.handleSubmit((data) => forgot.mutate({ data }))}
     >
-      <TextField
+      <Controller
         control={form.control}
         name="email"
-        label="E-posta"
-        type="email"
-        autoComplete="email"
-        required
+        render={({ field, fieldState }) => (
+          <Field label="E-posta" required error={fieldState.error?.message}>
+            <Input {...field} type="email" autoComplete="email" />
+          </Field>
+        )}
       />
       <Button htmlType="submit" color="primary" block loading={forgot.isPending}>
         Kod gönder
@@ -70,14 +72,28 @@ function ResetStep({ email, onReset }: { email: string; onReset: () => void }) {
         color="info"
         description={`Hesap varsa ${email} adresine 6 haneli bir kod gönderdik.`}
       />
-      <CodeField control={form.control} name="code" label="Kod" />
-      <TextField
+      <Controller
+        control={form.control}
+        name="code"
+        render={({ field, fieldState }) => (
+          <Field label="Kod" required error={fieldState.error?.message}>
+            <OtpInput
+              length={6}
+              inputMode="numeric"
+              value={field.value}
+              onChange={field.onChange}
+            />
+          </Field>
+        )}
+      />
+      <Controller
         control={form.control}
         name="newPassword"
-        label="Yeni şifre"
-        type="password"
-        autoComplete="new-password"
-        required
+        render={({ field, fieldState }) => (
+          <Field label="Yeni şifre" required error={fieldState.error?.message}>
+            <Input {...field} type="password" autoComplete="new-password" visibilityToggle />
+          </Field>
+        )}
       />
       <Button htmlType="submit" color="primary" block loading={reset.isPending}>
         Şifreyi değiştir

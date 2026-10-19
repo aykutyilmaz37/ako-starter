@@ -1,0 +1,17 @@
+{
+  "color": {
+    "primary": "#6951ce",
+    "accent": "#765991"
+  },
+  "typography": {
+    "fontFamilySans": "\"Geist\", ui-sans-serif, system-ui, -apple-system, sans-serif",
+    "fontFamilyMono": "\"Geist Mono\", ui-monospace, SFMono-Regular, monospace",
+    "fontFamilyHeading": "\"Manrope\", \"Geist\", ui-sans-serif, system-ui, sans-serif"
+  },
+  "density": {
+    "radius": "md",
+    "spacing": "normal",
+    "shadow": "normal"
+  },
+  "motion": "normal"
+}

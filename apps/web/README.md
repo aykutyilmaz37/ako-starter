@@ -75,25 +75,26 @@ tarayıcı ──/api/*──▶ Hono BFF ──Bearer token──▶ .NET API
 - `/api/*` API'ye iletilir; 401'de token sunucuda yenilenir ve çerez güncellenir.
 - `useLogin` ve `useExchangeLoginCode` web'de de aynen çalışır: BFF token'ı çereze yazar, tarayıcıya `{}` döner.
 - Sosyal giriş: `/bff/external/<sağlayıcı>` (tam sayfa yönlendirme) → API → sağlayıcı → `/bff/external/callback`.
-- Çıkış: `logout()` (`@ako/ui`) → `POST /bff/logout`.
+- Çıkış: `logout()` (`app/shared/api.ts`) → `POST /bff/logout`.
 - Backoffice: `requiredRole: 'Admin'`; Admin olmayan kullanıcı girişte 403 alır.
 - Gerçek istemci IP'si `X-Forwarded-For` ile API'ye iletilir (rate limiting için). API bu başlığa yalnızca
   güvendiği proxy'lerden inanır: varsayılan aynı makine, diğerleri `ForwardedHeaders:KnownNetworks` ile.
 
-## Tema
+## Tema ve mari-ui
 
 ```text
-packages/ui/themes/
-  site/mari-ui.config.json        marka rengi, font, kişilik, boşluk → mari-ui-theme.css (üretilir)
-  backoffice/mari-ui.config.json
-  warm-neutrals.css               sıcak yüzey/kenarlık/metin renkleri (mari-ui config'i bunları değiştiremiyor)
+apps/web/<uygulama>/
+  mari-ui.config.json     tema (site: Akı Kahve renkleri ve fontları; backoffice: varsayılan iris)
+  mari-ui-theme.css       pnpm theme ile üretilir, app/app.css'te import edilir
+  CLAUDE.md, AGENTS.md, .claude/skills/mari-ui/…   mari-ui AI kuralları (pnpm ai-rules ile güncellenir)
 ```
 
-Tema değişince: `pnpm --filter @ako/ui theme`. Bileşenlerde ham renk (hex) yazılmaz; `bg-mari-surface`,
-`text-mari-muted`, `bg-mari-primary-solid` gibi tema sınıfları kullanılır. Fontlar `@fontsource` ile gömülüdür.
+- Önce mari-ui: ihtiyacı karşılayan bir bileşen varsa (Card, List, Statistic, Sidebar, BasicMenu, Image, InputNumber…)
+  o kullanılır. Ham renk, sabit px ve arbitrary Tailwind değeri yok; tema sınıfları (`bg-mari-surface`, `text-mari-muted`…).
+- Importlar `~/…` ile (`app/` klasörü); üst klasöre çıkan `../` import yazılmaz.
 
 ## Formlar
 
-`TextField` / `CodeField` (`@ako/ui`) react-hook-form'u mari-ui `Field`'a bağlar. Şema api-client'ın ürettiği zod
+Her form react-hook-form `Controller` + mari-ui `Field` + kontrolü (`Input`, `OtpInput`, `InputNumber`, `Select`…) kendi içinde kurar. Şema api-client'ın ürettiği zod
 şemasından türetilir (`RegisterBody.extend(...)`), API'nin döndüğü alan hataları `applyFieldErrors` ile aynı alanlara
 düşer. Hassas veri içeren formlar `method="post"` kullanır: JavaScript yüklenmezse bile veri URL'ye yazılmaz.
