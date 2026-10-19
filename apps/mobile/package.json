@@ -1,0 +1,51 @@
+{
+  "name": "@ako/mobile",
+  "version": "0.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "dev": "expo start",
+    "ios": "expo start --ios",
+    "android": "expo start --android",
+    "typecheck": "tsc --noEmit",
+    "theme": "mari-ui theme --yes",
+    "ai-rules": "mari-ui sync"
+  },
+  "dependencies": {
+    "@ako/api-client": "workspace:*",
+    "@ako/shared": "workspace:*",
+    "@expo-google-fonts/playfair-display": "^0.4.2",
+    "@hookform/resolvers": "5.9.2",
+    "@mari-ui/core": "^0.3.1",
+    "@mari-ui/native": "^0.3.1",
+    "@mari-ui/tokens": "^0.3.1",
+    "@react-native-google-signin/google-signin": "^16.1.5",
+    "@tanstack/react-query": "^5.104.4",
+    "expo": "^57.0.30",
+    "expo-apple-authentication": "~57.0.2",
+    "expo-constants": "^57.0.22",
+    "expo-font": "~57.0.4",
+    "expo-image": "~57.0.5",
+    "expo-linking": "^57.0.13",
+    "expo-localization": "~57.0.2",
+    "expo-router": "^57.0.28",
+    "expo-secure-store": "^57.0.4",
+    "expo-status-bar": "^57.0.1",
+    "expo-web-browser": "~57.0.3",
+    "lucide-react-native": "^1.59.0",
+    "react": "19.2.3",
+    "react-hook-form": "7.90.0",
+    "react-native": "^0.86.3",
+    "react-native-safe-area-context": "5.7.0",
+    "react-native-screens": "4.26.0",
+    "react-native-svg": "15.15.4",
+    "react-native-worklets": "0.10.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@ako/tsconfig": "workspace:*",
+    "@mari-ui/cli": "0.3.1",
+    "@types/react": "~19.2.4",
+    "typescript": "^6.0.3"
+  }
+}

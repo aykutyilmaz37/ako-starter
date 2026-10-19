@@ -1,0 +1,24 @@
+{
+  "$schema": "https://mari-ui.dev/schema/theme.schema.json",
+  "persona": "editorial",
+  "color": {
+    "primary": "#92400E",
+    "accent": "#C67B5C",
+    "tokens": {
+      "surface": "#fbf8f3",
+      "surface-alt": "#f3ece2",
+      "border": "#e7dccd",
+      "input": "#9a8878",
+      "foreground": "#2b1d14",
+      "muted": "#6b5a4c",
+      "neutral": "#6e5e50",
+      "neutral-solid": "#6e5e50",
+      "neutral-solid-hover": "#4f4136",
+      "neutral-subtle": "#f3ece2",
+      "neutral-subtle-contrast": "#5c4c3f",
+      "neutral-border": "#6e5e50"
+    }
+  },
+  "density": { "radius": "lg", "spacing": "comfortable", "shadow": "soft" },
+  "motion": "calm"
+}

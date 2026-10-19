@@ -63,6 +63,17 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         return await LoginAsync(client, email);
     }
 
+    /// <summary>Misafir (anonim) kullanıcı oluşturur; token'ları ve token'lı bir HttpClient döner.</summary>
+    public async Task<(HttpClient Client, AccessTokenResponse Tokens)> CreateGuestClientAsync()
+    {
+        var client = CreateClient();
+        var response = await client.PostAsync("/auth/guest", null);
+        response.EnsureSuccessStatusCode();
+        var tokens = (await response.Content.ReadFromJsonAsync<AccessTokenResponse>())!;
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokens.AccessToken);
+        return (client, tokens);
+    }
+
     public Task<HttpClient> CreateAdminClientAsync() => LoginAsync(CreateClient(), AdminEmail);
 
     private static async Task<HttpClient> LoginAsync(HttpClient client, string email)

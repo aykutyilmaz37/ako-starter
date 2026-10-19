@@ -10,6 +10,7 @@ export * from './adminListTranslationsParams';
 export * from './adminListUsersParams';
 export * from './adminUserResponse';
 export * from './changeEmailRequest';
+export * from './claimGuestRequest';
 export * from './confirmChangeEmailRequest';
 export * from './confirmEmailRequest';
 export * from './createLanguageRequest';

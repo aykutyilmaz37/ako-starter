@@ -7,12 +7,18 @@ public static class AppRoles
 {
     public const string Admin = "Admin";
     public const string User = "User";
+
+    /// <summary>Anonim (misafir) kullanıcı: e-postası ve şifresi yoktur, kayıt/giriş olunca verisi hesaba taşınır.</summary>
+    public const string Guest = "Guest";
 }
 
 /// <summary>Endpoint'lerde RequireAuthorization(AppPolicies.X) ile kullanılan yetki kuralları.</summary>
 public static class AppPolicies
 {
     public const string Admin = "Admin";
+
+    /// <summary>Kayıtlı kullanıcı: token'ı olan ama <see cref="AppRoles.Guest"/> olmayan herkes. Yeni kişisel endpoint'lerin varsayılanı.</summary>
+    public const string Member = "Member";
 }
 
 /// <summary>

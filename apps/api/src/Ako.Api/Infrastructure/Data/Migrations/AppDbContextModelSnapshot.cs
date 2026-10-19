@@ -51,6 +51,10 @@ namespace Ako.Api.Infrastructure.Data.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("email_confirmed");
 
+                    b.Property<DateTimeOffset>("LastActiveAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_active_at");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean")
                         .HasColumnName("lockout_enabled");
@@ -401,6 +405,13 @@ namespace Ako.Api.Infrastructure.Data.Migrations
                             ConcurrencyStamp = "user",
                             Name = "User",
                             NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = new Guid("0199f2a0-0000-7000-8000-000000000003"),
+                            ConcurrencyStamp = "guest",
+                            Name = "Guest",
+                            NormalizedName = "GUEST"
                         });
                 });
 

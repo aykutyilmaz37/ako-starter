@@ -28,6 +28,7 @@
   <data name="auth.provider_unavailable" xml:space="preserve"><value>'{0}' ile giriş bu uygulamada etkin değil.</value></data>
   <data name="auth.invalid_return_url" xml:space="preserve"><value>Bu geri dönüş adresine izin verilmiyor.</value></data>
   <data name="auth.invalid_code" xml:space="preserve"><value>Kod geçersiz ya da süresi dolmuş.</value></data>
+  <data name="auth.invalid_guest_token" xml:space="preserve"><value>Misafir oturumu geçersiz ya da süresi dolmuş.</value></data>
   <data name="auth.invalid_id_token" xml:space="preserve"><value>Kimlik jetonu geçersiz.</value></data>
   <data name="auth.email_in_use" xml:space="preserve"><value>Bu e-posta adresiyle kayıtlı bir hesap var. Önce o hesapla giriş yapın.</value></data>
   <data name="auth.user_creation_failed" xml:space="preserve"><value>Kullanıcı oluşturulamadı.</value></data>

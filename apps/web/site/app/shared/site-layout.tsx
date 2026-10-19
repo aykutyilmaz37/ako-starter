@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { logout } from '~/shared/api';
 import { LocaleLink, useLocalePath, useT } from '~/shared/i18n/i18n-provider';
 import { LanguageSwitcher } from '~/shared/language-switcher';
+import { ThemeSwitcher } from '~/shared/theme-switcher';
 import { Logo } from '~/shared/logo';
 import { useMe } from '~/shared/use-me';
 
@@ -63,6 +64,7 @@ function HeaderActions() {
   return (
     <div className="flex items-center gap-1">
       <LanguageSwitcher />
+      <ThemeSwitcher />
       <Button
         href={localePath('/products')}
         variant="ghost"

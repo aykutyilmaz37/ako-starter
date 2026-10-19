@@ -27,5 +27,15 @@ test('admin girer ve ürün ekler', async ({ page }) => {
 
   await page.getByRole('textbox', { name: 'Ürünlerde ara' }).fill(sku);
   await page.keyboard.press('Enter');
-  await expect(page.getByText(name)).toBeVisible();
+  try {
+    await expect(page.getByText(name)).toBeVisible();
+  } finally {
+    // Test verisi geride kalmasın (geliştirme veritabanında "E2E Kahve" ürünleri birikiyordu). Oturum çerezi
+    // sayfayla aynı olduğundan BFF üzerinden silinir.
+    const found = await page.request.get(`/api/products?search=${encodeURIComponent(sku)}`);
+    const items = ((await found.json()) as { items?: { id: string; sku: string }[] }).items ?? [];
+    for (const product of items.filter((p) => p.sku === sku)) {
+      await page.request.delete(`/api/admin/products/${product.id}`);
+    }
+  }
 });

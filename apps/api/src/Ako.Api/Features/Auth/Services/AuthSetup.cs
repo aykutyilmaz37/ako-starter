@@ -28,7 +28,11 @@ public static class AuthSetup
             .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 
         services.AddAuthorizationBuilder()
-            .AddPolicy(AppPolicies.Admin, policy => policy.RequireRole(AppRoles.Admin));
+            .AddPolicy(AppPolicies.Admin, policy => policy.RequireRole(AppRoles.Admin))
+            // Kayıtlı kullanıcı: giriş yapmış ve misafir değil (Admin de üyedir).
+            .AddPolicy(AppPolicies.Member, policy => policy
+                .RequireAuthenticatedUser()
+                .RequireAssertion(context => !context.User.IsInRole(AppRoles.Guest)));
 
         // Sosyal giriş sağlayıcıları: yalnızca ayarı dolu olanlar kaydedilir.
         var authentication = services.AddAuthentication();
@@ -41,6 +45,8 @@ public static class AuthSetup
         services.AddSingleton<LoginCodeStore>();
         services.AddSingleton<IdTokenValidator>();
         services.AddScoped<ExternalUserResolver>();
+        services.AddScoped<GuestAccounts>();
+        services.AddHostedService<GuestCleanupService>();
         services.AddScoped<EmailCodes>();
         // E-posta: "Email:Smtp:Host" doluysa SMTP ile gönderilir, boşsa kod yalnızca log'a yazılır.
         services.Configure<EmailOptions>(configuration.GetSection("Email"));

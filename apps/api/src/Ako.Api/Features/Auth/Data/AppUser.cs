@@ -7,4 +7,7 @@ namespace Ako.Api.Features.Auth;
 public sealed class AppUser : IdentityUser<Guid>
 {
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+
+    /// <summary>Son görülme. Yalnızca misafirler için tutulur: süresi dolan (kullanılmayan) misafirler silinir.</summary>
+    public DateTimeOffset LastActiveAt { get; set; } = DateTimeOffset.UtcNow;
 }

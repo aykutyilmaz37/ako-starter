@@ -81,6 +81,8 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - **Backoffice dili çerezde** (`ako_lang`): adresler dilsizdir, seçici başlıktadır. "Çeviriler" sayfası yalnızca site metinlerini yönetir (backoffice ve api metinleri dosyadan gelir, arayüzde düzenlenmez): arama, tek "Kaydet" ile toplu kaydetme, "yalnızca eksikler", dil sütunları, satır içi düzenleme, dil ekleme/aç-kapat, dışa aktarma.
 - Veri (ürün adı/açıklaması) çevrilmez; yalnızca arayüz metinleri çevrilir. Para birimi TL kalır, gösterim biçimi dile göre değişir.
 - **create-ako-app "Çoklu dil olsun mu?" diye sorar.** Hayırsa yalnızca varsayılan dil kalır: dil seçici, çeviri tablosu ve "Çeviriler" sayfası (`features/localization`) silinir; `t()` anahtarları tek dosyadan çözülmeye devam eder, `:lang?` segmenti ve `/localization` endpoint'leri çıkarılır.
+- **Mobil metinleri** de aynı modeldedir: dördüncü alan `mobile` (`GET /localization/{dil}/mobile`), varsayılanlar `apps/mobile/locales/*.json` (API'ye gömülür, `TranslationNamespaces.Mobile`). Uygulama aynı dosyaları paketler: ilk açılışta ve API'ye ulaşılamazken onlar, çevrimiçiyken sözlük üstüne yazar. Dil seçimi cihazda (SecureStore) tutulur, yoksa cihaz dili; `Accept-Language` buradan gider. "Çeviriler" sayfası yalnızca site metinlerini yönetir.
+- **Tema tercihi** (sistem / açık / koyu): web'de `ako_theme` çerezi ve `<head>`'de satır içi betik (`@ako/web-core/theme`; sunucuda yazılmaz, çünkü herkese açık sayfalar CDN'de ortak önbelleğe alınır), mobilde SecureStore. mari-ui teması `[data-theme]` / `prefers-color-scheme` ile zaten iki modu taşır.
 - Bilinen sınır: sosyal girişten dönüş (`/bff/external/callback`) varsayılan dildeki ana sayfaya düşer.
 
 ## Tasarım ve örnek senaryo
@@ -100,6 +102,42 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - .NET'e doğrudan bağlanır, bearer token SecureStore'da tutulur.
 - Sosyal giriş: tarayıcı akışı (`AuthSession` + `ako://` deep link) tüm sağlayıcılar için; Google ve Apple'da ek olarak native SDK ile id token gönderilebilir.
 
+## Misafir ve kimlik (tüm istemciler)
+
+- **API istemciyi ayırt etmez, yalnızca bearer token'a bakar.** Mobil token'ı kendisi gönderir, web'de BFF çerezdeki token'ı sunucuda ekler. Mobil için ayrı endpoint açılmaz.
+- **Misafir = anonim Identity kullanıcısı.** `POST /auth/guest` e-postasız, şifresiz bir `AppUser` oluşturur (rol `Guest`) ve normal girişle aynı access + refresh token'ı döner. Mobil açılışta token yoksa misafir olur; bundan sonra her istek bearer'lıdır. Web'de gerekirse BFF aynı uçla misafir oturumu açar.
+- **Hangi özelliğin misafire açık olduğu özellik kararıdır, endpoint'te policy ile seçilir:**
+  - `RequireAuthorization()`: token'ı olan herkes (misafir dahil).
+  - `AppPolicies.Member`: kayıtlı kullanıcı (`Guest` rolü değil). Yeni kişisel uçların varsayılanı budur (güvenli taraf).
+  - `AppPolicies.Admin`: yönetim.
+- **Herkese açık okuma uçları anonim kalır** (token varsa kullanılır): web sitesi bu uçları SEO ve CDN önbelleği için token'sız çağırır.
+- **Misafirden üyeliğe geçiş veriyi korur ("claim" modeli):**
+  - Kayıt, e-posta/şifre girişi, sosyal ve native giriş **olduğu gibi çalışır**; hiçbiri misafiri tanımaz. Misafirken alınan refresh token'ı istemci saklar; kayıtlı kullanıcı olunca `POST /auth/guest/claim { guestRefreshToken }` çağırır (yalnızca `Member`).
+  - Sunucu token'ı çözer (süre, `Guest` rolü doğrulanır), her özelliğin `IGuestDataMerger.MergeAsync(guestId, targetUserId)` kancasını çalıştırır, sonra misafiri siler. Misafirin sahibi olduğunu refresh token'ın kendisi kanıtlar; hedef her zaman çağıran kullanıcıdır.
+  - Neden filtre/kanca yerine ayrı uç: giriş yanıtı (özellikle Identity'nin hazır `/login`'i) istemciye dönmeden veri taşınmış olmalıydı; ayrı uçta yarış yoktur, kayıt → kod doğrulama → giriş arasında uygulama kapansa bile istemci token'ı saklar ve sonra talep eder, tüm giriş yolları aynı kuralı kullanır. Talep tekrarlanırsa başarılı sayılır (idempotent).
+  - `Common.IGuestDataMerger` özelliklerce uygulanır (Auth hepsini DI'dan alır, hiçbirini tanımaz; ArchTests sınırları korur). Çakışma kuralı (birleştir / üzerine yaz / at) özelliğin kendi kararıdır; `Todos` örneği görevlerin sahibini değiştirir.
+- **Temizlik:** belirli süre görülmeyen misafirler verileriyle birlikte (`IGuestDataMerger.DeleteAsync`) arka plan işiyle silinir (`Auth:Guest:RetentionDays`, varsayılan 30; "son görülme" mobilin açılışta çağırdığı `/auth/me` ile en fazla günde iki kez güncellenir). `/auth/guest` `/auth` grubunun IP başına rate limit'indedir (NAT arkasında çok kullanıcılı ağlarda gerekirse `RateLimiting:Auth:PermitLimit` yükseltilir).
+- iOS Keychain uygulama silinince temizlenmeyebilir: eski misafir token'ı geçersizse istemci sessizce yeni misafir alır.
+- **Reddedilenler:** uygulamaya gömülü anahtar / client credentials (mobil uygulamadan her sır çıkarılabilir); herkese açık uçlara token zorunluluğu (web'in önbelleğini ve SEO'sunu bozar). "İstek gerçekten bizim uygulamadan mı" sorusu misafir token'ıyla çözülmez; gerekirse App Attest (iOS) / Play Integrity (Android) eklenir.
+- Misafir hesabın e-postası/şifresi yoktur: `AppPolicies.Member` ister uçlar (ör. e-posta değiştirme) misafire 403 döner. Güvenlik varsayılanı: yeni kişisel uçlar `Member` ile başlar, misafire açmak bilinçli bir karardır (`Todos` örneği açıktır).
+- Mobil: açılışta token yoksa otomatik misafir; çıkış yeni misafir başlatır; token geçersizse (kullanıcı silinmiş) sessizce yeni misafir.
+- create-ako-app auth sorusunun altında "misafir girişi olsun mu?" diye sorar.
+
+## Backend'siz mobil (yalnız mobil kombinasyonu)
+
+Her mobil uygulamanın sunucuya ihtiyacı yoktur: veri yalnızca cihazda durabilir, uygulama internete yalnızca reklam, analitik, uzaktan ayar gibi üçüncü taraf servisler için çıkar. Şablon bunu ayrı bir kombinasyon olarak destekler; uygulama türü (liste, takip, oyun, araç...) fark etmez.
+
+- create-ako-app "Backend: API / yok (cihazda veri)" diye sorar. "Yok" yalnızca **yalnız mobil** seçildiğinde sunulur (web BFF'i API'ye bağlıdır). Seçilirse `apps/api`, `packages/api-client`, `packages/web-core` silinir; auth, misafir, sosyal giriş ve API sözlüğü soruları sorulmaz.
+- **Veri: `expo-sqlite` + Drizzle ORM.** Tipli şema, `drizzle-kit` ile üretilen ve uygulamaya paketlenen migration'lar, `useLiveQuery` ile veri değişince kendiliğinden güncellenen ekranlar. Küçük ayarlar için anahtar-değer (`expo-sqlite/kv-store` ya da SecureStore). Veritabanı tek dosyadır ve işletim sisteminin otomatik yedeğine girer.
+- **Yapı API'li sürümle aynı mantıkta:** `features/<özellik>/data/` (şema, sorgular, hook'lar); ekranlar yalnızca hook kullanır. API ile yerel veri arasında otomatik geçiş yapan ortak bir soyutlama **yoktur**: seçim üretimde bir kez yapılır, iki yolu da taşıyan kod karmaşası olmaz.
+- Metinler paketli JSON'lardan (`locales/`), tema ve dil tercihi cihazda.
+- Örnek senaryo bu kombinasyonda: salt okunur içerik (ör. katalog) paketli JSON, kullanıcının ürettiği veri (ör. liste) SQLite.
+- **Backend gerektirmeyen ama internet isteyen modüller** (her iki kombinasyonda da ayrı create-ako-app seçenekleri):
+  - Reklam: AdMob (`react-native-google-mobile-ads`). Expo Go'da çalışmaz, geliştirme derlemesi (EAS) gerekir.
+  - Rıza: iOS ATT izni + AB için reklam rızası (Google UMP). Reklam seçilirse zorunlu.
+  - Analitik: Firebase / GA4 veri katmanı.
+  - Uzaktan ayar ve zorunlu güncelleme: Firebase Remote Config ya da CDN'deki statik bir JSON.
+
 ## Altyapı ve güvenlik
 
 - Docker Compose: Postgres + Mailpit (yerel SMTP, `localhost:8025`) + Aspire Dashboard (`localhost:18888`) + api (`--profile app`) + web.
@@ -117,4 +155,4 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - ~~Testler~~ → **xUnit + Testcontainers** (.NET), **Vitest + Playwright** (web) (karar verildi).
 - ~~i18n gerekecek mi?~~ → **çoklu dil var** (bkz. "Çoklu dil"; karar verildi).
 - Deploy hedefi: VPS + Docker mı, bulut servisi mi?
-- create-ako-app'te hangi seçenekler olacak (auth sağlayıcıları…; çoklu dil sorusu aşağıdaki bölümde)?
+- create-ako-app'te hangi seçenekler olacak (auth sağlayıcıları…; çoklu dil, misafir, backend'siz mobil ve reklam/analitik soruları yukarıdaki bölümlerde)?

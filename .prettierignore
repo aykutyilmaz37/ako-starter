@@ -16,3 +16,5 @@ apps/api/dotnet-tools.json
 **/mari-ui-theme.ts
 **/.claude/skills/mari-ui/**
 **/.cursor/rules/mari-ui.mdc
+# Expo
+**/expo-env.d.ts

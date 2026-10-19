@@ -7,6 +7,7 @@
 import type {
   AccessTokenResponse,
   ChangeEmailRequest,
+  ClaimGuestRequest,
   ConfirmChangeEmailRequest,
   ConfirmEmailRequest,
   ExchangeCodeRequest,
@@ -675,7 +676,155 @@ export function useGetMe<TData = Awaited<ReturnType<typeof getMe>>, TError = Err
 
 
 
-export const getSendConfirmationCodeUrl = () => {
+export const getCreateGuestUrl = () => {
+
+
+
+
+  return `/auth/guest`
+}
+
+export const createGuest = async ( options?: Parameters<typeof apiFetch>[1]): Promise<AccessTokenResponse> => {
+
+  return apiFetch<AccessTokenResponse>(getCreateGuestUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getCreateGuestMutationKey = () => ['createGuest'] as const;
+
+export const getCreateGuestMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createGuest>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createGuest>>, TError,void, TContext> => {
+
+const mutationKey = getCreateGuestMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createGuest>>, void> = () => {
+
+
+          return  createGuest(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateGuestMutationResult = NonNullable<Awaited<ReturnType<typeof createGuest>>>
+
+    export type CreateGuestMutationError = ErrorType<unknown>
+
+
+    export const useCreateGuest = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createGuest>>, TError,void, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createGuest>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getCreateGuestMutationOptions(options), queryClient);
+    }
+    export const getClaimGuestUrl = () => {
+
+
+
+
+  return `/auth/guest/claim`
+}
+
+export const claimGuest = async (claimGuestRequest: ClaimGuestRequest, options?: Parameters<typeof apiFetch>[1]): Promise<void> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return apiFetch<void>(getClaimGuestUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(claimGuestRequest)
+  }
+);}
+
+
+
+
+
+export const getClaimGuestMutationKey = () => ['claimGuest'] as const;
+
+export const getClaimGuestMutationOptions = <TError = ErrorType<ProblemDetails | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof claimGuest>>, TError,ClaimGuestMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof claimGuest>>, TError,ClaimGuestMutationVariables, TContext> => {
+
+const mutationKey = getClaimGuestMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof claimGuest>>, ClaimGuestMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  claimGuest(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ClaimGuestMutationResult = NonNullable<Awaited<ReturnType<typeof claimGuest>>>
+    export type ClaimGuestMutationBody = BodyType<ClaimGuestRequest>
+    export type ClaimGuestMutationError = ErrorType<ProblemDetails | void>
+    export type ClaimGuestMutationVariables = {data: BodyType<ClaimGuestRequest>}
+
+    export const useClaimGuest = <TError = ErrorType<ProblemDetails | void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof claimGuest>>, TError,ClaimGuestMutationVariables, TContext>, request?: SecondParameter<typeof apiFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof claimGuest>>,
+        TError,
+        ClaimGuestMutationVariables,
+        TContext
+      > => {
+      return useMutation(getClaimGuestMutationOptions(options), queryClient);
+    }
+    export const getSendConfirmationCodeUrl = () => {
 
 
 
