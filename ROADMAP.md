@@ -25,11 +25,11 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 Şablon sağlam olmadan üstüne bir şey eklemeyelim; sonraki aşamalardaki her değişiklik bu ağla kontrol edilir.
 
-- [x] GitHub Actions (`.github/workflows/ci.yml`; ilk çalıştırma doğrulanmadı): `pnpm build`, `typecheck`, `lint`, `test`, `generate:check`, `dotnet test`, `pnpm audit`, `dotnet list package --vulnerable`.
-- [ ] Vitest: `web-core` (oturum, token yenileme) ve `api-client` (`ApiError`, `applyFieldErrors`).
-- [ ] Playwright: tek duman testi (site: ürün listesi + dil değiştirme; backoffice: admin girişi + ürün ekleme).
+- [x] GitHub Actions (`.github/workflows/ci.yml`; CI yeşil): `pnpm build`, `typecheck`, `lint`, `test`, `generate:check`, `dotnet test`, `pnpm audit`, `dotnet list package --vulnerable`.
+- [x] Vitest: `web-core` (BFF, oturum, token yenileme: 6 test) ve `api-client` (`apiFetch`, `ApiError`, `applyFieldErrors`: 8 test).
+- [x] Playwright (`packages/e2e`, `pnpm --filter @ako/e2e test:e2e`): site ürün listesi + dil değiştirme, backoffice admin girişi + ürün ekleme. CI işi `e2e` yeşil.
 - [x] Dependabot: yalnızca güvenlik güncellemeleri, gruplu PR (`.github/dependabot.yml`). Rutin sürüm güncellemesi kapalı.
-- [ ] Temiz klonda doğrulama: `pnpm i && pnpm db:up` sonrası README adımlarıyla her şey ayağa kalkıyor mu?
+- [x] Temiz klonda doğrulama: `pnpm i --frozen-lockfile` sonrası `generate:check`, `typecheck`, `lint`, `build`, `test` geçti (2026-10-19); kök `README.md` eklendi.
 
 **Bitti:** boş bir klondan CI yeşil; README'deki komutlar birebir çalışıyor.
 
