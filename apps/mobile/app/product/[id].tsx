@@ -8,14 +8,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Eyebrow, Heading, Muted } from '~/components/ui';
 import { RADIUS, formatPrice, imageSource, stockState } from '~/lib/brand';
 import { useT } from '~/lib/i18n';
-import { useAddToList } from '~/lib/todos';
+import { useAddToList } from '~/lib/todos'; // ako:auth
 
 export default function ProductDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { color } = useTheme();
   const insets = useSafeAreaInsets();
   const t = useT();
-  const addToList = useAddToList();
+  const addToList = useAddToList(); // ako:auth
   const { data: product, isPending, isError } = useGetProduct(id);
 
   const back = (
@@ -83,6 +83,7 @@ export default function ProductDetail() {
           </View>
           {product.description ? <Paragraph muted>{product.description}</Paragraph> : null}
 
+          {/* ako:begin auth */}
           {!stock.available ? (
             <Button block size="lg" disabled>
               {t('product.unavailable')}
@@ -98,6 +99,7 @@ export default function ProductDetail() {
               {t('product.add')}
             </Button>
           )}
+          {/* ako:end auth */}
 
           <View
             style={{

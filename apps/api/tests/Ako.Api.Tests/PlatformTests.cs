@@ -22,6 +22,7 @@ public sealed class PlatformTests(ApiFactory factory)
         Assert.Contains("\"database\":\"Healthy\"", await ready.Content.ReadAsStringAsync());
     }
 
+    // ako:begin auth
     [Fact]
     public async Task Denetim_alanlari_otomatik_dolar()
     {
@@ -56,4 +57,5 @@ public sealed class PlatformTests(ApiFactory factory)
         Assert.Contains("rate_limited", await third.Content.ReadAsStringAsync());
         Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/auth/providers")).StatusCode);
     }
+    // ako:end auth
 }

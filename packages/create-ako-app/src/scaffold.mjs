@@ -11,9 +11,38 @@ import {
 } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildPlan, filterLaunch, isRemoved, renderReadme, stripE2eJob } from './plan.mjs';
+import { applyMarkers, hasMarkers } from './markers.mjs';
+import {
+  buildPlan,
+  filterLaunch,
+  formatJson,
+  isRemoved,
+  renderReadme,
+  stripE2eJob,
+} from './plan.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
+const VARIANTS_DIR = resolve(here, '../variants');
+const MARKED_EXTENSIONS = /\.(cs|csproj|props|slnx|ts|tsx|mjs|yml|yaml|html|css)$/;
+
+function listFilesRecursive(root, dir = '') {
+  return readdirSync(join(root, dir), { withFileTypes: true }).flatMap((entry) => {
+    const rel = dir ? `${dir}/${entry.name}` : entry.name;
+    return entry.isDirectory() ? listFilesRecursive(root, rel) : [rel];
+  });
+}
+
+/** Noktalı yollarla JSON anahtarı siler; yoksa sessizce geçer. */
+export function removeJsonKeys(text, keys) {
+  const json = JSON.parse(text);
+  for (const key of keys) {
+    const path = key.split('.');
+    let node = json;
+    for (const part of path.slice(0, -1)) node = node?.[part];
+    if (node && typeof node === 'object') delete node[path.at(-1)];
+  }
+  return `${formatJson(json)}\n`;
+}
 
 /** Yayınlanan pakette `template/` yanında durur; depodan çalışınca deponun kökü kullanılır. */
 export function resolveTemplate(explicit) {
@@ -44,7 +73,7 @@ export function listTemplateFiles(root) {
   return files;
 }
 
-export function scaffold({ target, template, choices, log = () => {} }) {
+export function scaffold({ target, template, choices, skipVariants = false, log = () => {} }) {
   const plan = buildPlan(choices);
   const files = listTemplateFiles(template).filter((file) => !isRemoved(file, plan.remove));
 
@@ -52,8 +81,27 @@ export function scaffold({ target, template, choices, log = () => {} }) {
     const from = join(template, file);
     const to = join(target, file);
     mkdirSync(dirname(to), { recursive: true });
-    copyFileSync(from, to);
+    if (plan.disabled.size > 0 && MARKED_EXTENSIONS.test(file)) {
+      const text = readFileSync(from, 'utf8');
+      writeFileSync(to, hasMarkers(text) ? applyMarkers(text, plan.disabled, file) : text);
+    } else {
+      copyFileSync(from, to);
+    }
     chmodSync(to, statSync(from).mode);
+  }
+
+  // Özelliğe özel hazır dosyalar (ör. auth'suz migration seti) şablonun üstüne yazılır.
+  for (const variant of skipVariants ? [] : plan.variants) {
+    const root = join(VARIANTS_DIR, variant);
+    if (!existsSync(root))
+      throw new Error(
+        `Varyant bulunamadı: ${root} (pnpm --filter create-ako-app variants ile üretin)`,
+      );
+    for (const file of listFilesRecursive(root)) {
+      const to = join(target, file);
+      mkdirSync(dirname(to), { recursive: true });
+      copyFileSync(join(root, file), to);
+    }
   }
 
   const edit = (file, change) => {
@@ -61,10 +109,14 @@ export function scaffold({ target, template, choices, log = () => {} }) {
     if (existsSync(path)) writeFileSync(path, change(readFileSync(path, 'utf8')));
   };
 
+  for (const { file, keys } of plan.jsonRemove) {
+    edit(file, (text) => removeJsonKeys(text, keys));
+  }
+
   edit('package.json', (text) => {
     const pkg = JSON.parse(text);
     pkg.name = choices.name;
-    return `${JSON.stringify(pkg, null, 2)}\n`;
+    return `${formatJson(pkg)}\n`;
   });
   edit('.claude/launch.json', (text) => filterLaunch(text, plan.launchServers));
   if (!plan.keepE2e) edit('.github/workflows/ci.yml', stripE2eJob);

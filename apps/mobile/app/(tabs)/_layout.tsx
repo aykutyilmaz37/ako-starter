@@ -32,6 +32,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color: c, size }) => <Store color={c} size={size} />,
         }}
       />
+      {/* ako:begin auth */}
       <Tabs.Screen
         name="list"
         options={{
@@ -39,6 +40,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color: c, size }) => <ListChecks color={c} size={size} />,
         }}
       />
+      {/* ako:end auth */}
       <Tabs.Screen
         name="account"
         options={{

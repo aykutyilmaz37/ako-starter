@@ -15,6 +15,7 @@ public static class LocalizationEndpoints
         return app;
     }
 
+    // ako:begin auth
     public static RouteGroupBuilder MapLocalizationAdmin(this RouteGroupBuilder admin)
     {
         var group = admin.MapGroup("/localization").WithTags("Admin: Localization");
@@ -29,4 +30,5 @@ public static class LocalizationEndpoints
 
         return admin;
     }
+    // ako:end auth
 }

@@ -4,7 +4,7 @@ import { useLocalePath, useT } from '~/shared/i18n/i18n-provider';
 import { SectionHeading } from '~/shared/section-heading';
 
 /** Kavurucunun hikâyesi: güven verir ve markayı "bir kişi" olarak tanıtır. */
-export function Story({ signedIn }: { signedIn: boolean }) {
+export function Story({ signedIn }: { signedIn?: boolean }) {
   const t = useT();
   const localePath = useLocalePath();
 
@@ -23,6 +23,7 @@ export function Story({ signedIn }: { signedIn: boolean }) {
       <div className="flex flex-col gap-4 md:col-span-3">
         <SectionHeading eyebrow={t('home.story.eyebrow')} title={t('home.story.title')} />
         <Paragraph className="leading-relaxed text-mari-muted">{t('home.story.text')}</Paragraph>
+        {/* ako:begin auth */}
         {!signedIn && (
           <div>
             <Button href={localePath('/register')} variant="outline">
@@ -30,6 +31,7 @@ export function Story({ signedIn }: { signedIn: boolean }) {
             </Button>
           </div>
         )}
+        {/* ako:end auth */}
       </div>
     </section>
   );

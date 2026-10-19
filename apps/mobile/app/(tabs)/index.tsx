@@ -10,7 +10,7 @@ import { ProductCard } from '~/components/product-card';
 import { Heading, Muted, SectionHeader } from '~/components/ui';
 import { CATEGORIES, RADIUS, imageSource } from '~/lib/brand';
 import { useT } from '~/lib/i18n';
-import { useSession } from '~/lib/session';
+import { useSession } from '~/lib/session'; // ako:auth
 
 function openShop(category?: ProductCategory) {
   router.navigate({ pathname: '/shop', params: category ? { category } : {} });
@@ -21,7 +21,7 @@ export default function Home() {
   const { color } = useTheme();
   const insets = useSafeAreaInsets();
   const t = useT();
-  const { user } = useSession();
+  const { user } = useSession(); // ako:auth
   const featured = useListProducts({ category: 'Coffee', pageSize: 4 });
   const images = (featured.data?.items ?? []).slice(0, 3);
 
@@ -186,6 +186,7 @@ export default function Home() {
         <Text style={{ color: color.primary.solidContrast, opacity: 0.85 }}>
           {t('home.story.author')}
         </Text>
+        {/* ako:begin auth */}
         {user ? null : (
           <Button
             variant="outline"
@@ -196,6 +197,7 @@ export default function Home() {
             {t('home.story.cta')}
           </Button>
         )}
+        {/* ako:end auth */}
       </View>
     </ScrollView>
   );

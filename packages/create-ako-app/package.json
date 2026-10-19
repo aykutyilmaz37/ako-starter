@@ -10,12 +10,14 @@
   "files": [
     "bin",
     "src",
+    "variants",
     "template"
   ],
   "scripts": {
     "test": "vitest run",
     "build:template": "node scripts/build-template.mjs",
-    "verify": "node scripts/verify-combos.mjs"
+    "verify": "node scripts/verify-combos.mjs",
+    "variants": "node scripts/refresh-variants.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

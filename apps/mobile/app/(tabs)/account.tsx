@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Eyebrow, Heading, Muted } from '~/components/ui';
 import { RADIUS } from '~/lib/brand';
 import { useI18n } from '~/lib/i18n';
-import { useSession } from '~/lib/session';
+import { useSession } from '~/lib/session'; // ako:auth
 import { useThemePreference, type ThemePreference } from '~/lib/theme-preference';
 
 /** Hesap sekmesi: giriş isteğe bağlıdır; giriş yapılmamışsa davet, yapılmışsa profil ve çıkış. Tema ve dil burada. */
@@ -14,16 +14,21 @@ export default function Account() {
   const { color } = useTheme();
   const insets = useSafeAreaInsets();
   const { t, lang, languages, setLanguage } = useI18n();
-  const { user, signOut } = useSession();
+  const { user, signOut } = useSession(); // ako:auth
   const { preference, setPreference } = useThemePreference();
 
   return (
     <ScrollView contentContainerStyle={{ padding: 20, paddingTop: insets.top + 20, gap: 20 }}>
       <View style={{ gap: 4 }}>
         <Eyebrow>{t('account.eyebrow')}</Eyebrow>
+        {/* ako:begin auth */}
         <Heading size={32}>{user ? t('account.hello') : t('account.join')}</Heading>
+        {/* ako:else auth */}
+        {/*~ <Heading size={32}>{t('tab.account')}</Heading> */}
+        {/* ako:end auth */}
       </View>
 
+      {/* ako:begin auth */}
       {user ? (
         <View
           style={{
@@ -77,6 +82,7 @@ export default function Account() {
           </Button>
         </View>
       )}
+      {/* ako:end auth */}
 
       <View style={{ gap: 8 }}>
         <Text weight="semibold">{t('account.appearance')}</Text>
@@ -106,11 +112,13 @@ export default function Account() {
         </View>
       ) : null}
 
+      {/* ako:begin auth */}
       {user ? (
         <Button variant="outline" onPress={() => void signOut()}>
           {t('account.logout')}
         </Button>
       ) : null}
+      {/* ako:end auth */}
     </ScrollView>
   );
 }

@@ -7,10 +7,12 @@ export default [
     index('features/home/pages/home.tsx'),
     route('products', 'features/products/pages/catalog.tsx'),
     route('products/:id', 'features/products/pages/product-detail.tsx'),
+    // ako:begin auth
     route('list', 'features/todos/pages/todos.tsx'),
     route('login', 'features/auth/pages/login.tsx'),
     route('register', 'features/auth/pages/register.tsx'),
     route('verify', 'features/auth/pages/verify.tsx'),
     route('forgot-password', 'features/auth/pages/forgot-password.tsx'),
+    // ako:end auth
   ]),
 ] satisfies RouteConfig;

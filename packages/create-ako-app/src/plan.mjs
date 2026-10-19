@@ -5,11 +5,62 @@ export const WEB_APPS = ['site', 'backoffice'];
 /** Şablonun kendisine ait olan, üretilen projeye hiç girmeyen yollar. */
 const TEMPLATE_ONLY = ['ROADMAP.md', 'packages/create-ako-app'];
 
+/** Auth kapalıyken silinen yollar (API tarafı). İstemci tarafı sonraki adımda eklenir. */
+const API = 'apps/api/src/Ako.Api';
+const AUTH_PATHS = [
+  `${API}/Features/Auth`,
+  `${API}/Features/Todos`,
+  `${API}/Features/Products/Actions/Admin`,
+  `${API}/Features/Localization/Actions/Admin`,
+  `${API}/Infrastructure/AdminEndpoints.cs`,
+  `${API}/Infrastructure/Email`,
+  `${API}/Resources/EmailTemplates`,
+  `${API}/Common/GuestDataMerger.cs`,
+  // Migration'lar Identity tablolarını içerir; auth'suz set variants/no-auth altından gelir.
+  `${API}/Infrastructure/Data/Migrations`,
+  'apps/api/tests/Ako.Api.Tests/AdminTests.cs',
+  'apps/api/tests/Ako.Api.Tests/AuthTests.cs',
+  'apps/api/tests/Ako.Api.Tests/EmailCodeTests.cs',
+  'apps/api/tests/Ako.Api.Tests/EmailTemplateTests.cs',
+  'apps/api/tests/Ako.Api.Tests/GuestTests.cs',
+  'apps/api/tests/Ako.Api.Tests/TodosTests.cs',
+  // Ürün testleri ürünü admin ucuyla oluşturur; yönetim yoksa anlamlı karşılığı kalmaz.
+  'apps/api/tests/Ako.Api.Tests/ProductsTests.cs',
+  // Site: giriş/kayıt/liste sayfaları ve oturum bilgisini okuyan yardımcılar.
+  'apps/web/site/app/features/auth',
+  'apps/web/site/app/features/todos',
+  'apps/web/site/app/features/products/hooks/use-add-to-list.ts',
+  'apps/web/site/app/shared/use-me.ts',
+  // Mobil: giriş ekranları, oturum, sosyal giriş, alışveriş listesi (Todos) ve token deposu.
+  'apps/mobile/app/(auth)',
+  'apps/mobile/app/(tabs)/list.tsx',
+  'apps/mobile/lib/session.tsx',
+  'apps/mobile/lib/social-login.ts',
+  'apps/mobile/lib/todos.ts',
+  'apps/mobile/lib/token-store.ts',
+  'apps/mobile/components/auth-screen.tsx',
+  'apps/mobile/components/social-button.tsx',
+  'apps/mobile/components/offline-screen.tsx',
+];
+
+/** Auth kapalıyken ayar dosyalarından çıkarılan anahtarlar (noktalı yol). */
+const AUTH_JSON_KEYS = [
+  {
+    file: 'apps/mobile/package.json',
+    keys: [
+      'dependencies.@react-native-google-signin/google-signin',
+      'dependencies.expo-apple-authentication',
+    ],
+  },
+  { file: `${API}/appsettings.json`, keys: ['Auth', 'Api.EnableAdminEndpoints'] },
+  { file: `${API}/appsettings.Development.json`, keys: ['Auth', 'Api.EnableAdminEndpoints'] },
+];
+
 /**
  * @param {{ name: string, web: string[], mobile: boolean }} choices
- * @returns {{ name: string, web: string[], mobile: boolean }}
+ * @returns {{ name: string, web: string[], mobile: boolean, auth: boolean }}
  */
-export function normalizeChoices({ name, web, mobile }) {
+export function normalizeChoices({ name, web, mobile, auth = true }) {
   const unknown = web.filter((app) => !WEB_APPS.includes(app));
   if (unknown.length > 0) {
     throw new Error(
@@ -24,14 +75,19 @@ export function normalizeChoices({ name, web, mobile }) {
       `Geçersiz proje adı "${name}": küçük harf, rakam, "-", "_" ve "." kullanılabilir.`,
     );
   }
-  return { name, web: WEB_APPS.filter((app) => web.includes(app)), mobile };
+  if (!auth && web.includes('backoffice')) {
+    throw new Error(
+      'Auth kapalıyken backoffice olamaz (yönetim girişi gerekir). --web=site ya da --no-web kullanın.',
+    );
+  }
+  return { name, web: WEB_APPS.filter((app) => web.includes(app)), mobile, auth };
 }
 
 /**
- * @param {{ name: string, web: string[], mobile: boolean }} choices
+ * @param {{ name: string, web: string[], mobile: boolean, auth?: boolean }} choices
  */
 export function buildPlan(choices) {
-  const { web, mobile } = normalizeChoices(choices);
+  const { web, mobile, auth } = normalizeChoices(choices);
   const remove = [...TEMPLATE_ONLY];
 
   for (const app of WEB_APPS) {
@@ -47,8 +103,21 @@ export function buildPlan(choices) {
   const keepE2e = web.length === WEB_APPS.length;
   if (!keepE2e) remove.push('packages/e2e');
 
+  const disabled = new Set();
+  const variants = [];
+  const jsonRemove = [];
+  if (!auth) {
+    disabled.add('auth');
+    variants.push('no-auth');
+    remove.push(...AUTH_PATHS);
+    jsonRemove.push(...AUTH_JSON_KEYS);
+  }
+
   return {
     remove,
+    disabled,
+    variants,
+    jsonRemove,
     keepE2e,
     /** `.claude/launch.json` içinde kalacak sunucular. */
     launchServers: ['api', ...web],
@@ -69,10 +138,31 @@ export function stripE2eJob(yaml) {
 export function filterLaunch(launchJson, keep) {
   const launch = JSON.parse(launchJson);
   launch.configurations = launch.configurations.filter((c) => keep.includes(c.name));
-  return `${JSON.stringify(launch, null, 2)}\n`;
+  return formatJson(launch);
 }
 
-export function renderReadme({ name, web, mobile }) {
+/** Prettier'ın JSON çıktısına yakın biçim: sığan diziler tek satırda kalır (CI `format:check` değişmez). */
+export function formatJson(value, indent = '', lead = 0, width = 100) {
+  if (value === null || typeof value !== 'object') return JSON.stringify(value);
+  const isArray = Array.isArray(value);
+  const entries = isArray ? value : Object.entries(value);
+  if (entries.length === 0) return isArray ? '[]' : '{}';
+  if (isArray && value.every((v) => v === null || typeof v !== 'object')) {
+    const inline = `[${value.map((v) => JSON.stringify(v)).join(', ')}]`;
+    if (indent.length + lead + inline.length <= width) return inline;
+  }
+  const inner = `${indent}  `;
+  const body = isArray
+    ? value.map((v) => `${inner}${formatJson(v, inner, 0, width)}`)
+    : entries.map(([k, v]) => {
+        const key = `${JSON.stringify(k)}: `;
+        return `${inner}${key}${formatJson(v, inner, key.length, width)}`;
+      });
+  const [open, close] = isArray ? ['[', ']'] : ['{', '}'];
+  return `${open}\n${body.join(',\n')}\n${indent}${close}`;
+}
+
+export function renderReadme({ name, web, mobile, auth = true }) {
   const lines = [
     `# ${name}`,
     '',
@@ -83,6 +173,11 @@ export function renderReadme({ name, web, mobile }) {
   if (web.includes('site')) lines.push('- `apps/web/site`: herkese açık web sitesi (port 5173)');
   if (web.includes('backoffice')) lines.push('- `apps/web/backoffice`: yönetim paneli (port 5174)');
   if (mobile) lines.push('- `apps/mobile`: Expo mobil uygulaması');
+  if (!auth)
+    lines.push(
+      '',
+      'Bu projede **auth yok**: giriş, kayıt, misafir, Todos ve yönetim (`/admin`) uçları çıkarıldı.',
+    );
   lines.push(
     '',
     '## Çalıştırma',

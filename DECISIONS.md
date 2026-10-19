@@ -149,6 +149,18 @@ Her mobil uygulamanın sunucuya ihtiyacı yoktur: veri yalnızca cihazda durabil
 - Renovate/Dependabot. CI'da `pnpm audit` ve `dotnet list package --vulnerable` çalışır.
 - `@mari-ui/modules` adapter deseni: modüllerin arayüzleri `api-client` ile doldurulur.
 
+## create-ako-app: üretim mekaniği
+
+Şablon deponun kendisidir (ayrı bir şablon klasörü tutulmaz); üretici izlenen dosyaları kopyalar, seçilmeyeni çıkarır. Yayınlanınca `build:template` aynı dosyaları pakete `template/` olarak koyar.
+
+- **Üç araç:** (1) yol silme (`src/plan.mjs`: seçilmeyen uygulama, özelliğe ait klasör/dosya), (2) satır işaretleri (`src/markers.mjs`), (3) hazır varyant dosyaları (`variants/<ad>/`, hedefin üstüne yazılır).
+- **İşaretler** dosya türünden bağımsızdır; şablon işaretlerle de derlenir (hepsi yorum): `// ako:<özellik>` satırı siler, `ako:begin/ako:end` bloğu siler, `ako:else` ile kapalıyken geçerli kod `//~ ` (JSX'te `{/*~ ... */}`) önekiyle yazılır. Özellik açıkken dosyaya dokunulmaz.
+- **Auth kapalı** (`--no-auth`): giriş, kayıt, misafir, sosyal giriş, `Todos` ve tüm `/admin` uçları çıkar; **backoffice de çıkar** (yönetim girişi auth ister, seçimle birlikte kullanılamaz). Site ve mobil katalog olarak salt okunur kalır.
+- **Migration:** auth'lu set `Infrastructure/Data/Migrations`'ta, auth'suz set `variants/no-auth/` altında hazır durur (Identity tablolarını içermez); üretimde dotnet-ef gerekmez. Modeli değiştirince `pnpm --filter create-ako-app variants` ile yenilenir; `verify` betiği `has-pending-model-changes` ile bayat seti yakalar.
+- **Üretim sonrası sıra:** install → `generate` (API değiştiyse openapi.json ve Orval çıktısı yeniden) → `format` → `git init` + ilk commit; böylece `generate:check` ve `format:check` baştan temiz.
+- **Doğrulama:** `pnpm --filter create-ako-app verify` her kombinasyon için CLI'ın son adımlarını, sonra CI komutlarını (format:check, generate:check, typecheck, lint, build, test) çalıştırır.
+- Şimdilik tek iki-seçenekli ayrım: e2e paketi yalnızca iki web uygulaması birlikteyse kalır.
+
 ## Kurulum sırasında konuşulacaklar
 
 - ~~Form yönetimi~~ → **react-hook-form + Orval'ın ürettiği zod şemaları** (karar verildi).

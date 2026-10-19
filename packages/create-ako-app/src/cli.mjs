@@ -1,8 +1,8 @@
-import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { basename, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { createInterface } from 'node:readline/promises';
+import { finalize } from './finalize.mjs';
 import { WEB_APPS, normalizeChoices } from './plan.mjs';
 import { resolveTemplate, scaffold } from './scaffold.mjs';
 
@@ -10,7 +10,9 @@ const HELP = `create-ako-app <klasör> [seçenekler]
 
   --web=site,backoffice|none   Web uygulamaları (varsayılan: ikisi)
   --mobile / --no-mobile       Expo mobil uygulaması (varsayılan: evet)
+  --auth / --no-auth           Giriş, kayıt, misafir, Todos, yönetim (varsayılan: evet; kapalıyken backoffice olamaz)
   --install / --no-install     Üretimden sonra pnpm install (varsayılan: evet)
+  --no-git                     git init + ilk commit yapma
   --template=<klasör>          Şablon kaynağı (varsayılan: paketlenmiş şablon ya da depo)
   -y, --yes                    Soru sorma, belirtilmeyenlerde varsayılanı kullan
   -h, --help
@@ -32,8 +34,11 @@ export async function main(argv) {
       web: { type: 'string' },
       mobile: { type: 'boolean' },
       'no-mobile': { type: 'boolean' },
+      auth: { type: 'boolean' },
+      'no-auth': { type: 'boolean' },
       install: { type: 'boolean' },
       'no-install': { type: 'boolean' },
+      'no-git': { type: 'boolean' },
       template: { type: 'string' },
       yes: { type: 'boolean', short: 'y' },
       help: { type: 'boolean', short: 'h' },
@@ -53,6 +58,10 @@ export async function main(argv) {
     if (existsSync(target) && readdirSync(target).length > 0)
       throw new Error(`${target} boş değil.`);
 
+    let auth = values.auth ? true : values['no-auth'] ? false : undefined;
+    if (auth === undefined)
+      auth = rl ? await ask(rl, 'Auth (giriş, kayıt, misafir, yönetim) olsun mu?', true) : true;
+
     let web;
     if (values.web !== undefined) {
       web =
@@ -64,13 +73,16 @@ export async function main(argv) {
               .filter(Boolean);
     } else if (rl) {
       web = [];
-      for (const app of WEB_APPS) if (await ask(rl, `Web: ${app} olsun mu?`, true)) web.push(app);
-    } else web = WEB_APPS;
+      for (const app of WEB_APPS) {
+        if (app === 'backoffice' && !auth) continue; // yönetim girişi auth ister
+        if (await ask(rl, `Web: ${app} olsun mu?`, true)) web.push(app);
+      }
+    } else web = auth ? WEB_APPS : WEB_APPS.filter((app) => app !== 'backoffice');
 
     let mobile = values.mobile ? true : values['no-mobile'] ? false : undefined;
     if (mobile === undefined) mobile = rl ? await ask(rl, 'Mobil (Expo) olsun mu?', true) : true;
 
-    const choices = normalizeChoices({ name: basename(target), web, mobile });
+    const choices = normalizeChoices({ name: basename(target), web, mobile, auth });
     const plan = scaffold({
       target,
       template: resolveTemplate(values.template),
@@ -88,9 +100,11 @@ export async function main(argv) {
         : interactive
           ? await ask(rl, 'pnpm install çalıştırılsın mı?', true)
           : false;
-    if (install) execFileSync('pnpm', ['install'], { cwd: target, stdio: 'inherit' });
+    finalize({ target, plan, install, git: !values['no-git'] });
 
-    console.log(`\n✔ Hazır: ${target}\n  cd ${dir}${install ? '' : ' && pnpm install'}`);
+    console.log(
+      `\n✔ Hazır: ${target}\n  cd ${dir}${install ? '' : ` && pnpm install${plan.disabled.size > 0 ? ' && pnpm generate' : ''}`}`,
+    );
   } finally {
     rl?.close();
   }

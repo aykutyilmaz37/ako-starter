@@ -1,10 +1,11 @@
-// Her kombinasyon için: üret → pnpm install → typecheck + build → dotnet build.
-// Kullanım: pnpm --filter create-ako-app verify [--only=web,mobile] [--out=<klasör>] [--dotnet-test]
+// Her kombinasyon için: üret → CLI'ın son adımları → CI komutları (format:check, generate:check, typecheck, lint, build, test).
+// Kullanım: pnpm --filter create-ako-app verify [--only=web,mobile] [--out=<klasör>] [--skip-tests]
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
+import { finalize } from '../src/finalize.mjs';
 import { resolveTemplate, scaffold } from '../src/scaffold.mjs';
 
 const COMBOS = {
@@ -13,13 +14,16 @@ const COMBOS = {
   mobile: { web: [], mobile: true },
   site: { web: ['site'], mobile: false },
   backoffice: { web: ['backoffice'], mobile: false },
+  'no-auth-site': { web: ['site'], mobile: false, auth: false },
+  'no-auth-mobile': { web: [], mobile: true, auth: false },
+  'no-auth-both': { web: ['site'], mobile: true, auth: false },
 };
 
 const { values } = parseArgs({
   options: {
     only: { type: 'string' },
     out: { type: 'string' },
-    'dotnet-test': { type: 'boolean' },
+    'skip-tests': { type: 'boolean' },
     keep: { type: 'boolean' },
   },
 });

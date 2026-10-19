@@ -59,7 +59,7 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 Şablonun asıl ürünü bu; önce çıkarılacak parçalar temiz olmalı (Aşama 1–2).
 
-- [x] (kısmen) `packages/create-ako-app` iskeleti: web (site/backoffice) / mobil / ikisi seçimi, seçilmeyeni silme, CI/launch/README düzeltmesi, `verify` betiği (5 kombinasyon: install + typecheck + build + dotnet build geçti). Kalan sorular:
+- [x] (kısmen) `packages/create-ako-app` iskeleti: web (site/backoffice) / mobil / ikisi seçimi, seçilmeyeni silme, CI/launch/README düzeltmesi, `verify` betiği (5 kombinasyon: install + typecheck + build + dotnet build geçti). `--no-auth` varyantı (API/site/mobil, auth'suz migration seti, `ako:` işaretleri) ve 8 kombinasyon doğrulaması tamam. Kalan sorular:
 - [ ] Sorular: web / mobil / ikisi; backend (API / yok, yalnız mobilde); auth (+ sağlayıcılar, misafir girişi); çoklu dil; reklam + rıza; analitik; uzaktan ayar; örnek senaryo (Akı Kahve) kalsın mı.
 - [ ] Silme kuralları: seçilmeyen uygulama klasörü, `Features/Auth` (`// ako:auth` işaretleri), `features/localization` + `:lang?` + `/localization`, Todos/Products örnekleri.
 - [ ] Backend'siz mobil varyantı (karar: DECISIONS.md): `expo-sqlite` + Drizzle iskeleti, paketli migration'lar, örnek özellik yerel veriyle (`features/<özellik>/data/`); `api-client`, oturum, sosyal giriş ve API sözlüğü bağımlılıklarının temiz çıkarılması.

@@ -7,9 +7,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { OfflineScreen } from '~/components/offline-screen';
+import { OfflineScreen } from '~/components/offline-screen'; // ako:auth
 import { I18nProvider } from '~/lib/i18n';
-import { SessionProvider, useSession } from '~/lib/session';
+import { SessionProvider, useSession } from '~/lib/session'; // ako:auth
 import { ThemePreferenceProvider, useThemePreference } from '~/lib/theme-preference';
 import { mariTheme } from '../mari-ui-theme';
 
@@ -26,21 +26,25 @@ function Themed({ children }: { children: React.ReactNode }) {
 }
 
 function Routes() {
-  const { status } = useSession();
+  const { status } = useSession(); // ako:auth
   const surface = useTheme().color.canvas.surface;
 
   // Token okunurken / ilk /auth/me beklenirken boş yüzey: ekran göz kırpmasın.
+  // ako:begin auth
   if (status === 'loading') return <View style={{ flex: 1, backgroundColor: surface }} />;
   if (status === 'offline') return <OfflineScreen />;
+  // ako:end auth
 
   return (
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: surface } }}>
       {/* Katalog herkese açık; giriş yalnızca alışveriş listesi gibi kişisel ekranlar için gerekir. */}
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="product/[id]" />
+      {/* ako:begin auth */}
       <Stack.Protected guard={status === 'guest'}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
+      {/* ako:end auth */}
     </Stack>
   );
 }
@@ -55,13 +59,17 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
+          {/* ako:begin auth */}
           <SessionProvider>
+            {/* ako:end auth */}
             <ThemePreferenceProvider>
               <Themed>
                 <Routes />
               </Themed>
             </ThemePreferenceProvider>
+            {/* ako:begin auth */}
           </SessionProvider>
+          {/* ako:end auth */}
         </I18nProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
