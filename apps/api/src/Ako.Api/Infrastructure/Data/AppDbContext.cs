@@ -14,9 +14,9 @@ namespace Ako.Api.Infrastructure.Data;
 public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     // ako:begin auth
     : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>(options), IDataProtectionKeyContext
-    // ako:else auth
-    //~ : DbContext(options), IDataProtectionKeyContext
-    // ako:end auth
+// ako:else auth
+//~ : DbContext(options), IDataProtectionKeyContext
+// ako:end auth
 {
     /// <summary>
     /// Token ve çerezleri şifreleyen anahtarlar. Veritabanında durdukları için container yeniden başlasa
