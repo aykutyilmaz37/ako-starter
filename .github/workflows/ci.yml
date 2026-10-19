@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm generate:check
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm audit --prod
+
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet restore apps/api/Ako.slnx
+      - run: dotnet format apps/api/Ako.slnx --verify-no-changes --no-restore
+      - run: dotnet build apps/api/Ako.slnx -c Release --no-restore
+      # Testler Testcontainers/Docker kullanıyorsa runner'da Docker hazırdır.
+      - run: dotnet test apps/api/Ako.slnx -c Release --no-build
+      - name: Güvenlik açığı olan paket var mı
+        run: |
+          dotnet list apps/api/Ako.slnx package --vulnerable --include-transitive 2>&1 | tee vuln.log
+          ! grep -q "has the following vulnerable packages" vuln.log
