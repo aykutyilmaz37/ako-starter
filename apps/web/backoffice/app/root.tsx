@@ -1,5 +1,6 @@
 import { getMe } from '@ako/api-client/auth';
 import { sessionContext } from '@ako/web-core';
+import { themeInitScript } from '@ako/web-core/theme';
 import {
   Links,
   Meta,
@@ -63,9 +64,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const lang = root?.lang ?? 'tr';
 
   return (
-    <html lang={lang}>
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Backoffice arama motorlarında görünmesin. */}
         <meta name="robots" content="noindex, nofollow" />

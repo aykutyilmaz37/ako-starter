@@ -1,4 +1,4 @@
-import { Avatar, Button, Paragraph, Text, useTheme } from '@mari-ui/native';
+import { Avatar, Button, Paragraph, Segmented, Text, useTheme } from '@mari-ui/native';
 import { router } from 'expo-router';
 import { Heart } from 'lucide-react-native';
 import { View } from 'react-native';
@@ -6,12 +6,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Eyebrow, Heading, Muted } from '~/components/ui';
 import { RADIUS } from '~/lib/brand';
 import { useSession } from '~/lib/session';
+import { useThemePreference, type ThemePreference } from '~/lib/theme-preference';
 
 /** Hesap sekmesi: giriş isteğe bağlıdır; giriş yapılmamışsa davet, yapılmışsa profil ve çıkış. */
 export default function Account() {
   const { color } = useTheme();
   const insets = useSafeAreaInsets();
   const { user, signOut } = useSession();
+  const { preference, setPreference } = useThemePreference();
 
   return (
     <View style={{ flex: 1, padding: 20, paddingTop: insets.top + 20, gap: 20 }}>
@@ -76,6 +78,21 @@ export default function Account() {
           </Button>
         </View>
       )}
+
+      <View style={{ gap: 8 }}>
+        <Text weight="semibold">Görünüm</Text>
+        <Segmented
+          block
+          accessibilityLabel="Tema"
+          value={preference}
+          onChange={(value) => setPreference(value as ThemePreference)}
+          options={[
+            { value: 'system', label: 'Sistem' },
+            { value: 'light', label: 'Açık' },
+            { value: 'dark', label: 'Koyu' },
+          ]}
+        />
+      </View>
 
       {user ? (
         <Button variant="outline" onPress={() => void signOut()}>

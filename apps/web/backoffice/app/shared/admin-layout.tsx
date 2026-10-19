@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { logout } from '~/shared/api';
 import { useT } from '~/shared/i18n/i18n-provider';
 import { LanguageSwitcher } from '~/shared/language-switcher';
+import { ThemeSwitcher } from '~/shared/theme-switcher';
 import { useMe } from '~/shared/use-me';
 
 /**
@@ -104,6 +105,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           />
           <div className="ml-auto flex items-center gap-3">
             <LanguageSwitcher />
+            <ThemeSwitcher />
             <Avatar size="sm" color="primary" alt={email} />
             <Text className="hidden max-w-56 truncate text-sm sm:block">{email}</Text>
             <Button

@@ -1,5 +1,9 @@
 {
   "language.label": "Sprache",
+  "theme.label": "Design",
+  "theme.system": "System",
+  "theme.light": "Hell",
+  "theme.dark": "Dunkel",
   "common.cancel": "Abbrechen",
   "category.Coffee": "Kaffee",
   "category.Equipment": "Brühzubehör",

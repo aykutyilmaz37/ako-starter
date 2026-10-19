@@ -9,13 +9,16 @@ import { View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { OfflineScreen } from '~/components/offline-screen';
 import { SessionProvider, useSession } from '~/lib/session';
+import { ThemePreferenceProvider, useThemePreference } from '~/lib/theme-preference';
 import { mariTheme } from '../mari-ui-theme';
 
-// Marka krem/sıcak tonlarda tasarlandı (web sitesi de yalnızca açık tema); sistem koyu modu izlenmez.
+// Tema tercihi (sistem / açık / koyu) Hesap sekmesinden seçilir; "sistem" cihazın görünümünü izler.
 function Themed({ children }: { children: React.ReactNode }) {
   const insets = useSafeAreaInsets();
+  const { scheme } = useThemePreference();
   return (
-    <ThemeProvider theme={mariTheme.light} insets={insets}>
+    <ThemeProvider theme={mariTheme[scheme]} insets={insets}>
+      <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <ToastProvider insets={insets}>{children}</ToastProvider>
     </ThemeProvider>
   );
@@ -51,10 +54,11 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
-          <Themed>
-            <StatusBar style="dark" />
-            <Routes />
-          </Themed>
+          <ThemePreferenceProvider>
+            <Themed>
+              <Routes />
+            </Themed>
+          </ThemePreferenceProvider>
         </SessionProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
