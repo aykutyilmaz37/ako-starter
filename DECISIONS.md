@@ -102,6 +102,38 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - .NET'e doğrudan bağlanır, bearer token SecureStore'da tutulur.
 - Sosyal giriş: tarayıcı akışı (`AuthSession` + `ako://` deep link) tüm sağlayıcılar için; Google ve Apple'da ek olarak native SDK ile id token gönderilebilir.
 
+## Misafir ve kimlik (tüm istemciler)
+
+- **API istemciyi ayırt etmez, yalnızca bearer token'a bakar.** Mobil token'ı kendisi gönderir, web'de BFF çerezdeki token'ı sunucuda ekler. Mobil için ayrı endpoint açılmaz.
+- **Misafir = anonim Identity kullanıcısı.** `POST /auth/guest` e-postasız, şifresiz bir `AppUser` oluşturur (rol `Guest`) ve normal girişle aynı access + refresh token'ı döner. Mobil açılışta token yoksa misafir olur; bundan sonra her istek bearer'lıdır. Web'de gerekirse BFF aynı uçla misafir oturumu açar.
+- **Hangi özelliğin misafire açık olduğu özellik kararıdır, endpoint'te policy ile seçilir:**
+  - `RequireAuthorization()`: token'ı olan herkes (misafir dahil).
+  - `AppPolicies.Member`: kayıtlı kullanıcı (`Guest` rolü değil). Yeni kişisel uçların varsayılanı budur (güvenli taraf).
+  - `AppPolicies.Admin`: yönetim.
+- **Herkese açık okuma uçları anonim kalır** (token varsa kullanılır): web sitesi bu uçları SEO ve CDN önbelleği için token'sız çağırır.
+- **Misafirden üyeliğe geçiş veriyi korur:**
+  - Kayıt (ya da sosyal/native giriş) misafir token'ıyla gelirse yeni kullanıcı açılmaz; aynı kayda e-posta/şifre ya da dış giriş bağlanır, rol `User` olur, veri yerinde kalır.
+  - Misafir **var olan** bir hesaba giriş yaparsa her özellik kendi misafir verisini o hesaba taşır: `Common`'daki `IGuestDataMerger` arayüzünü özellikler uygular, Auth hepsini DI'dan alıp çalıştırır, sonra misafir kaydı silinir. Auth özellikleri, özellikler birbirini tanımaz (ArchTests). Çakışma kuralı (birleştir / üzerine yaz / at) özelliğin kendi kararıdır.
+- **Temizlik:** belirli süre işlem görmeyen misafirler arka plan işiyle silinir (`Auth:Guest:RetentionDays`, varsayılan 30). `/auth/guest` IP başına rate limit'lidir.
+- iOS Keychain uygulama silinince temizlenmeyebilir: eski misafir token'ı geçersizse istemci sessizce yeni misafir alır.
+- **Reddedilenler:** uygulamaya gömülü anahtar / client credentials (mobil uygulamadan her sır çıkarılabilir); herkese açık uçlara token zorunluluğu (web'in önbelleğini ve SEO'sunu bozar). "İstek gerçekten bizim uygulamadan mı" sorusu misafir token'ıyla çözülmez; gerekirse App Attest (iOS) / Play Integrity (Android) eklenir.
+- create-ako-app auth sorusunun altında "misafir girişi olsun mu?" diye sorar.
+
+## Backend'siz mobil (yalnız mobil kombinasyonu)
+
+Her mobil uygulamanın sunucuya ihtiyacı yoktur: veri yalnızca cihazda durabilir, uygulama internete yalnızca reklam, analitik, uzaktan ayar gibi üçüncü taraf servisler için çıkar. Şablon bunu ayrı bir kombinasyon olarak destekler; uygulama türü (liste, takip, oyun, araç...) fark etmez.
+
+- create-ako-app "Backend: API / yok (cihazda veri)" diye sorar. "Yok" yalnızca **yalnız mobil** seçildiğinde sunulur (web BFF'i API'ye bağlıdır). Seçilirse `apps/api`, `packages/api-client`, `packages/web-core` silinir; auth, misafir, sosyal giriş ve API sözlüğü soruları sorulmaz.
+- **Veri: `expo-sqlite` + Drizzle ORM.** Tipli şema, `drizzle-kit` ile üretilen ve uygulamaya paketlenen migration'lar, `useLiveQuery` ile veri değişince kendiliğinden güncellenen ekranlar. Küçük ayarlar için anahtar-değer (`expo-sqlite/kv-store` ya da SecureStore). Veritabanı tek dosyadır ve işletim sisteminin otomatik yedeğine girer.
+- **Yapı API'li sürümle aynı mantıkta:** `features/<özellik>/data/` (şema, sorgular, hook'lar); ekranlar yalnızca hook kullanır. API ile yerel veri arasında otomatik geçiş yapan ortak bir soyutlama **yoktur**: seçim üretimde bir kez yapılır, iki yolu da taşıyan kod karmaşası olmaz.
+- Metinler paketli JSON'lardan (`locales/`), tema ve dil tercihi cihazda.
+- Örnek senaryo bu kombinasyonda: salt okunur içerik (ör. katalog) paketli JSON, kullanıcının ürettiği veri (ör. liste) SQLite.
+- **Backend gerektirmeyen ama internet isteyen modüller** (her iki kombinasyonda da ayrı create-ako-app seçenekleri):
+  - Reklam: AdMob (`react-native-google-mobile-ads`). Expo Go'da çalışmaz, geliştirme derlemesi (EAS) gerekir.
+  - Rıza: iOS ATT izni + AB için reklam rızası (Google UMP). Reklam seçilirse zorunlu.
+  - Analitik: Firebase / GA4 veri katmanı.
+  - Uzaktan ayar ve zorunlu güncelleme: Firebase Remote Config ya da CDN'deki statik bir JSON.
+
 ## Altyapı ve güvenlik
 
 - Docker Compose: Postgres + Mailpit (yerel SMTP, `localhost:8025`) + Aspire Dashboard (`localhost:18888`) + api (`--profile app`) + web.
@@ -119,4 +151,4 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - ~~Testler~~ → **xUnit + Testcontainers** (.NET), **Vitest + Playwright** (web) (karar verildi).
 - ~~i18n gerekecek mi?~~ → **çoklu dil var** (bkz. "Çoklu dil"; karar verildi).
 - Deploy hedefi: VPS + Docker mı, bulut servisi mi?
-- create-ako-app'te hangi seçenekler olacak (auth sağlayıcıları…; çoklu dil sorusu aşağıdaki bölümde)?
+- create-ako-app'te hangi seçenekler olacak (auth sağlayıcıları…; çoklu dil, misafir, backend'siz mobil ve reklam/analitik soruları yukarıdaki bölümlerde)?

@@ -42,18 +42,32 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 - [x] Çoklu dil: `GET /localization/{dil}/mobile` alanı eklendi (karar: DECISIONS.md), dil seçici Hesap sekmesinde.
 - [x] Native Google/Apple girişi (`/auth/native/{provider}`; SDK yoksa tarayıcı akışına düşer); **denenmedi**: Google için geliştirme derlemesi + istemci kimliği gerekir.
 
-**Bitti:** simülatörde giriş yapılıp ürün listelenir, listeye ürün eklenir. (Telefonda/Expo Go ile elle denenecek: giriş, listeye ekleme, dil değişimi.)
+### Misafir girişi (karar: DECISIONS.md, "Misafir ve kimlik")
+
+- [ ] API: `POST /auth/guest` (rol `Guest`, normal token), IP başına rate limit.
+- [ ] API: `AppPolicies.Member`; örnek özelliklerde policy seçimi: biri misafire açık (ör. Todos), biri yalnız üyeye. Yeni kişisel uçların varsayılanı `Member`.
+- [ ] API: misafirden üyeliğe geçiş: kayıt, e-posta kodu, sosyal ve native giriş misafir token'ıyla gelince aynı kullanıcı yükseltilir.
+- [ ] API: var olan hesaba girişte `IGuestDataMerger` (Common) ile her özelliğin misafir verisini taşıması, sonra misafirin silinmesi; ArchTests sınırları korunur.
+- [ ] API: eski misafir temizliği (arka plan işi, `Auth:Guest:RetentionDays`).
+- [ ] API testleri: misafir oluşturma, policy (misafir 403 / üye 200), yükseltme, birleştirme, temizlik.
+- [ ] Mobil: açılışta token yoksa misafir; oturum durumları `guest` / `member`; misafire kapalı ekranlarda giriş daveti; kayıt/giriş sonrası verinin korunduğunu gösteren akış; geçersiz misafir token'ında sessizce yenisi.
+- [ ] Web: misafir gerekiyor mu (BFF misafir oturumu) kararı; şimdilik web anonim + üye.
+
+**Bitti:** simülatörde giriş yapılıp ürün listelenir, listeye ürün eklenir; misafir olarak listeye eklenen veri kayıt olunca kaybolmaz. (Telefonda/Expo Go ile elle denenecek: giriş, listeye ekleme, dil değişimi.)
 
 ## Aşama 3 — create-ako-app
 
 Şablonun asıl ürünü bu; önce çıkarılacak parçalar temiz olmalı (Aşama 1–2).
 
-- [ ] Sorular: web / mobil / ikisi, auth (+ sağlayıcılar), çoklu dil, örnek senaryo (Akı Kahve) kalsın mı.
+- [ ] Sorular: web / mobil / ikisi; backend (API / yok, yalnız mobilde); auth (+ sağlayıcılar, misafir girişi); çoklu dil; reklam + rıza; analitik; uzaktan ayar; örnek senaryo (Akı Kahve) kalsın mı.
 - [ ] Silme kuralları: seçilmeyen uygulama klasörü, `Features/Auth` (`// ako:auth` işaretleri), `features/localization` + `:lang?` + `/localization`, Todos/Products örnekleri.
+- [ ] Backend'siz mobil varyantı (karar: DECISIONS.md): `expo-sqlite` + Drizzle iskeleti, paketli migration'lar, örnek özellik yerel veriyle (`features/<özellik>/data/`); `api-client`, oturum, sosyal giriş ve API sözlüğü bağımlılıklarının temiz çıkarılması.
+- [ ] Reklam + rıza modülü: AdMob, iOS ATT, Google UMP; geliştirme derlemesi (EAS) yapılandırması.
+- [ ] Analitik ve uzaktan ayar modülü: Firebase (GA4, Remote Config) ya da CDN JSON ile zorunlu güncelleme kontrolü.
 - [ ] Her kombinasyon için otomatik sınama: üret → `build` + `typecheck` + `dotnet test` geçer mi.
 - [ ] `npm create ako-app` yayın akışı.
 
-**Bitti:** en az 4 kombinasyon (yalnız web, yalnız mobil, ikisi, auth/dil kapalı) üretilip derleniyor.
+**Bitti:** en az 5 kombinasyon (yalnız web, yalnız mobil, ikisi, auth/dil kapalı, yalnız mobil + backend yok) üretilip derleniyor.
 
 ## Aşama 4 — Üretim hazırlığı
 
