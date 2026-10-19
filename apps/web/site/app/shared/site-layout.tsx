@@ -4,12 +4,12 @@ import { Text } from '@mari-ui/components/typography';
 import { ListChecks, LogOut, Search } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { logout } from '~/shared/api';
+import { logout } from '~/shared/api'; // ako:auth
 import { LocaleLink, useLocalePath, useT } from '~/shared/i18n/i18n-provider';
-import { LanguageSwitcher } from '~/shared/language-switcher';
+import { LanguageSwitcher } from '~/shared/language-switcher'; // ako:lang
 import { ThemeSwitcher } from '~/shared/theme-switcher';
 import { Logo } from '~/shared/logo';
-import { useMe } from '~/shared/use-me';
+import { useMe } from '~/shared/use-me'; // ako:auth
 
 /** Başlık + içerik + alt bilgi. Menüye yeni bölümler `menu` dizisinden eklenir. */
 export function SiteLayout({ children }: { children: ReactNode }) {
@@ -57,13 +57,13 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 }
 
 function HeaderActions() {
-  const me = useMe();
+  const me = useMe(); // ako:auth
   const t = useT();
   const localePath = useLocalePath();
 
   return (
     <div className="flex items-center gap-1">
-      <LanguageSwitcher />
+      <LanguageSwitcher /> {/* ako:lang */}
       <ThemeSwitcher />
       <Button
         href={localePath('/products')}
@@ -72,6 +72,7 @@ function HeaderActions() {
         icon={<Search size={18} aria-hidden />}
         aria-label={t('layout.search')}
       />
+      {/* ako:begin auth */}
       {me ? (
         <>
           <Button
@@ -95,6 +96,7 @@ function HeaderActions() {
           {t('layout.login')}
         </Button>
       )}
+      {/* ako:end auth */}
     </div>
   );
 }
@@ -110,6 +112,7 @@ function SiteFooter() {
         { to: '/products?category=Accessory', label: t('layout.footer.accessory') },
       ],
     },
+    // ako:begin auth
     {
       title: t('layout.footer.account'),
       links: [
@@ -118,6 +121,7 @@ function SiteFooter() {
         { to: '/list', label: t('layout.footer.list') },
       ],
     },
+    // ako:end auth
   ];
 
   return (

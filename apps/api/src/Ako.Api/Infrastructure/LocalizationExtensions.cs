@@ -1,5 +1,5 @@
 using Ako.Api.Common;
-using Ako.Api.Features.Localization;
+using Ako.Api.Features.Localization; // ako:lang
 using Ako.Api.Resources.Localization;
 using FluentValidation;
 using Microsoft.AspNetCore.Localization;
@@ -17,15 +17,23 @@ public static class LocalizationExtensions
     public static IServiceCollection AddAppLocalization(this IServiceCollection services)
     {
         // Messages statik olduğundan katalog süreç başına tektir (testlerde aynı süreçte birden fazla uygulama örneği olabilir).
+        // ako:begin lang
         var catalog = Messages.Catalog ??= new TranslationCatalog();
         services.AddSingleton(catalog);
         services.AddSingleton<TranslationRefresher>();
         services.AddHostedService(sp => sp.GetRequiredService<TranslationRefresher>());
 
         string[] startupCultures = ["tr", "en", "de"];
+        // ako:else lang
+        //~ string[] startupCultures = ["tr"];
+        // ako:end lang
         services.AddRequestLocalization(options =>
         {
+            // ako:begin lang
             options.SetDefaultCulture(TranslationCatalog.DefaultCultureFallback)
+            // ako:else lang
+            //~ options.SetDefaultCulture("tr")
+            // ako:end lang
                 .AddSupportedCultures(startupCultures)
                 .AddSupportedUICultures(startupCultures);
             options.RequestCultureProviders = [new AcceptLanguageHeaderRequestCultureProvider()];

@@ -38,6 +38,7 @@ public sealed class LocalizationTests(ApiFactory factory)
         Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/localization/de/yok")).StatusCode);
     }
 
+    // ako:begin auth
     [Fact]
     public async Task Tablodan_ezilen_metin_hata_mesajinda_gorunur_silinince_dosyaya_doner()
     {
@@ -112,4 +113,5 @@ public sealed class LocalizationTests(ApiFactory factory)
         Assert.Contains("""<data name="problem.409" xml:space="preserve">""", resx);
         Assert.Contains("<value>Conflict.</value>", resx);
     }
+    // ako:end auth
 }

@@ -1,0 +1,26 @@
+{
+  "name": "create-ako-app",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ako-starter şablonundan web / mobil / ikisini içeren yeni bir proje üretir.",
+  "bin": {
+    "create-ako-app": "./bin/create-ako-app.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "variants",
+    "template"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "build:template": "node scripts/build-template.mjs",
+    "verify": "node scripts/verify-combos.mjs",
+    "variants": "node scripts/refresh-variants.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "vitest": "^5.0.5"
+  }
+}

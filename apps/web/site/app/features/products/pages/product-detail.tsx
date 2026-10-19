@@ -9,13 +9,13 @@ import { Paragraph, Text, Title } from '@mari-ui/components/typography';
 import { ListPlus, Package, RefreshCw, Truck } from 'lucide-react';
 import { data } from 'react-router';
 import { ProductGrid } from '~/features/products/components/product-card';
-import { useAddToList } from '~/features/products/hooks/use-add-to-list';
+import { useAddToList } from '~/features/products/hooks/use-add-to-list'; // ako:auth
 import { formatPrice, productImageSrc, stockState } from '~/shared/catalog';
 import { apiInit } from '~/shared/i18n/api-init.server';
 import { metaTranslator } from '~/shared/i18n/i18n';
 import { useI18n, useLocalePath } from '~/shared/i18n/i18n-provider';
 import { SectionHeading } from '~/shared/section-heading';
-import { useMe } from '~/shared/use-me';
+import { useMe } from '~/shared/use-me'; // ako:auth
 import type { Route } from './+types/product-detail';
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
@@ -50,8 +50,8 @@ export default function ProductDetailPage({ loaderData }: Route.ComponentProps) 
     { icon: Package, text: t('products.detail.promise.fast') },
     { icon: RefreshCw, text: t('products.detail.promise.exchange') },
   ];
-  const me = useMe();
-  const list = useAddToList();
+  const me = useMe(); // ako:auth
+  const list = useAddToList(); // ako:auth
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -96,6 +96,7 @@ export default function ProductDetailPage({ loaderData }: Route.ComponentProps) 
 
           <Paragraph className="leading-relaxed text-mari-muted">{product.description}</Paragraph>
 
+          {/* ako:begin auth */}
           {me ? (
             <Button
               color="primary"
@@ -117,6 +118,7 @@ export default function ProductDetailPage({ loaderData }: Route.ComponentProps) 
               {t('products.detail.loginToAdd')}
             </Button>
           )}
+          {/* ako:end auth */}
 
           <List
             size="sm"

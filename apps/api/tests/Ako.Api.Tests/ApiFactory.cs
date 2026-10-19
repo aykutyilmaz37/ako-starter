@@ -1,12 +1,12 @@
-using System.Net.Http.Headers;
+using System.Net.Http.Headers; // ako:auth
 using System.Net.Http.Json;
-using Ako.Api.Common;
-using Ako.Api.Features.Auth;
-using Ako.Api.Features.Localization;
+using Ako.Api.Common; // ako:auth
+using Ako.Api.Features.Auth; // ako:auth
+using Ako.Api.Features.Localization; // ako:lang
 using Ako.Api.Infrastructure.Data;
-using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Authentication.BearerToken; // ako:auth
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity; // ako:auth
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -21,8 +21,10 @@ namespace Ako.Api.Tests;
 /// </summary>
 public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    // ako:begin auth
     public const string AdminEmail = "admin@test.local";
     public const string Password = "Test1234!";
+    // ako:end auth
 
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17-alpine").Build();
 
@@ -31,26 +33,34 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         // "Testing": appsettings.Development (yerel DB, dev admin, otomatik migration) yüklenmez.
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:Default", _postgres.GetConnectionString());
+        // ako:begin auth
         builder.UseSetting("RateLimiting:Auth:PermitLimit", "10000"); // testler aynı "IP"den çok sayıda kayıt yapar
         builder.UseSetting("Api:EnableAdminEndpoints", "true");
         builder.ConfigureTestServices(services => services.AddSingleton<IAppEmailSender>(Emails));
+        // ako:end auth
     }
 
+    // ako:begin auth
     /// <summary>Gönderilen e-posta kodlarını yakalar; testler kodu buradan okur.</summary>
     public CapturingEmailSender Emails { get; } = new();
+    // ako:end auth
 
     public async Task InitializeAsync()
     {
         await _postgres.StartAsync();
         using var scope = Services.CreateScope();
         await scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync();
-        await Services.GetRequiredService<TranslationRefresher>().RefreshAsync(CancellationToken.None); // dilleri hemen yükle
+        await Services.GetRequiredService<TranslationRefresher>().RefreshAsync(CancellationToken.None); // ako:lang
 
+        // ako:begin auth
         var users = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
         var admin = new AppUser { UserName = AdminEmail, Email = AdminEmail, EmailConfirmed = true };
         await users.CreateAsync(admin, Password);
         await users.AddToRolesAsync(admin, [AppRoles.Admin, AppRoles.User]);
+        // ako:end auth
     }
+
+    // ako:begin auth
 
     /// <summary>Yeni bir kullanıcı kaydeder, giriş yapar ve token'lı bir HttpClient döner.</summary>
     public async Task<HttpClient> CreateUserClientAsync(string? email = null)
@@ -85,6 +95,8 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         return client;
     }
 
+    // ako:end auth
+
     async Task IAsyncLifetime.DisposeAsync()
     {
         await _postgres.DisposeAsync();
@@ -92,6 +104,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     }
 }
 
+// ako:begin auth
 public sealed class CapturingEmailSender : IAppEmailSender
 {
     private readonly System.Collections.Concurrent.ConcurrentDictionary<(string, EmailCodePurpose), string> _codes = new();
@@ -106,6 +119,8 @@ public sealed class CapturingEmailSender : IAppEmailSender
 
     public bool HasCode(string email, EmailCodePurpose purpose) => _codes.ContainsKey((email.ToLowerInvariant(), purpose));
 }
+
+// ako:end auth
 
 [CollectionDefinition(Name)]
 public sealed class ApiCollection : ICollectionFixture<ApiFactory>

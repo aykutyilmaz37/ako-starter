@@ -9,11 +9,11 @@ import { Controller, useForm } from 'react-hook-form';
 import { Pressable, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
-import { Eyebrow, Heading, Muted } from '~/components/ui';
-import { RADIUS } from '~/lib/brand';
-import { useT } from '~/lib/i18n';
-import { useSession } from '~/lib/session';
-import { useShoppingList } from '~/lib/todos';
+import { Eyebrow, Heading, Muted } from '~/shared/components/ui';
+import { RADIUS } from '~/shared/lib/brand';
+import { useT } from '~/features/localization/i18n';
+import { useSession } from '~/features/auth/session';
+import { useShoppingList } from '~/features/shopping-list/data/hooks';
 
 const Schema = CreateTodoBody.extend({ title: z.string().trim().min(1).max(200) });
 

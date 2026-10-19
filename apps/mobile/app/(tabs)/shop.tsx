@@ -1,14 +1,15 @@
-import type { ProductCategory } from '@ako/api-client/model';
-import { useListProducts } from '@ako/api-client/products';
 import { Empty, SearchInput, Text, useTheme } from '@mari-ui/native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ProductCard } from '~/components/product-card';
-import { Eyebrow, Heading, Muted } from '~/components/ui';
-import { CATEGORIES, RADIUS } from '~/lib/brand';
-import { useT } from '~/lib/i18n';
+import { ProductCard } from '~/features/catalog/components/product-card';
+import { Eyebrow, Heading, Muted } from '~/shared/components/ui';
+import { useListProducts } from '~/features/catalog/data/hooks';
+import type { ProductCategory } from '~/features/catalog/data/schema';
+import { CATEGORIES } from '~/features/catalog/lib/product';
+import { RADIUS } from '~/shared/lib/brand';
+import { useT } from '~/features/localization/i18n';
 
 /** Mağaza: arama + kategori çipleri + iki sütunlu ürün ızgarası. */
 export default function Shop() {

@@ -1,6 +1,6 @@
 # apps/mobile
 
-Expo (SDK 57; Expo Go uyumu için) + expo-router + `@mari-ui/native`. API'ye doğrudan bağlanır; token'lar SecureStore'da (`lib/token-store.ts`), 401'de `api-client` tek uçuşla yeniler.
+Expo (SDK 57; Expo Go uyumu için) + expo-router + `@mari-ui/native`. API'ye doğrudan bağlanır; token'lar SecureStore'da (`features/auth/token-store.ts`), 401'de `api-client` tek uçuşla yeniler.
 
 ```bash
 pnpm --filter @ako/mobile dev      # Expo geliştirme sunucusu (i: iOS simülatörü)
@@ -11,6 +11,18 @@ pnpm --filter @ako/mobile theme    # mari-ui.config.json -> mari-ui-theme.ts
 - API adresi: `EXPO_PUBLIC_API_URL` (varsayılan iOS `http://localhost:5165`, Android `http://10.0.2.2:5165`).
 - Tema web sitesiyle aynı renkleri kullanır (`mari-ui.config.json`); `mari-ui-theme.ts` üretilmiş dosyadır.
 - `react` sürümü Expo SDK'sının istediğine sabittir (`expo install --check` temiz olmalı).
+
+## Yapı
+
+Özellik başına klasör (web uygulamalarındaki `features/` ile aynı mantık); ekranlar (`app/`, yalnızca yönlendirme ve sayfa düzeni) özelliklerin hook ve bileşenlerini kullanır.
+
+- `features/auth/`: `session.tsx` (oturum, misafir), `token-store.ts`, `social-login.ts`, `components/` (giriş ekranı kabuğu, sosyal düğme, çevrimdışı ekranı).
+- `features/catalog/`: `data/` (`hooks.ts` ürün hook'ları, `images.ts`, `schema.ts` tipler), `components/product-card.tsx`, `lib/product.ts` (fiyat, stok, özet biçimleyicileri).
+- `features/shopping-list/data/hooks.ts`: alışveriş listesi (API'deki Todos).
+- `features/localization/i18n.tsx`, `features/theme/theme-preference.tsx`: dil ve tema tercihi.
+- `shared/components/`: özelliğe bağlı olmayan ortak bileşenler. `shared/lib/`: altyapı (`api.ts`, `config.ts`, `prefs.ts`, `brand.ts` tasarım sabitleri).
+- Yeni özellik: `features/<özellik>/{data,components,lib}`; özellikler birbirinin iç dosyalarına değil `data/hooks.ts` gibi açık girişlerine bağlanır.
+- create-ako-app bu yollara bağlıdır (`src/plan.mjs`: `features/auth`, `features/shopping-list` auth kapalıyken silinir; `variants/no-backend/` aynı yollara yerel veri dosyalarını koyar).
 
 ## Giriş yöntemleri
 

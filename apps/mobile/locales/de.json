@@ -57,6 +57,7 @@
   "list.eyebrow": "Mein Konto",
   "list.title": "Meine Einkaufsliste",
   "list.description": "Haken Sie Gekauftes ab; die Liste ist auf allen Geräten gleich.",
+  "list.description.local": "Haken Sie Gekauftes ab; die Liste wird auf diesem Gerät gespeichert.",
   "list.form.placeholder": "z. B. Filterpapier, Milch",
   "list.form.label": "Zur Liste hinzufügen",
   "list.form.add": "Hinzufügen",

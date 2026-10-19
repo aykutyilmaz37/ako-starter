@@ -8,27 +8,31 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- ako:begin auth -->
     <!-- E-posta şablonları uygulamaya gömülür (bkz. Infrastructure/Email/EmailTemplates.cs). -->
     <EmbeddedResource Include="Resources/EmailTemplates/*.html" LogicalName="EmailTemplates/%(Filename)%(Extension)" />
+    <!-- ako:end auth -->
+    <!-- ako:begin lang -->
     <!-- Web arayüzlerinin varsayılan metinleri (apps/web/<uygulama>/app/locales/*.json) de gömülür; çeviri tablosu ve
          /localization/{dil}/{alan} bunları temel alır. Uygulama yoksa (create-ako-app ile çıkarıldıysa) eşleşme olmaz. -->
     <EmbeddedResource Include="../../../web/site/app/locales/*.json" LogicalName="Locales/site/%(Filename)%(Extension)" Link="Locales/site/%(Filename)%(Extension)" />
     <EmbeddedResource Include="../../../web/backoffice/app/locales/*.json" LogicalName="Locales/backoffice/%(Filename)%(Extension)" Link="Locales/backoffice/%(Filename)%(Extension)" />
     <EmbeddedResource Include="../../../mobile/locales/*.json" LogicalName="Locales/mobile/%(Filename)%(Extension)" Link="Locales/mobile/%(Filename)%(Extension)" />
+    <!-- ako:end lang -->
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="10.0.0" />
-    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="10.0.0" />
-    <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="10.0.0" />
-    <PackageReference Include="AspNet.Security.OAuth.Twitter" Version="10.0.0" />
+    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="10.0.0" /> <!-- ako:auth -->
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="10.0.0" /> <!-- ako:auth -->
+    <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="10.0.0" /> <!-- ako:auth -->
+    <PackageReference Include="AspNet.Security.OAuth.Twitter" Version="10.0.0" /> <!-- ako:auth -->
     <PackageReference Include="EFCore.NamingConventions" Version="10.0.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
-    <PackageReference Include="MailKit" Version="4.18.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="10.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.13" />
+    <PackageReference Include="MailKit" Version="4.18.1" /> <!-- ako:auth -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="10.0.13" /> <!-- ako:auth -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.13" /> <!-- ako:auth -->
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="10.0.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.13" /> <!-- ako:auth -->
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -39,7 +43,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.13" />
-    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.23.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.23.0" /> <!-- ako:auth -->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageReference Include="Npgsql.OpenTelemetry" Version="10.0.3" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.20.0" />

@@ -1,7 +1,6 @@
-import { getGetDictionaryUrl, getGetLanguagesUrl } from '@ako/api-client/localization';
-import type { LanguageResponse } from '@ako/api-client/model';
-import { env } from '~/env.server';
-import type { Dictionary } from '~/shared/i18n/i18n';
+import { getGetDictionaryUrl, getGetLanguagesUrl } from '@ako/api-client/localization'; // ako:lang
+import { env } from '~/env.server'; // ako:lang
+import type { Dictionary, LanguageInfo } from '~/shared/i18n/i18n';
 import type { RequestLanguage } from '~/shared/i18n/language-context';
 
 // Gömülü yedek: app/locales/*.json. API kapalıyken ya da yeni anahtar henüz tabloya yansımadıysa bunlar kullanılır.
@@ -11,10 +10,11 @@ const bundled = Object.fromEntries(
   ).map(([path, dictionary]) => [path.match(/([^/]+)\.json$/)![1]!, dictionary]),
 );
 
-const DEFAULT_LANGUAGES: LanguageResponse[] = [
+const DEFAULT_LANGUAGES: LanguageInfo[] = [
   { code: 'tr', name: 'Türkçe', isDefault: true, isEnabled: true },
 ];
 
+// ako:begin lang
 // Her istekte API'ye gitmemek için bellekte tutulur; süre dolunca ETag ile (If-None-Match) kontrol edilir,
 // değişmediyse 304 döner ve yük taşınmaz. Süre dolduğunda eski değer hemen sunulur, yenileme arkada yapılır.
 const TTL_MS = 30_000;
@@ -54,18 +54,31 @@ async function cached<T>(path: string): Promise<T | undefined> {
   }
   return entry.value as T | undefined;
 }
+// ako:end lang
 
 /** Açık diller; varsayılan dil ilk sırada. */
-export async function getLanguages(): Promise<LanguageResponse[]> {
-  const languages = await cached<LanguageResponse[]>(getGetLanguagesUrl());
+// ako:begin lang
+export async function getLanguages(): Promise<LanguageInfo[]> {
+  const languages = await cached<LanguageInfo[]>(getGetLanguagesUrl());
   return languages?.length ? languages : DEFAULT_LANGUAGES;
 }
+// ako:else lang
+//~ export async function getLanguages(): Promise<LanguageInfo[]> {
+//~   return DEFAULT_LANGUAGES;
+//~ }
+// ako:end lang
 
 /** Dilin backoffice sözlüğü: gömülü dosya + tablodaki (admin düzenlemeli) değerler üstüne yazar. */
+// ako:begin lang
 export async function getDictionary(lang: string, defaultLang: string): Promise<Dictionary> {
   const remote = await cached<Dictionary>(getGetDictionaryUrl(lang, 'backoffice'));
   return { ...bundled[defaultLang], ...bundled[lang], ...remote };
 }
+// ako:else lang
+//~ export async function getDictionary(lang: string, defaultLang: string): Promise<Dictionary> {
+//~   return { ...bundled[defaultLang], ...bundled[lang] };
+//~ }
+// ako:end lang
 
 /** İsteğin dili: çerezdeki dil açıksa o, değilse varsayılan dil. */
 export async function resolveRequestLanguage(

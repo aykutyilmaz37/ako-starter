@@ -22,13 +22,14 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
-      - run: pnpm generate:check
+      - run: pnpm generate:check # ako:backend
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm build
       - run: pnpm run audit
 
+  # ako:begin backend
   api:
     name: API build and test
     runs-on: ubuntu-latest
@@ -46,6 +47,7 @@ jobs:
         run: |
           dotnet list apps/api/Ako.slnx package --vulnerable --include-transitive 2>&1 | tee vuln.log
           ! grep -qE "^\s*>.*\bCritical\b" vuln.log
+  # ako:end backend
 
   e2e:
     name: E2E duman testi

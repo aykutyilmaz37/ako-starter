@@ -57,6 +57,7 @@
   "list.eyebrow": "My account",
   "list.title": "My shopping list",
   "list.description": "Check off what you buy; the list is the same on all your devices.",
+  "list.description.local": "Check off what you buy; the list is stored on this device.",
   "list.form.placeholder": "e.g. filter paper, milk",
   "list.form.label": "Add to list",
   "list.form.add": "Add",

@@ -7,7 +7,7 @@ import { type ReactNode, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { logout } from '~/shared/api';
 import { useT } from '~/shared/i18n/i18n-provider';
-import { LanguageSwitcher } from '~/shared/language-switcher';
+import { LanguageSwitcher } from '~/shared/language-switcher'; // ako:lang
 import { ThemeSwitcher } from '~/shared/theme-switcher';
 import { useMe } from '~/shared/use-me';
 
@@ -52,12 +52,14 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       route: '/users',
       icon: <Users size={18} aria-hidden />,
     },
+    // ako:begin lang
     {
       key: 'translations',
       title: t('layout.menu.translations'),
       route: '/translations',
       icon: <Languages size={18} aria-hidden />,
     },
+    // ako:end lang
   ];
 
   const logo = (
@@ -104,7 +106,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             onClick={() => setDrawerOpen(true)}
           />
           <div className="ml-auto flex items-center gap-3">
-            <LanguageSwitcher />
+            <LanguageSwitcher /> {/* ako:lang */}
             <ThemeSwitcher />
             <Avatar size="sm" color="primary" alt={email} />
             <Text className="hidden max-w-56 truncate text-sm sm:block">{email}</Text>

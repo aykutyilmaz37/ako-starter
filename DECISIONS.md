@@ -101,6 +101,7 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - Expo + `@mari-ui/native`.
 - .NET'e doğrudan bağlanır, bearer token SecureStore'da tutulur.
 - Sosyal giriş: tarayıcı akışı (`AuthSession` + `ako://` deep link) tüm sağlayıcılar için; Google ve Apple'da ek olarak native SDK ile id token gönderilebilir.
+- **Feature-tabanlı yapı:** `features/<özellik>/{data,components,lib}` (auth, catalog, shopping-list, localization, theme); ortak bileşenler `shared/components/`, altyapı `shared/lib/` (`api`, `config`, `prefs`, `brand`). Ekranlar (`app/`) yalnızca özelliklerin hook ve bileşenlerini kullanır; API çağrıları `data/hooks.ts` arkasındadır (web `features/` düzeniyle aynı mantık). Sonucu: create-ako-app'te ürün ve liste hook importları işaretsizdir (backend’siz sürüm aynı yolları kullanır), `features/catalog/data/{hooks,images,schema}.ts` ve `features/shopping-list/data/hooks.ts` dosyalarını `variants/no-backend/` değiştirir; auth kapalıyken `features/auth` ve `features/shopping-list` klasörleri silinir (`AUTH_PATHS`).
 
 ## Misafir ve kimlik (tüm istemciler)
 
@@ -148,6 +149,25 @@ Her mobil uygulamanın sunucuya ihtiyacı yoktur: veri yalnızca cihazda durabil
 - E-posta: SMTP (MailKit). Sağlayıcıya bağlı değil; ayardan değişir.
 - Renovate/Dependabot. CI'da `pnpm audit` ve `dotnet list package --vulnerable` çalışır.
 - `@mari-ui/modules` adapter deseni: modüllerin arayüzleri `api-client` ile doldurulur.
+
+## create-ako-app: üretim mekaniği
+
+Şablon deponun kendisidir (ayrı bir şablon klasörü tutulmaz); üretici izlenen dosyaları kopyalar, seçilmeyeni çıkarır. Yayınlanınca `build:template` aynı dosyaları pakete `template/` olarak koyar.
+
+- **Üç araç:** (1) yol silme (`src/plan.mjs`: seçilmeyen uygulama, özelliğe ait klasör/dosya), (2) satır işaretleri (`src/markers.mjs`), (3) hazır varyant dosyaları (`variants/<ad>/`, hedefin üstüne yazılır).
+- **İşaretler** dosya türünden bağımsızdır; şablon işaretlerle de derlenir (hepsi yorum): `// ako:<özellik>` satırı siler, `ako:begin/ako:end` bloğu siler, `ako:else` ile kapalıyken geçerli kod `//~ ` (JSX'te `{/*~ ... */}`) önekiyle yazılır. Özellik açıkken dosyaya dokunulmaz.
+- **Auth kapalı** (`--no-auth`): giriş, kayıt, misafir, sosyal giriş, `Todos` ve tüm `/admin` uçları çıkar; **backoffice de çıkar** (yönetim girişi auth ister, seçimle birlikte kullanılamaz). Site ve mobil katalog olarak salt okunur kalır.
+- **Migration:** auth'lu set `Infrastructure/Data/Migrations`'ta, auth'suz set `variants/no-auth/` altında hazır durur (Identity tablolarını içermez); üretimde dotnet-ef gerekmez. Modeli değiştirince `pnpm --filter create-ako-app variants` ile yenilenir; `verify` betiği `has-pending-model-changes` ile bayat seti yakalar.
+- **Üretim sonrası sıra:** install → `generate` (API değiştiyse openapi.json ve Orval çıktısı yeniden) → `format` → `git init` + ilk commit; böylece `generate:check` ve `format:check` baştan temiz.
+- **Doğrulama:** `pnpm --filter create-ako-app verify` her kombinasyon için CLI'ın son adımlarını, sonra CI komutlarını (format:check, generate:check, typecheck, lint, build, test) çalıştırır.
+- **Çoklu dil kapalı** (`--no-lang`): API'de `Features/Localization` (tablo, `/localization`, admin uçları), `Messages.en/de.resx` ve web/mobil `en`/`de` dosyaları çıkar; API metinleri yalnızca `Messages.resx`'ten, desteklenen kültür yalnızca `tr`. Web'de `:lang?` segmenti, `lang-layout`, dil seçici ve backoffice "Çeviriler" gider; `dictionary.server.ts` yalnızca gömülü varsayılan dosyayı okur (sözlük API'den gelmez). Mobil yalnızca `tr.json` paketler, dil seçici görünmez. `t()` anahtarları ve tür güvenliği aynen sürer. Dil değiştirme sınamasını içeren e2e paketi çıkar.
+- **Backend'siz mobil** (`--no-backend`, yalnız mobil): `apps/api`, `packages/{api-client,web-core,shared,e2e}`, `compose.yaml`, CI'ın `api` işi, dependabot'un nuget/docker girdileri, kök `db:*`/`generate*` betikleri ve turbo `generate` görevi çıkar; auth kapalı sayılır (`ako:auth`), sözlük yalnızca paketli dosyalardan gelir. Mekanik:
+  - Yeni işaretler: `backend` (API'ye bağlanan satırlar), türetilmiş `list` (alışveriş listesi: API'li sürümde giriş ister, backend'siz sürümde cihazdadır; yalnızca auth kapalı **ve** backend açıkken kapanır) ve `api-lang` (dil kapalı **ya da** backend yok: sözlük/dil listesi API'den çekilmez).
+  - Ekranlar iki yolda da aynı hook adlarını (`useListProducts`, `useGetProduct`, `useAddToList`) ve aynı dönüş biçimini kullanır; yalnızca `import` satırı işaretle değişir, çalışma zamanında geçiş yoktur.
+  - Yerel veri `variants/no-backend/` ile gelir: `features/catalog/data` (paketli `products.json`, görseller API'nin wwwroot'undan `assets/products`'a kopyalanır: `plan.copy`) ve `features/shopping-list/data` (Drizzle şeması, sorgular, `useLiveQuery` hook'u), `shared/lib/db.ts` + `shared/lib/database.tsx` (migration'ları açılışta uygular), `shared/lib/prefs.ts` (tema/dil için `expo-sqlite/kv-store`; API'li sürümde SecureStore).
+  - Drizzle migration'ları `variants/no-backend/apps/mobile/drizzle/` altında hazır durur (inline-import babel eklentisi `.sql`'i pakete gömer). Şemayı değiştirince `pnpm --filter create-ako-app variants` (yalnız Drizzle: `--only=drizzle`) ile yenilenir; `verify` bayat seti yakalar (`drizzle-kit generate` "nothing to migrate" dememeli) ve `expo export` ile paketlemeyi sınar.
+  - Katalog verisi `ProductSeed.cs` ile `products.json`'da iki kez durur; seed değişirse JSON elle güncellenir.
+- **Migration setleri** `variants/` altında (auth, dil) ikilisine göre: `no-auth`, `no-lang`, `no-auth-no-lang`. Ek iki-seçenekli ayrım: e2e paketi yalnızca iki web uygulaması birlikte ve çoklu dil açıkken kalır.
 
 ## Kurulum sırasında konuşulacaklar
 

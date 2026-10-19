@@ -1,0 +1,27 @@
+import { configureApiClient } from '@ako/api-client';
+import { API_URL } from '~/shared/lib/config';
+import { tokenStore } from '~/features/auth/token-store'; // ako:auth
+
+// ako:begin auth
+let onSessionExpired: () => void = () => {};
+
+/** Oturum bitince (refresh de reddedilince) çağrılacak işlevi kök layout verir. */
+export function setSessionExpiredHandler(handler: () => void): void {
+  onSessionExpired = handler;
+}
+// ako:end auth
+
+let language = 'tr';
+
+/** Seçili dil API'ye Accept-Language olarak gider (hata ve doğrulama mesajları o dilde döner). */
+export function setApiLanguage(next: string): void {
+  language = next;
+}
+
+// Modül yüklenirken bir kez: ilk istekten önce hazır olsun.
+configureApiClient({
+  baseUrl: API_URL,
+  tokens: tokenStore, // ako:auth
+  getLanguage: () => language,
+  onSessionExpired: () => onSessionExpired(), // ako:auth
+});

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "ak-eth-yrg",
+    "sku": "AK-ETH-YRG",
+    "name": "Etiyopya Yirgacheffe",
+    "description": "Yıkanmış işlem, 1.900–2.200 m. Açık kavrum. Bergamot, yasemin ve limon kabuğu notaları; çay gibi hafif bir gövde. V60 ve Chemex için ideal.",
+    "category": "Coffee",
+    "price": 520,
+    "stock": 42,
+    "image": "etiyopya-yirgacheffe"
+  },
+  {
+    "id": "ak-col-hui",
+    "sku": "AK-COL-HUI",
+    "name": "Kolombiya Huila",
+    "description": "Yıkanmış işlem, 1.600–1.800 m. Orta kavrum. Karamel, kırmızı elma ve sütlü çikolata. Her demleme yöntemiyle dengeli bir fincan.",
+    "category": "Coffee",
+    "price": 460,
+    "stock": 58,
+    "image": "kolombiya-huila"
+  },
+  {
+    "id": "ak-ken-nye",
+    "sku": "AK-KEN-NYE",
+    "name": "Kenya Nyeri AA",
+    "description": "Yıkanmış işlem, SL28 ve SL34 çeşitleri. Açık-orta kavrum. Frenk üzümü, greyfurt ve canlı, sulu bir asidite.",
+    "category": "Coffee",
+    "price": 590,
+    "stock": 18,
+    "image": "kenya-nyeri"
+  },
+  {
+    "id": "ak-bra-cer",
+    "sku": "AK-BRA-CER",
+    "name": "Brezilya Cerrado",
+    "description": "Doğal işlem. Orta-koyu kavrum. Fındık, kakao ve düşük asidite. Sütlü içecekler ve French press için.",
+    "category": "Coffee",
+    "price": 390,
+    "stock": 75,
+    "image": "brezilya-cerrado"
+  },
+  {
+    "id": "ak-gua-ant",
+    "sku": "AK-GUA-ANT",
+    "name": "Guatemala Antigua",
+    "description": "Yıkanmış işlem, volkanik toprak. Orta kavrum. Kahverengi şeker, portakal ve baharat. Yeni hasat yolda.",
+    "category": "Coffee",
+    "price": 480,
+    "stock": 0,
+    "image": "guatemala-antigua"
+  },
+  {
+    "id": "ak-esp-hrm",
+    "sku": "AK-ESP-HRM",
+    "name": "Akı Espresso Harmanı",
+    "description": "Brezilya ve Kolombiya harmanı. Koyu kavrum. Bitter çikolata, karamel ve yoğun krema. Espresso ve moka pot için.",
+    "category": "Coffee",
+    "price": 420,
+    "stock": 120,
+    "image": "aki-espresso"
+  },
+  {
+    "id": "ak-eqp-v60",
+    "sku": "AK-EQP-V60",
+    "name": "V60 Demleme Seti",
+    "description": "Seramik V60 02 demleyici, cam sürahi ve 40 adet filtre kağıdı. Filtre kahveye başlamak için ihtiyacınız olan her şey.",
+    "category": "Equipment",
+    "price": 1150,
+    "stock": 24,
+    "image": "v60-demleme-seti"
+  },
+  {
+    "id": "ak-eqp-grn",
+    "sku": "AK-EQP-GRN",
+    "name": "Seramik Çarklı El Değirmeni",
+    "description": "Ayarlanabilir seramik çark, 30 g hazne. Türk kahvesinden French press'e kadar homojen öğütme.",
+    "category": "Equipment",
+    "price": 2900,
+    "stock": 6,
+    "image": "el-degirmeni"
+  },
+  {
+    "id": "ak-eqp-ket",
+    "sku": "AK-EQP-KET",
+    "name": "Ağızlı Su Isıtıcısı",
+    "description": "0,9 L, sıcaklık ayarlı, ince ağızlı. Pour-over demlemede suyu tam istediğiniz hızda dökün.",
+    "category": "Equipment",
+    "price": 3400,
+    "stock": 4,
+    "image": "kettle"
+  },
+  {
+    "id": "ak-acc-scl",
+    "sku": "AK-ACC-SCL",
+    "name": "Hassas Kahve Terazisi",
+    "description": "0,1 g hassasiyet, dahili zamanlayıcı. Tekrarlanabilir tarifler için kahveyi ve suyu tartın.",
+    "category": "Accessory",
+    "price": 1450,
+    "stock": 30,
+    "image": "hassas-terazi"
+  },
+  {
+    "id": "ak-acc-flt",
+    "sku": "AK-ACC-FLT",
+    "name": "V60 Filtre Kağıdı (100'lü)",
+    "description": "02 boy, ağartılmamış. Demlemeden önce sıcak suyla ıslatmayı unutmayın.",
+    "category": "Accessory",
+    "price": 180,
+    "stock": 200,
+    "image": "filtre-kagidi"
+  },
+  {
+    "id": "ak-acc-mug",
+    "sku": "AK-ACC-MUG",
+    "name": "Akı Seramik Kupa",
+    "description": "El yapımı, 300 ml, mat sır. Bulaşık makinesinde yıkanabilir.",
+    "category": "Accessory",
+    "price": 350,
+    "stock": 60,
+    "image": "seramik-kupa"
+  }
+]

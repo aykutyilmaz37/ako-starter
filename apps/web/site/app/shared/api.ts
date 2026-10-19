@@ -15,8 +15,10 @@ export function configureApi() {
   });
 }
 
+// ako:begin auth
 /** Çıkış: BFF çerezi siler; sayfa yenilenince oturum yok. */
 export async function logout(redirectTo = '/') {
   await fetch('/bff/logout', { method: 'POST' });
   window.location.assign(redirectTo);
 }
+// ako:end auth

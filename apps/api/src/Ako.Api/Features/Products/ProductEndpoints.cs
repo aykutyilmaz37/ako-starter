@@ -17,6 +17,7 @@ public static class ProductEndpoints
         return app;
     }
 
+    // ako:begin auth
     /// <summary>Backoffice adresleri. Yalnızca admin grubu açıksa çağrılır (bkz. AdminEndpoints); grup Admin rolü ister.</summary>
     public static RouteGroupBuilder MapProductsAdmin(this RouteGroupBuilder admin)
     {
@@ -28,4 +29,5 @@ public static class ProductEndpoints
 
         return admin;
     }
+    // ako:end auth
 }

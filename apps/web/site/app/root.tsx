@@ -1,5 +1,5 @@
-import { getMe } from '@ako/api-client/auth';
-import { sessionContext } from '@ako/web-core';
+import { getMe } from '@ako/api-client/auth'; // ako:auth
+import { sessionContext } from '@ako/web-core'; // ako:auth
 import { themeInitScript } from '@ako/web-core/theme';
 import {
   Links,
@@ -14,7 +14,7 @@ import {
 import { env } from '~/env.server';
 import { configureApi } from '~/shared/api';
 import { getDictionary, getLanguages } from '~/shared/i18n/dictionary.server';
-import { apiInit } from '~/shared/i18n/api-init.server';
+import { apiInit } from '~/shared/i18n/api-init.server'; // ako:auth
 import { stripLanguage, localizePath } from '~/shared/i18n/i18n';
 import { I18nProvider, LocaleLink, useT } from '~/shared/i18n/i18n-provider';
 import { languageContext } from '~/shared/i18n/language-context';
@@ -40,14 +40,22 @@ export const links: Route.LinksFunction = () => [
  * Aynı yerde sayfanın dili ve sözlüğü de gelir (sözlük sunucuda kısa süre önbelleklenir, bkz. dictionary.server).
  */
 export async function loader({ request, context }: Route.LoaderArgs) {
-  const session = context.get(sessionContext);
   const { lang, defaultLang } = context.get(languageContext);
+  // ako:begin auth
+  const session = context.get(sessionContext);
   const [me, languages, dictionary] = await Promise.all([
     session ? getMe(apiInit(context, request)).catch(() => null) : null,
     getLanguages(),
     getDictionary(lang, defaultLang),
   ]);
   return { me, lang, defaultLang, languages, dictionary, origin: env.publicUrl };
+  // ako:else auth
+  //~ const [languages, dictionary] = await Promise.all([
+  //~   getLanguages(),
+  //~   getDictionary(lang, defaultLang),
+  //~ ]);
+  //~ return { lang, defaultLang, languages, dictionary, origin: env.publicUrl };
+  // ako:end auth
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {

@@ -13,7 +13,7 @@ import { apiInit } from '~/shared/i18n/api-init.server';
 import { metaTranslator } from '~/shared/i18n/i18n';
 import { useLocalePath, useT } from '~/shared/i18n/i18n-provider';
 import { SectionHeading } from '~/shared/section-heading';
-import { useMe } from '~/shared/use-me';
+import { useMe } from '~/shared/use-me'; // ako:auth
 import type { Route } from './+types/home';
 
 export function meta({ matches }: Route.MetaArgs) {
@@ -49,7 +49,7 @@ export function headers({ loaderHeaders }: Route.HeadersArgs) {
 
 export default function HomePage({ loaderData }: Route.ComponentProps) {
   const { featured, tiles } = loaderData;
-  const me = useMe();
+  const me = useMe(); // ako:auth
   const t = useT();
   const localePath = useLocalePath();
 
@@ -88,7 +88,11 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
       </section>
 
       <div className="mt-24">
+        {/* ako:begin auth */}
         <Story signedIn={!!me} />
+        {/* ako:else auth */}
+        {/*~ <Story /> */}
+        {/* ako:end auth */}
       </div>
     </>
   );

@@ -442,6 +442,15 @@ importers:
         specifier: ^4.6.7
         version: 4.6.7
 
+  packages/create-ako-app:
+    devDependencies:
+      '@types/node':
+        specifier: ^26.6.5
+        version: 26.6.5
+      vitest:
+        specifier: ^5.0.5
+        version: 5.0.5(@types/node@26.6.5)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
+
   packages/e2e:
     devDependencies:
       '@playwright/test':
