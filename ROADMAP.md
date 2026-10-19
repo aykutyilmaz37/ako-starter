@@ -4,17 +4,17 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 ## Durum
 
-| Alan | Durum |
-| --- | --- |
-| API (Auth, Products, Todos, Localization, Identity, ArchTests, xUnit) | Var |
-| Web: site + backoffice (RR8 + Hono BFF + mari-ui), çoklu dil | Var |
-| api-client (Orval), web-core, shared | Var |
-| Akı Kahve senaryosu ve tasarım | Var |
-| Web testleri (Vitest/Playwright) | Yok |
-| CI (build, `generate:check`, audit) | Yok |
-| Mobil (`apps/mobile`) | Yalnızca README |
-| create-ako-app | Yok |
-| Deploy hedefi | Karar bekliyor |
+| Alan                                                                  | Durum           |
+| --------------------------------------------------------------------- | --------------- |
+| API (Auth, Products, Todos, Localization, Identity, ArchTests, xUnit) | Var             |
+| Web: site + backoffice (RR8 + Hono BFF + mari-ui), çoklu dil          | Var             |
+| api-client (Orval), web-core, shared                                  | Var             |
+| Akı Kahve senaryosu ve tasarım                                        | Var             |
+| Web testleri (Vitest/Playwright)                                      | Yok             |
+| CI (build, `generate:check`, audit)                                   | Yok             |
+| Mobil (`apps/mobile`)                                                 | Yalnızca README |
+| create-ako-app                                                        | Yok             |
+| Deploy hedefi                                                         | Karar bekliyor  |
 
 ## Aşama 0 — Backoffice sidebar responsive
 

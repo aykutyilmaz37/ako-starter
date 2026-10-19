@@ -15,3 +15,7 @@ indent_size = 4
 # Actions/, Contracts/, Data/ ve Services/ klasörleri yalnızca düzen içindir, using kalabalığı olmasın diye.
 [apps/api/src/Ako.Api/Features/**.cs]
 dotnet_diagnostic.IDE0130.severity = none
+
+# EF Core migration dosyaları BOM ile üretilir.
+[**/Migrations/*.cs]
+charset = utf-8-bom
