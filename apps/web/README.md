@@ -18,9 +18,14 @@ Yeni bir ürün (ör. `investment`): `backoffice` ya da `site` klasörünü kopy
 ```bash
 pnpm db:up                              # kökten: Postgres + Mailpit + Aspire Dashboard
 pnpm --filter @ako/api dev              # API: http://localhost:5165
-pnpm --filter @ako/web-site dev         # http://localhost:5173
-pnpm --filter @ako/web-backoffice dev   # http://localhost:5174  (admin@ako.local / Admin123!)
+pnpm --filter @ako/web-site dev         # http://site.localhost:5173
+pnpm --filter @ako/web-backoffice dev   # http://admin.localhost:5174  (admin@ako.local / Admin123!)
 ```
+
+Geliştirmede her uygulama kendi alan adında açılır (`site.localhost`, `admin.localhost`; tarayıcılar bunları ek ayar
+gerektirmeden bu bilgisayara yönlendirir). Çerezler alan adına göre ayrıldığı için site ve backoffice oturumları birbirini
+görmez; production'daki ayrı domainlerle aynı davranış. `localhost:<port>` de çalışır ama orada iki uygulamanın çerezleri
+aynı kavanozda durur.
 
 Ayarlar `.env` dosyasından ya da ortam değişkenlerinden gelir (bkz. `.env.example`). Geliştirmede hepsinin
 varsayılanı vardır; production'da `SESSION_SECRET` zorunludur (yoksa sunucu açılmaz).

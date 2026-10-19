@@ -16,6 +16,7 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
   packages/shared       ortak TS yardımcıları
   ```
 - **Birden fazla web ürünü / backoffice:** aynı monorepoda `apps/web/` altında ayrı uygulamalar; ayrı build, ayrı domain, ayrı deploy. Tek uygulamada sayfa grupları olarak tutulmaz (müşteri paketine admin kodu girmez, biri diğerini yeniden yayınlatmaz). Ayrı repo yalnızca ayrı ekip/takvim ya da zorunlu ağ ayrımı varsa.
+- Geliştirmede her web uygulaması kendi alan adında (`site.localhost:5173`, `admin.localhost:5174`): çerezler production'daki gibi tamamen ayrı.
 - **Backoffice güvenliği:** aynı API kodu, iki deploy. İnternete açık örnekte admin endpoint'leri kapalı (`Api:EnableAdminEndpoints=false`, adresler hiç oluşmaz), iç ağdaki/VPN'deki örnekte açık. Rol kontrolü (`AppPolicies.Admin`) ikinci katman olarak kalır. Admin endpoint'leri her özelliğin içinde `Actions/Admin/` altında, `/admin/...` adresinde durur; yönetim işlemleri (ör. ürün ekleme/güncelleme/silme) public adreslerde hiç bulunmaz. Ayrı bir .NET projesi açılmadı: ortak kod (kurallar, veritabanı) tek projede kalsın diye. Build sırasında üretilen `openapi.json` admin adreslerini her zaman içerir (api-client'ta hook'lar olsun diye).
 - **Kural:** her uygulama tek başına silinebilir. Uygulamalar birbirini import etmez, ortak olan her şey `packages/` altında durur.
 

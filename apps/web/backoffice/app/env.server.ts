@@ -17,6 +17,6 @@ function sessionSecret(): string {
 export const env = {
   apiUrl: process.env.API_URL ?? 'http://localhost:5165',
   apiPublicUrl: process.env.API_PUBLIC_URL || undefined,
-  publicUrl: process.env.PUBLIC_URL ?? 'http://localhost:5174',
+  publicUrl: process.env.PUBLIC_URL ?? 'http://admin.localhost:5174',
   sessionSecret: sessionSecret(),
 };
