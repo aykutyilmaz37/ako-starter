@@ -1,4 +1,5 @@
 using Ako.Api.Features.Auth;
+using Ako.Api.Features.Localization;
 using Ako.Api.Features.Products;
 using Ako.Api.Features.Todos;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
@@ -21,6 +22,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 
     public DbSet<Todo> Todos => Set<Todo>();
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<Language> Languages => Set<Language>();
+    public DbSet<Translation> Translations => Set<Translation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

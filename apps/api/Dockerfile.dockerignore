@@ -1,0 +1,7 @@
+# Bağlam repo kökü; yalnızca API kaynağı ve web arayüzlerinin metin dosyaları girer.
+*
+!apps/api/Directory.Build.props
+!apps/api/src
+!apps/web/*/app/locales
+**/bin
+**/obj

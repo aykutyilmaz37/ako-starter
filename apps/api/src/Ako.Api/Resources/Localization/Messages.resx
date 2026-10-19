@@ -69,4 +69,13 @@
   <data name="products.image_url_format" xml:space="preserve"><value>Görsel adresi "/" ile başlayan bir yol ya da https adresi olmalı.</value></data>
   <data name="field.category" xml:space="preserve"><value>Kategori</value></data>
   <data name="field.imageUrl" xml:space="preserve"><value>Görsel</value></data>
+  <data name="localization.language_not_found" xml:space="preserve"><value>'{0}' dili bulunamadı.</value></data>
+  <data name="localization.language_exists" xml:space="preserve"><value>'{0}' dili zaten var.</value></data>
+  <data name="localization.namespace_not_found" xml:space="preserve"><value>'{0}' adında bir çeviri alanı yok.</value></data>
+  <data name="localization.key_not_found" xml:space="preserve"><value>'{0}' anahtarı tanımlı değil. Yeni metinler önce varsayılan dosyaya eklenir.</value></data>
+  <data name="localization.culture_invalid" xml:space="preserve"><value>Geçerli bir dil kodu girin (ör. fr, pt-BR).</value></data>
+  <data name="field.value" xml:space="preserve"><value>Değer</value></data>
+  <data name="field.key" xml:space="preserve"><value>Anahtar</value></data>
+  <data name="field.culture" xml:space="preserve"><value>Dil</value></data>
+  <data name="field.namespace" xml:space="preserve"><value>Alan</value></data>
 </root>

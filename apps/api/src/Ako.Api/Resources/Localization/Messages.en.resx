@@ -69,4 +69,13 @@
   <data name="products.image_url_format" xml:space="preserve"><value>Image URL must be a path starting with "/" or an https address.</value></data>
   <data name="field.category" xml:space="preserve"><value>Category</value></data>
   <data name="field.imageUrl" xml:space="preserve"><value>Image</value></data>
+  <data name="localization.language_not_found" xml:space="preserve"><value>Language '{0}' was not found.</value></data>
+  <data name="localization.language_exists" xml:space="preserve"><value>Language '{0}' already exists.</value></data>
+  <data name="localization.namespace_not_found" xml:space="preserve"><value>There is no translation area named '{0}'.</value></data>
+  <data name="localization.key_not_found" xml:space="preserve"><value>Key '{0}' is not defined. New texts are added to the default file first.</value></data>
+  <data name="localization.culture_invalid" xml:space="preserve"><value>Enter a valid language code (e.g. fr, pt-BR).</value></data>
+  <data name="field.value" xml:space="preserve"><value>Value</value></data>
+  <data name="field.key" xml:space="preserve"><value>Key</value></data>
+  <data name="field.culture" xml:space="preserve"><value>Language</value></data>
+  <data name="field.namespace" xml:space="preserve"><value>Area</value></data>
 </root>

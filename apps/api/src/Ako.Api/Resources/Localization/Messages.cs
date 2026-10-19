@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Resources;
+using Ako.Api.Features.Localization;
 
 // Messages.resx Türkçedir; dil eşleşmediğinde buna düşülür.
 [assembly: NeutralResourcesLanguage("tr")]
@@ -7,14 +8,18 @@ using System.Resources;
 namespace Ako.Api.Resources.Localization;
 
 /// <summary>
-/// Messages.resx (tr, varsayılan) ve Messages.en.resx'e erişim. Dil, RequestLocalization
-/// middleware'inin Accept-Language'e göre ayarladığı CultureInfo.CurrentUICulture'dan gelir.
-/// Statik olması bilinçli: validator'lar, FluentValidation'ın global ayarları ve
-/// ProblemDetails özelleştirmesi DI'a bağlı kalmadan aynı yerden okur.
+/// API mesajlarına (hatalar, doğrulama, e-postalar) erişim. Dil, RequestLocalization middleware'inin Accept-Language'e
+/// göre ayarladığı CultureInfo.CurrentUICulture'dan gelir. Metin önce çeviri kataloğundan (tablodaki ezmeler +
+/// resx), katalog yoksa (ör. build sırasında) doğrudan resx'ten okunur.
+/// Statik olması bilinçli: validator'lar, FluentValidation'ın global ayarları ve ProblemDetails özelleştirmesi DI'a
+/// bağlı kalmadan aynı yerden okur.
 /// </summary>
 public static class Messages
 {
     private static readonly ResourceManager Resources = new("Ako.Api.Resources.Localization.Messages", typeof(Messages).Assembly);
+
+    /// <summary>Uygulama açılırken ayarlanır (bkz. LocalizationExtensions).</summary>
+    public static TranslationCatalog? Catalog { get; set; }
 
     /// <summary>Anahtarın çevirisini döner; yoksa anahtarın kendisini (eksik çeviri görünür kalsın diye).</summary>
     public static string Get(string key, params object?[] args)
@@ -23,5 +28,7 @@ public static class Messages
         return args.Length == 0 ? format : string.Format(CultureInfo.CurrentCulture, format, args);
     }
 
-    public static string? Find(string key) => Resources.GetString(key, CultureInfo.CurrentUICulture);
+    public static string? Find(string key) =>
+        Catalog?.Find(TranslationNamespaces.Api, CultureInfo.CurrentUICulture.Name, key)
+        ?? Resources.GetString(key, CultureInfo.CurrentUICulture);
 }

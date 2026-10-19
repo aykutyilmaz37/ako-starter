@@ -1,4 +1,5 @@
 using Ako.Api.Features.Auth;
+using Ako.Api.Features.Localization;
 using Ako.Api.Features.Products;
 using Ako.Api.Features.Todos;
 using Ako.Api.Infrastructure;
@@ -62,6 +63,7 @@ app.MapAppHealthChecks(); // /health/live, /health/ready
 app.MapAuth(); // ako:auth
 app.MapTodos();
 app.MapProducts();
+app.MapLocalization();
 
 // Backoffice adresleri: yalnızca Api:EnableAdminEndpoints=true olan (iç ağdaki) örnekte oluşur.
 if (AdminEndpoints.IsEnabled(app.Configuration))
@@ -70,6 +72,7 @@ if (AdminEndpoints.IsEnabled(app.Configuration))
     {
         admin.MapAuthAdmin(); // ako:auth
         admin.MapProductsAdmin();
+        admin.MapLocalizationAdmin();
     });
 }
 

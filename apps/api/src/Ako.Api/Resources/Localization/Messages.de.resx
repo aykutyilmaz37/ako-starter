@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="problem.validation" xml:space="preserve"><value>Ein oder mehrere Validierungsfehler sind aufgetreten.</value></data>
+  <data name="problem.400" xml:space="preserve"><value>Ungültige Anfrage.</value></data>
+  <data name="problem.401" xml:space="preserve"><value>Anmeldung erforderlich.</value></data>
+  <data name="problem.403" xml:space="preserve"><value>Dafür haben Sie keine Berechtigung.</value></data>
+  <data name="problem.404" xml:space="preserve"><value>Ressource nicht gefunden.</value></data>
+  <data name="problem.409" xml:space="preserve"><value>Konflikt.</value></data>
+  <data name="problem.500" xml:space="preserve"><value>Ein unerwarteter Fehler ist aufgetreten.</value></data>
+  <data name="todos.not_found" xml:space="preserve"><value>Aufgabe '{0}' wurde nicht gefunden.</value></data>
+  <data name="products.not_found" xml:space="preserve"><value>Produkt '{0}' wurde nicht gefunden.</value></data>
+  <data name="products.sku_taken" xml:space="preserve"><value>Die SKU '{0}' wird bereits von einem anderen Produkt verwendet.</value></data>
+  <data name="products.sku_format" xml:space="preserve"><value>Die SKU darf nur Buchstaben, Ziffern und Bindestriche enthalten.</value></data>
+  <data name="field.title" xml:space="preserve"><value>Titel</value></data>
+  <data name="field.isDone" xml:space="preserve"><value>Erledigt</value></data>
+  <data name="field.sku" xml:space="preserve"><value>SKU</value></data>
+  <data name="field.name" xml:space="preserve"><value>Name</value></data>
+  <data name="field.description" xml:space="preserve"><value>Beschreibung</value></data>
+  <data name="field.price" xml:space="preserve"><value>Preis</value></data>
+  <data name="field.stock" xml:space="preserve"><value>Bestand</value></data>
+  <data name="field.page" xml:space="preserve"><value>Seite</value></data>
+  <data name="field.pageSize" xml:space="preserve"><value>Seitengröße</value></data>
+  <data name="field.search" xml:space="preserve"><value>Suche</value></data>
+  <data name="auth.provider_unavailable" xml:space="preserve"><value>Die Anmeldung mit '{0}' ist nicht aktiviert.</value></data>
+  <data name="auth.invalid_return_url" xml:space="preserve"><value>Diese Rücksprungadresse ist nicht erlaubt.</value></data>
+  <data name="auth.invalid_code" xml:space="preserve"><value>Der Code ist ungültig oder abgelaufen.</value></data>
+  <data name="auth.invalid_id_token" xml:space="preserve"><value>Das ID-Token ist ungültig.</value></data>
+  <data name="auth.email_in_use" xml:space="preserve"><value>Mit dieser E-Mail-Adresse existiert bereits ein Konto. Melden Sie sich zuerst mit diesem Konto an.</value></data>
+  <data name="auth.user_creation_failed" xml:space="preserve"><value>Der Benutzer konnte nicht angelegt werden.</value></data>
+  <data name="auth.external_failed" xml:space="preserve"><value>Die Anmeldung über soziale Netzwerke konnte nicht abgeschlossen werden.</value></data>
+  <data name="identity.DuplicateEmail" xml:space="preserve"><value>Die E-Mail-Adresse '{0}' ist bereits vergeben.</value></data>
+  <data name="identity.DuplicateUserName" xml:space="preserve"><value>'{0}' ist bereits vergeben.</value></data>
+  <data name="identity.InvalidEmail" xml:space="preserve"><value>'{0}' ist keine gültige E-Mail-Adresse.</value></data>
+  <data name="identity.InvalidUserName" xml:space="preserve"><value>'{0}' ist kein gültiger Benutzername.</value></data>
+  <data name="identity.InvalidToken" xml:space="preserve"><value>Ungültiger oder abgelaufener Link.</value></data>
+  <data name="identity.PasswordMismatch" xml:space="preserve"><value>Falsches Passwort.</value></data>
+  <data name="identity.PasswordTooShort" xml:space="preserve"><value>Passwörter müssen mindestens {0} Zeichen lang sein.</value></data>
+  <data name="identity.PasswordRequiresDigit" xml:space="preserve"><value>Passwörter müssen mindestens eine Ziffer enthalten.</value></data>
+  <data name="identity.PasswordRequiresLower" xml:space="preserve"><value>Passwörter müssen mindestens einen Kleinbuchstaben enthalten.</value></data>
+  <data name="identity.PasswordRequiresUpper" xml:space="preserve"><value>Passwörter müssen mindestens einen Großbuchstaben enthalten.</value></data>
+  <data name="identity.PasswordRequiresNonAlphanumeric" xml:space="preserve"><value>Passwörter müssen mindestens ein Sonderzeichen enthalten.</value></data>
+  <data name="identity.PasswordRequiresUniqueChars" xml:space="preserve"><value>Passwörter müssen mindestens {0} verschiedene Zeichen enthalten.</value></data>
+  <data name="identity.LoginAlreadyAssociated" xml:space="preserve"><value>Dieses Konto ist bereits mit einem anderen Benutzer verknüpft.</value></data>
+  <data name="field.code" xml:space="preserve"><value>Code</value></data>
+  <data name="field.idToken" xml:space="preserve"><value>ID-Token</value></data>
+  <data name="problem.429" xml:space="preserve"><value>Zu viele Anfragen.</value></data>
+  <data name="auth.code_throttled" xml:space="preserve"><value>Bitte warten Sie eine Minute, bevor Sie einen neuen Code anfordern.</value></data>
+  <data name="auth.too_many_attempts" xml:space="preserve"><value>Zu viele Fehlversuche. Fordern Sie einen neuen Code an.</value></data>
+  <data name="auth.use_email_change" xml:space="preserve"><value>Verwenden Sie /auth/email/change, um Ihre E-Mail-Adresse zu ändern.</value></data>
+  <data name="field.email" xml:space="preserve"><value>E-Mail</value></data>
+  <data name="field.newEmail" xml:space="preserve"><value>Neue E-Mail-Adresse</value></data>
+  <data name="field.newPassword" xml:space="preserve"><value>Neues Passwort</value></data>
+  <data name="email.ConfirmEmail.subject" xml:space="preserve"><value>Ihr Bestätigungscode</value></data>
+  <data name="email.ConfirmEmail.intro" xml:space="preserve"><value>Geben Sie den folgenden Code ein, um Ihre E-Mail-Adresse zu bestätigen:</value></data>
+  <data name="email.ResetPassword.subject" xml:space="preserve"><value>Ihr Code zum Zurücksetzen des Passworts</value></data>
+  <data name="email.ResetPassword.intro" xml:space="preserve"><value>Geben Sie den folgenden Code ein, um Ihr Passwort zurückzusetzen:</value></data>
+  <data name="email.ChangeEmail.subject" xml:space="preserve"><value>Ihr Code zur Änderung der E-Mail-Adresse</value></data>
+  <data name="email.ChangeEmail.intro" xml:space="preserve"><value>Geben Sie den folgenden Code ein, um Ihre neue E-Mail-Adresse zu bestätigen:</value></data>
+  <data name="email.footer" xml:space="preserve"><value>Dies ist eine automatische E-Mail, bitte antworten Sie nicht darauf.</value></data>
+  <data name="email.code.note" xml:space="preserve"><value>Der Code ist 10 Minuten gültig. Wenn Sie ihn nicht angefordert haben, können Sie diese E-Mail ignorieren.</value></data>
+  <data name="rate_limited" xml:space="preserve"><value>Zu viele Anfragen. Bitte warten Sie einen Moment und versuchen Sie es erneut.</value></data>
+  <data name="auth.user_not_found" xml:space="preserve"><value>Benutzer '{0}' wurde nicht gefunden.</value></data>
+  <data name="auth.cannot_remove_own_admin" xml:space="preserve"><value>Sie können Ihre eigene Admin-Rolle nicht entfernen.</value></data>
+  <data name="field.roles" xml:space="preserve"><value>Rollen</value></data>
+  <data name="products.image_url_format" xml:space="preserve"><value>Die Bild-URL muss ein mit "/" beginnender Pfad oder eine https-Adresse sein.</value></data>
+  <data name="field.category" xml:space="preserve"><value>Kategorie</value></data>
+  <data name="field.imageUrl" xml:space="preserve"><value>Bild</value></data>
+  <data name="localization.language_not_found" xml:space="preserve"><value>Die Sprache '{0}' wurde nicht gefunden.</value></data>
+  <data name="localization.language_exists" xml:space="preserve"><value>Die Sprache '{0}' existiert bereits.</value></data>
+  <data name="localization.namespace_not_found" xml:space="preserve"><value>Es gibt keinen Übersetzungsbereich namens '{0}'.</value></data>
+  <data name="localization.key_not_found" xml:space="preserve"><value>Der Schlüssel '{0}' ist nicht definiert. Neue Texte werden zuerst in der Standarddatei angelegt.</value></data>
+  <data name="localization.culture_invalid" xml:space="preserve"><value>Geben Sie einen gültigen Sprachcode ein (z. B. fr, pt-BR).</value></data>
+  <data name="field.value" xml:space="preserve"><value>Wert</value></data>
+  <data name="field.key" xml:space="preserve"><value>Schlüssel</value></data>
+  <data name="field.culture" xml:space="preserve"><value>Sprache</value></data>
+  <data name="field.namespace" xml:space="preserve"><value>Bereich</value></data>
+</root>

@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Ako.Api.Common;
 using Ako.Api.Features.Auth;
+using Ako.Api.Features.Localization;
 using Ako.Api.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Hosting;
@@ -43,6 +44,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         await _postgres.StartAsync();
         using var scope = Services.CreateScope();
         await scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.MigrateAsync();
+        await Services.GetRequiredService<TranslationRefresher>().RefreshAsync(CancellationToken.None); // dilleri hemen yükle
 
         var users = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
         var admin = new AppUser { UserName = AdminEmail, Email = AdminEmail, EmailConfirmed = true };
