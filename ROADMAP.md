@@ -50,10 +50,10 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 - [x] API: `IGuestDataMerger` (Common) ile her özelliğin misafir verisini taşıması, sonra misafirin silinmesi (`Todos` örneği uygular); ArchTests sınırları korunur.
 - [x] API: eski misafir temizliği (`GuestCleanupService`, `Auth:Guest:RetentionDays`, `LastActiveAt` + migration `GuestUsers`).
 - [x] API testleri (`GuestTests`, 10 test): oluşturma, yenileme, policy, claim, idempotans, geçersiz/üye token, temizlik.
-- [x] Mobil: açılışta otomatik misafir; oturum durumları `guest` / `member`; alışveriş listesi misafirde çalışır (kayıt daveti kartı); giriş sonrası `claim`, token saklama; geçersiz oturumda sessizce yeni misafir. **Telefonda denenmedi.**
+- [x] Mobil: açılışta otomatik misafir; oturum durumları `guest` / `member`; alışveriş listesi misafirde çalışır (kayıt daveti kartı); giriş sonrası `claim`, token saklama; geçersiz oturumda sessizce yeni misafir. **Telefonda (Expo Go) denendi.**
 - [x] Web: karar: gerekmez, anonim + üye kalır (SEO/CDN için herkese açık sayfalar anonim); ihtiyaç doğarsa BFF aynı uçla misafir oturumu açabilir.
 
-**Bitti:** simülatörde giriş yapılıp ürün listelenir, listeye ürün eklenir; misafir olarak listeye eklenen veri kayıt olunca kaybolmaz. (Telefonda/Expo Go ile elle denenecek: giriş, listeye ekleme, dil değişimi.)
+**Bitti:** telefonda (Expo Go) giriş yapılıp ürün listelenir, listeye ürün eklenir; misafir olarak listeye eklenen veri kayıt olunca kaybolmaz. Sosyal ve native giriş gerçek sağlayıcı ayarı olmadan denenemedi (kod hazır).
 
 ## Aşama 3 — create-ako-app
 
