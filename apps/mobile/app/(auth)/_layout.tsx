@@ -1,5 +1,5 @@
-import { Stack } from 'expo-router';
+import { ThemedStack } from '~/components/themed-stack';
 
 export default function AuthLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return <ThemedStack />;
 }
