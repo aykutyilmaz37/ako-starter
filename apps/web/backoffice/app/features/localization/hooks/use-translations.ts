@@ -3,6 +3,7 @@ import {
   getAdminListLanguagesQueryKey,
   getAdminListTranslationsQueryKey,
   useAdminCreateLanguage,
+  useAdminDeleteLanguage,
   useAdminListLanguages,
   useAdminListTranslations,
   useAdminSetTranslation,
@@ -13,8 +14,10 @@ import { useToast } from '@mari-ui/components/toast';
 import { keepPreviousData, useQueryClient } from '@tanstack/react-query';
 import { useT } from '~/shared/i18n/i18n-provider';
 
-export const NAMESPACES = ['site', 'backoffice', 'api'] as const;
-export type Namespace = (typeof NAMESPACES)[number];
+// Yönetilebilen çeviri alanı: yalnızca site metinleri. (API her alanı destekler; backoffice ve api metinleri
+// yalnızca dosyadan gelir, arayüzde düzenlenmez.)
+export const NAMESPACE = 'site';
+export type Namespace = typeof NAMESPACE;
 
 /** Sayfalı çeviri satırları (anahtar + dil başına değer); sayfa değişirken eski veri ekranda kalır. */
 export function useTranslations(params: {
@@ -32,26 +35,37 @@ export function useLanguages() {
   return useAdminListLanguages();
 }
 
-/** Bir hücreyi kaydeder; boş değer dosyadaki varsayılana döner (ezmeyi siler). */
-export function useSaveTranslation(onSaved: () => void) {
+/** Birden çok hücreyi birlikte kaydeder; boş değer dosyadaki varsayılana döner (ezmeyi siler). */
+export function useSaveTranslations(onSaved: () => void) {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const t = useT();
+  const save = useAdminSetTranslation();
 
-  return useAdminSetTranslation({
-    mutation: {
-      onSuccess: () => {
-        showToast({ title: t('translations.saved'), type: 'success' });
-        void queryClient.invalidateQueries({ queryKey: getAdminListTranslationsQueryKey() });
+  return {
+    isPending: save.isPending,
+    saveAll: async (
+      changes: { namespace: string; culture: string; key: string; value: string }[],
+    ) => {
+      try {
+        for (const { value, ...rest } of changes) {
+          await save.mutateAsync({ data: { ...rest, value: value.trim() ? value : null } });
+        }
+        showToast({
+          title: t('translations.savedCount', { count: changes.length }),
+          type: 'success',
+        });
         onSaved();
-      },
-      onError: (error) =>
+      } catch (error) {
         showToast({
           title: isApiError(error) ? error.message : t('translations.failed'),
           type: 'error',
-        }),
+        });
+      } finally {
+        void queryClient.invalidateQueries({ queryKey: getAdminListTranslationsQueryKey() });
+      }
     },
-  });
+  };
 }
 
 /** Dil ekleme ve açıp kapama; site/backoffice dil seçicilerinin kullandığı herkese açık liste de yenilenir. */
@@ -77,6 +91,15 @@ export function useSaveLanguage(onSaved?: () => void) {
           showToast({ title: t('translations.languages.added'), type: 'success' });
           refresh();
           onSaved?.();
+        },
+        onError,
+      },
+    }),
+    remove: useAdminDeleteLanguage({
+      mutation: {
+        onSuccess: () => {
+          showToast({ title: t('translations.languages.deleted'), type: 'success' });
+          refresh();
         },
         onError,
       },

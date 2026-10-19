@@ -108,7 +108,7 @@ const lp = useLocalePath(); // yalnızca site: lp('/products') → "/en/products
   `:lang?` segmenti `shared/i18n/lang-layout.tsx`'te doğrulanır (`/tr/…` → 301, bilinmeyen dil → 404). Loader'larda
   API çağrısına `apiInit(context, request)` verilir (token + adresteki dil). `<html lang>` ve `hreflang` root'ta.
 - **Backoffice:** dil `ako_lang` çerezinde, adresler dilsiz. Başlıktaki seçici çerezi yazıp sayfayı yeniler.
-  "Çeviriler" (`features/localization`): alan, arama, "yalnızca eksikler", dil sütunları, satır içi düzenleme
+  "Çeviriler" (`features/localization`, yalnızca site metinleri; backoffice ve api metinleri dosyadan gelir): arama, tek "Kaydet" ile toplu kaydetme, "yalnızca eksikler", dil sütunları, satır içi düzenleme
   (kaydet / ezmeyi sil), dil ekleme ve aç-kapat, dışa aktarma.
 - Dil seçici bayrakları `public/flags/<kod>.png`; açık dil tek ise seçici görünmez.
 - Çoklu dil istenmiyorsa (create-ako-app "hayır"): seçici, `:lang?` segmenti ve `features/localization` silinir.

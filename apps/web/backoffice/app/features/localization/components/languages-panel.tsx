@@ -7,7 +7,8 @@ import { Input } from '@mari-ui/components/input';
 import { List, ListItem, ListItemMeta } from '@mari-ui/components/list';
 import { Switch } from '@mari-ui/components/switch';
 import { Tag } from '@mari-ui/components/tag';
-import { Download, Plus } from 'lucide-react';
+import { Popconfirm } from '@mari-ui/components/popconfirm';
+import { Download, Plus, Trash2 } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { useSaveLanguage, type Namespace } from '~/features/localization/hooks/use-translations';
 import { useT } from '~/shared/i18n/i18n-provider';
@@ -22,7 +23,7 @@ interface LanguagesPanelProps {
 export function LanguagesPanel({ namespace, languages, loading }: LanguagesPanelProps) {
   const t = useT();
   const form = useForm<{ code: string; name: string }>({ defaultValues: { code: '', name: '' } });
-  const { create, update } = useSaveLanguage(() => form.reset());
+  const { create, update, remove } = useSaveLanguage(() => form.reset());
 
   return (
     <Card title={t('translations.languages.title')}>
@@ -45,6 +46,25 @@ export function LanguagesPanel({ namespace, languages, loading }: LanguagesPanel
                 >
                   {t('translations.export')}
                 </Button>,
+                !language.isDefault && (
+                  <Popconfirm
+                    key="delete"
+                    title={t('translations.languages.confirmDelete')}
+                    description={t('translations.languages.confirmDeleteText')}
+                    okText={t('translations.languages.delete')}
+                    cancelText={t('common.cancel')}
+                    color="error"
+                    onConfirm={() => remove.mutate({ code: language.code })}
+                  >
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      color="error"
+                      icon={<Trash2 size={16} aria-hidden />}
+                      aria-label={t('translations.languages.deleteLabel', { name: language.name })}
+                    />
+                  </Popconfirm>
+                ),
                 <Switch
                   key="enabled"
                   checked={language.isEnabled}
@@ -76,7 +96,7 @@ export function LanguagesPanel({ namespace, languages, loading }: LanguagesPanel
 
         <form
           method="post"
-          className="flex flex-col gap-3 border-t border-mari-border pt-4 sm:flex-row sm:items-start"
+          className="flex flex-col gap-3 border-t border-mari-border pt-4 sm:flex-row sm:items-end"
           onSubmit={form.handleSubmit((data) => create.mutate({ data }))}
         >
           <Controller
@@ -86,11 +106,10 @@ export function LanguagesPanel({ namespace, languages, loading }: LanguagesPanel
             render={({ field, fieldState }) => (
               <Field
                 label={t('translations.languages.code')}
-                hint={t('translations.languages.codeHint')}
                 required
                 error={fieldState.error ? ' ' : undefined}
               >
-                <Input {...field} />
+                <Input {...field} placeholder={t('translations.languages.codeHint')} />
               </Field>
             )}
           />
@@ -101,12 +120,11 @@ export function LanguagesPanel({ namespace, languages, loading }: LanguagesPanel
             render={({ field, fieldState }) => (
               <Field
                 label={t('translations.languages.name')}
-                hint={t('translations.languages.nameHint')}
                 required
                 error={fieldState.error ? ' ' : undefined}
                 className="flex-1"
               >
-                <Input {...field} />
+                <Input {...field} placeholder={t('translations.languages.nameHint')} />
               </Field>
             )}
           />
@@ -115,7 +133,6 @@ export function LanguagesPanel({ namespace, languages, loading }: LanguagesPanel
             color="primary"
             loading={create.isPending}
             icon={<Plus size={16} aria-hidden />}
-            className="sm:mt-7"
           >
             {t('translations.languages.submit')}
           </Button>
