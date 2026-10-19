@@ -27,7 +27,7 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 - [x] GitHub Actions (`.github/workflows/ci.yml`; ilk çalıştırma doğrulanmadı): `pnpm build`, `typecheck`, `lint`, `test`, `generate:check`, `dotnet test`, `pnpm audit`, `dotnet list package --vulnerable`.
 - [ ] Vitest: `web-core` (oturum, token yenileme) ve `api-client` (`ApiError`, `applyFieldErrors`).
-- [ ] Playwright: tek duman testi (site: ürün listesi + dil değiştirme; backoffice: admin girişi + ürün ekleme).
+- [x] Playwright (`packages/e2e`, `pnpm --filter @ako/e2e test:e2e`): site ürün listesi + dil değiştirme, backoffice admin girişi + ürün ekleme. CI işi `e2e` (ilk çalıştırma doğrulanacak).
 - [x] Dependabot: yalnızca güvenlik güncellemeleri, gruplu PR (`.github/dependabot.yml`). Rutin sürüm güncellemesi kapalı.
 - [ ] Temiz klonda doğrulama: `pnpm i && pnpm db:up` sonrası README adımlarıyla her şey ayağa kalkıyor mu?
 

@@ -17,3 +17,7 @@ obj/
 .expo/
 ios/
 android/
+
+# Playwright
+test-results/
+playwright-report/
