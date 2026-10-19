@@ -30,7 +30,7 @@ export function RecentUsers({ users, loading }: { users: AdminUserResponse[]; lo
           return (
             <ListItem>
               <ListItemMeta
-                avatar={<Avatar size="sm" src={email.slice(0, 2).toUpperCase()} alt={email} />}
+                avatar={<Avatar size="sm" alt={email} />}
                 title={email}
                 description={ago(u.createdAt)}
               />

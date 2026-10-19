@@ -25,7 +25,7 @@ export function UsersTable({ users, loading, onPageChange }: UsersTableProps) {
         const email = user.email ?? user.userName;
         return (
           <div className="flex items-center gap-3">
-            <Avatar size="sm" src={email.slice(0, 2).toUpperCase()} alt={email} />
+            <Avatar size="sm" alt={email} />
             <span className="truncate">{email}</span>
           </div>
         );

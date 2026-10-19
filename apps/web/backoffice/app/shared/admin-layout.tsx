@@ -2,7 +2,7 @@ import { Avatar } from '@mari-ui/components/avatar';
 import { Button } from '@mari-ui/components/button';
 import { Sidebar } from '@mari-ui/components/menu';
 import { Text } from '@mari-ui/components/typography';
-import { LayoutDashboard, LogOut, Package, Users } from 'lucide-react';
+import { Coffee, LayoutDashboard, LogOut, Package, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { logout } from '~/shared/api';
@@ -47,15 +47,20 @@ export function AdminLayout({ children }: { children: ReactNode }) {
         variant="hover"
         label="Yönetim menüsü"
         data={menu}
-        logo={<Text weight="semibold">Akı Kahve</Text>}
+        // Kapalı ikon şeridine sığsın diye logo yalnız işaret; erişilebilir adı logoLabel'dan.
+        logo={
+          <span className="flex size-8 items-center justify-center rounded-mari-md bg-mari-primary-solid text-mari-primary-solid-contrast">
+            <Coffee size={18} aria-hidden />
+          </span>
+        }
         logoHref="/"
-        logoLabel="Genel bakış"
+        logoLabel="Akı Kahve yönetim paneli, genel bakış"
         currentPath={location.pathname}
         onNavigate={(route) => navigate(route)}
       />
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-14 items-center justify-end gap-3 border-b border-mari-border bg-mari-surface px-6">
-          <Avatar size="sm" color="primary" src={email.slice(0, 2).toUpperCase()} alt={email} />
+          <Avatar size="sm" color="primary" alt={email} />
           <Text className="max-w-56 truncate text-sm">{email}</Text>
           <Button
             size="sm"
