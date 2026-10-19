@@ -33,7 +33,7 @@ export function LanguageSwitcher() {
           <span className="hidden text-sm sm:inline">{current.name}</span>
         </span>
       </DropdownTrigger>
-      <DropdownContent placement="bottom-end" className="z-mari-drawer!">
+      <DropdownContent>
         {languages.map((l) => (
           <DropdownItem
             key={l.code}

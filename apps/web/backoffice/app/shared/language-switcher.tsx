@@ -33,7 +33,7 @@ export function LanguageSwitcher() {
           <span className="hidden text-sm sm:inline">{current.name}</span>
         </span>
       </DropdownTrigger>
-      <DropdownContent placement="bottom-end">
+      <DropdownContent>
         {languages.map((l) => (
           <DropdownItem key={l.code} icon={<Flag code={l.code} />} onClick={() => select(l.code)}>
             {l.name}
