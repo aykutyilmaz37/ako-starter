@@ -1,5 +1,6 @@
 // Her kombinasyon için: üret → CLI'ın son adımları → CI komutları (format:check, generate:check, typecheck, lint, build, test).
-// Kullanım: pnpm --filter create-ako-app verify [--only=web,mobile] [--out=<klasör>] [--skip-tests]
+// Kullanım: pnpm --filter create-ako-app verify [--only=web,mobile] [--out=<klasör>] [--skip-tests] [--keep]
+// (`--` kullanmayın: pnpm betiğe aktarmaz.) --skip-tests: dotnet test ve vitest atlanır.
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -17,8 +18,28 @@ const COMBOS = {
   'no-auth-site': { web: ['site'], mobile: false, auth: false },
   'no-auth-mobile': { web: [], mobile: true, auth: false },
   'no-lang-both': { web: ['site', 'backoffice'], mobile: true, lang: false },
+  'no-guest-both': { web: ['site', 'backoffice'], mobile: true, guest: false },
+  'no-guest-no-lang': { web: ['site'], mobile: true, guest: false, lang: false },
   'no-auth-no-lang': { web: ['site'], mobile: true, auth: false, lang: false },
   'no-auth-both': { web: ['site'], mobile: true, auth: false },
+  'no-sample-both': { web: ['site', 'backoffice'], mobile: true, sample: false },
+  'no-sample-site': { web: ['site'], mobile: false, sample: false },
+  'no-sample-no-auth': { web: ['site'], mobile: true, auth: false, sample: false },
+  'no-sample-no-guest-no-lang': {
+    web: ['site'],
+    mobile: true,
+    guest: false,
+    sample: false,
+    lang: false,
+  },
+  'no-social-both': { web: ['site', 'backoffice'], mobile: true, social: false },
+  'no-social-no-guest-no-lang': {
+    web: ['site'],
+    mobile: true,
+    social: false,
+    guest: false,
+    lang: false,
+  },
   // Backend'siz mobil: dotnet/Docker gerekmez; ek olarak Expo paketleme ve Drizzle migration'larının güncelliği sınanır.
   'no-backend': { web: [], mobile: true, backend: false },
   'no-backend-no-lang': { web: [], mobile: true, backend: false, lang: false },
@@ -60,6 +81,11 @@ function verifyLocalData(target) {
   );
 }
 
+process.env.GIT_AUTHOR_NAME ??= process.env.GIT_COMMITTER_NAME ??= 'verify';
+process.env.GIT_AUTHOR_EMAIL ??= process.env.GIT_COMMITTER_EMAIL ??= 'verify@example.com';
+process.env.GIT_COMMITTER_NAME ??= 'verify';
+process.env.GIT_COMMITTER_EMAIL ??= 'verify@example.com';
+
 const failed = [];
 for (const name of names) {
   const combo = COMBOS[name];
@@ -67,14 +93,24 @@ for (const name of names) {
   const target = join(base, name);
   console.log(`\n=== ${name} → ${target}`);
   try {
-    scaffold({ target, template: resolveTemplate(), choices: { name: `combo-${name}`, ...combo } });
-    run(target, 'pnpm', ['install', '--no-frozen-lockfile']);
+    const plan = scaffold({
+      target,
+      template: resolveTemplate(),
+      choices: { name: `combo-${name}`, ...combo },
+    });
+    // CLI'ın son adımları (install → generate → format), ardından CI komutları.
+    // generate:check git diff kullanır: ilk commit gerekir.
+    finalize({ target, plan, install: true, git: true });
+    run(target, 'pnpm', ['format:check']);
+    if (combo.backend !== false) run(target, 'pnpm', ['generate:check']);
+    run(target, 'pnpm', ['lint']);
     run(target, 'pnpm', ['typecheck']);
     run(target, 'pnpm', ['build']);
+    if (!values['skip-tests']) run(target, 'pnpm', ['test']);
     if (combo.backend === false) verifyLocalData(target);
     else {
       run(target, 'dotnet', ['build', 'apps/api/Ako.slnx', '-c', 'Release']);
-      if (values['dotnet-test'])
+      if (!values['skip-tests'])
         run(target, 'dotnet', ['test', 'apps/api/Ako.slnx', '-c', 'Release', '--no-build']);
     }
     console.log(`✔ ${name}`);

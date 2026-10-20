@@ -1,7 +1,7 @@
 using Ako.Api.Features.Auth; // ako:auth
 using Ako.Api.Features.Localization; // ako:lang
-using Ako.Api.Features.Products;
-using Ako.Api.Features.Todos; // ako:auth
+using Ako.Api.Features.Products; // ako:sample
+using Ako.Api.Features.Todos; // ako:todos
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity; // ako:auth
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore; // ako:auth
@@ -24,8 +24,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     /// </summary>
     public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
 
-    public DbSet<Todo> Todos => Set<Todo>(); // ako:auth
-    public DbSet<Product> Products => Set<Product>();
+    public DbSet<Todo> Todos => Set<Todo>(); // ako:todos
+    public DbSet<Product> Products => Set<Product>(); // ako:sample
     public DbSet<Language> Languages => Set<Language>(); // ako:lang
     public DbSet<Translation> Translations => Set<Translation>(); // ako:lang
 

@@ -22,15 +22,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="10.0.0" /> <!-- ako:auth -->
-    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="10.0.0" /> <!-- ako:auth -->
-    <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="10.0.0" /> <!-- ako:auth -->
-    <PackageReference Include="AspNet.Security.OAuth.Twitter" Version="10.0.0" /> <!-- ako:auth -->
+    <PackageReference Include="AspNet.Security.OAuth.Apple" Version="10.0.0" /> <!-- ako:social -->
+    <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="10.0.0" /> <!-- ako:social -->
+    <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="10.0.0" /> <!-- ako:social -->
+    <PackageReference Include="AspNet.Security.OAuth.Twitter" Version="10.0.0" /> <!-- ako:social -->
     <PackageReference Include="EFCore.NamingConventions" Version="10.0.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
     <PackageReference Include="MailKit" Version="4.18.1" /> <!-- ako:auth -->
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="10.0.13" /> <!-- ako:auth -->
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.13" /> <!-- ako:auth -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="10.0.13" /> <!-- ako:social -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.13" /> <!-- ako:social -->
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="10.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.13" /> <!-- ako:auth -->
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.13" />
@@ -43,7 +43,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.13" />
-    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.23.0" /> <!-- ako:auth -->
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.23.0" /> <!-- ako:social -->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageReference Include="Npgsql.OpenTelemetry" Version="10.0.3" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.20.0" />

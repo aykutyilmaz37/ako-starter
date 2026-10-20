@@ -70,6 +70,8 @@
   "list.failed": "Aktion fehlgeschlagen.",
   "list.guest.title": "Ihre Liste liegt vorerst auf diesem Gerät",
   "list.guest.text": "Wenn Sie sich registrieren oder anmelden, wandert die Liste in Ihr Konto und ist auf allen Geräten gleich.",
+  "list.login.title": "Ihre Liste wartet",
+  "list.login.text": "Melden Sie sich an, um Ihre Lieblingskaffees zu speichern; die Liste ist auf allen Geräten gleich.",
   "account.eyebrow": "Konto",
   "account.hello": "Hallo",
   "account.join": "Werden Sie Teil der Akı-Familie",

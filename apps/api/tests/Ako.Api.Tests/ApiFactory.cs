@@ -73,6 +73,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         return await LoginAsync(client, email);
     }
 
+    // ako:begin guest
     /// <summary>Misafir (anonim) kullanıcı oluşturur; token'ları ve token'lı bir HttpClient döner.</summary>
     public async Task<(HttpClient Client, AccessTokenResponse Tokens)> CreateGuestClientAsync()
     {
@@ -83,6 +84,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokens.AccessToken);
         return (client, tokens);
     }
+    // ako:end guest
 
     public Task<HttpClient> CreateAdminClientAsync() => LoginAsync(CreateClient(), AdminEmail);
 

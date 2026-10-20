@@ -6,6 +6,7 @@ import {
   normalizeChoices,
   renderReadme,
   stripE2eJob,
+  variantName,
 } from './plan.mjs';
 import { setJsonKeys } from './scaffold.mjs';
 
@@ -63,7 +64,7 @@ describe("backend'siz mobil", () => {
 
   it("auth kapalı sayılır; alışveriş listesi kalır, sözlük API'den gelmez", () => {
     const { disabled } = buildPlan(noBackend);
-    expect(disabled).toEqual(new Set(['backend', 'auth', 'api-lang']));
+    expect(disabled).toEqual(new Set(['backend', 'auth', 'guest', 'social', 'todos', 'api-lang']));
   });
 
   it('dil kapalıysa migration varyantı değişmez, yalnızca dil dosyaları çıkar', () => {
@@ -83,7 +84,7 @@ describe("backend'siz mobil", () => {
 
   it("API'li auth kapalı: liste ve sözlük işaretleri doğru türer", () => {
     expect(buildPlan({ ...both, web: ['site'], auth: false }).disabled).toEqual(
-      new Set(['auth', 'list']),
+      new Set(['auth', 'guest', 'social', 'list', 'todos']),
     );
     expect(buildPlan({ ...both, lang: false }).disabled).toEqual(new Set(['lang', 'api-lang']));
     expect(buildPlan({ ...both, lang: false }).needsGenerate).toBe(true);
@@ -105,6 +106,130 @@ describe("backend'siz mobil", () => {
     );
     expect(Object.keys(out.dependencies)).toEqual(['b', 'c', 'd']);
     expect(out.scripts.x).toBe('y');
+  });
+});
+
+describe('misafir girişi', () => {
+  it('kapalıyken yalnızca misafir yolları çıkar, auth ve migration varyantı ayrı kalır', () => {
+    const plan = buildPlan({ ...both, guest: false });
+    expect(plan.disabled).toEqual(new Set(['guest']));
+    expect(plan.remove).toEqual(
+      expect.arrayContaining([
+        'apps/api/src/Ako.Api/Features/Auth/Actions/CreateGuest.cs',
+        'apps/api/tests/Ako.Api.Tests/GuestTests.cs',
+      ]),
+    );
+    expect(plan.remove).not.toContain('apps/api/src/Ako.Api/Features/Auth');
+    expect(plan.variants).toEqual(['no-guest']);
+    expect(plan.needsGenerate).toBe(true);
+  });
+
+  it('dil kapalıyla birleşince tek migration varyantı seçilir', () => {
+    expect(buildPlan({ ...both, guest: false, lang: false }).variants).toEqual([
+      'no-guest-no-lang',
+    ]);
+  });
+
+  it('auth kapalıyken misafir istense de kapalıdır ve varyant adı no-auth kalır', () => {
+    expect(normalizeChoices({ ...both, web: ['site'], auth: false, guest: true }).guest).toBe(
+      false,
+    );
+    expect(buildPlan({ ...both, web: ['site'], auth: false }).variants).toEqual(['no-auth']);
+  });
+
+  it('README misafir yokluğunu belirtir', () => {
+    expect(renderReadme({ ...both, guest: false })).toContain('**misafir girişi yok**');
+    expect(renderReadme(both)).not.toContain('misafir girişi yok');
+  });
+});
+
+describe('sosyal giriş', () => {
+  it('kapalıyken sağlayıcı kodu, düğmeler ve marka paketi çıkar; auth ve migration varyantı kalır', () => {
+    const plan = buildPlan({ ...both, social: false });
+    expect(plan.disabled).toEqual(new Set(['social']));
+    expect(plan.remove).toEqual(
+      expect.arrayContaining([
+        'apps/api/src/Ako.Api/Features/Auth/Actions/ExternalLogin.cs',
+        'apps/api/src/Ako.Api/Features/Auth/Services/IdTokenValidator.cs',
+        'apps/mobile/features/auth/social-login.ts',
+        'packages/shared',
+      ]),
+    );
+    expect(plan.remove).not.toContain('apps/api/src/Ako.Api/Features/Auth');
+    expect(plan.variants).toEqual([]);
+    expect(plan.needsGenerate).toBe(true);
+    const mobile = plan.jsonRemove.find((r) => r.file === 'apps/mobile/package.json');
+    expect(mobile.keys).toEqual(
+      expect.arrayContaining([
+        'dependencies.@react-native-google-signin/google-signin',
+        'dependencies.expo-apple-authentication',
+        'dependencies.expo-web-browser',
+      ]),
+    );
+  });
+
+  it('auth ya da backend kapalıyken sosyal istense de kapalıdır', () => {
+    expect(normalizeChoices({ ...both, web: ['site'], auth: false, social: true }).social).toBe(
+      false,
+    );
+    expect(
+      normalizeChoices({ name: 'x', web: [], mobile: true, backend: false, social: true }).social,
+    ).toBe(false);
+  });
+
+  it('diğer kapalı özelliklerle birleşince yalnız kendi işaretini ekler', () => {
+    const plan = buildPlan({ ...both, social: false, guest: false });
+    expect(plan.disabled).toEqual(new Set(['guest', 'social']));
+    expect(plan.variants).toEqual(['no-guest']);
+  });
+
+  it('README sosyal girişin yokluğunu belirtir', () => {
+    expect(renderReadme({ ...both, social: false })).toContain('**sosyal giriş yok**');
+    expect(renderReadme(both)).not.toContain('sosyal giriş yok');
+  });
+});
+
+describe('örnek senaryo', () => {
+  it('kapalıyken Products/Todos, görseller ve ekranlar çıkar; auth ve migration adı sample ile birleşir', () => {
+    const plan = buildPlan({ ...both, sample: false });
+    expect(plan.disabled).toEqual(new Set(['sample', 'list', 'todos']));
+    expect(plan.remove).toEqual(
+      expect.arrayContaining([
+        'apps/api/src/Ako.Api/Features/Products',
+        'apps/api/src/Ako.Api/wwwroot/images',
+        'apps/web/site/app/features/products',
+        'apps/web/backoffice/app/features/products',
+        'apps/mobile/features/catalog',
+        'apps/mobile/features/shopping-list',
+      ]),
+    );
+    expect(plan.remove).not.toContain('apps/api/src/Ako.Api/Features/Auth');
+    expect(plan.variants).toEqual(['no-sample']);
+    expect(plan.keepE2e).toBe(false);
+    expect(plan.needsGenerate).toBe(true);
+    expect(plan.localeRemove.map((r) => r.file)).toEqual(
+      expect.arrayContaining(['apps/web/site/app/locales', 'apps/mobile/locales']),
+    );
+  });
+
+  it('diğer kapalı özelliklerle tek migration varyantı adı olur', () => {
+    expect(variantName(new Set(['sample', 'lang']))).toBe('no-sample-no-lang');
+    expect(variantName(new Set(['auth', 'sample']))).toBe('no-auth-no-sample');
+    expect(variantName(new Set(['guest', 'sample', 'lang']))).toBe('no-guest-no-sample-no-lang');
+    expect(buildPlan({ ...both, web: ['site'], auth: false, sample: false }).variants).toEqual([
+      'no-auth-no-sample',
+    ]);
+  });
+
+  it('backend yokken kapatılamaz', () => {
+    expect(() =>
+      normalizeChoices({ name: 'x', web: [], mobile: true, backend: false, sample: false }),
+    ).toThrow(/Backend yokken örnek/);
+  });
+
+  it('README örnek senaryonun yokluğunu belirtir', () => {
+    expect(renderReadme({ ...both, sample: false })).toContain('**örnek senaryo yok**');
+    expect(renderReadme(both)).not.toContain('örnek senaryo yok');
   });
 });
 

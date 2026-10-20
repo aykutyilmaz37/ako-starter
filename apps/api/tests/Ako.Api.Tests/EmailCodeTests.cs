@@ -117,6 +117,7 @@ public sealed class EmailCodeTests(ApiFactory factory)
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
+    // ako:begin social
     [Fact]
     public async Task Sosyal_girisle_acilan_hesap_dogrulanmis_sayilir()
     {
@@ -130,6 +131,7 @@ public sealed class EmailCodeTests(ApiFactory factory)
         Assert.True(user.IsSuccess);
         Assert.True(user.Value.EmailConfirmed);
     }
+    // ako:end social
 
     private static async Task<string?> CodeOf(HttpResponseMessage response)
     {

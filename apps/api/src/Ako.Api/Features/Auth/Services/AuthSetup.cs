@@ -27,13 +27,19 @@ public static class AuthSetup
             .AddEntityFrameworkStores<Infrastructure.Data.AppDbContext>()
             .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 
-        services.AddAuthorizationBuilder()
-            .AddPolicy(AppPolicies.Admin, policy => policy.RequireRole(AppRoles.Admin))
-            // Kayıtlı kullanıcı: giriş yapmış ve misafir değil (Admin de üyedir).
-            .AddPolicy(AppPolicies.Member, policy => policy
-                .RequireAuthenticatedUser()
-                .RequireAssertion(context => !context.User.IsInRole(AppRoles.Guest)));
+        var authorization = services.AddAuthorizationBuilder()
+            .AddPolicy(AppPolicies.Admin, policy => policy.RequireRole(AppRoles.Admin));
+        // ako:begin guest
+        // Kayıtlı kullanıcı: giriş yapmış ve misafir değil (Admin de üyedir).
+        authorization.AddPolicy(AppPolicies.Member, policy => policy
+            .RequireAuthenticatedUser()
+            .RequireAssertion(context => !context.User.IsInRole(AppRoles.Guest)));
+        // ako:else guest
+        //~ // Kayıtlı kullanıcı: giriş yapmış herkes (Admin de üyedir).
+        //~ authorization.AddPolicy(AppPolicies.Member, policy => policy.RequireAuthenticatedUser());
+        // ako:end guest
 
+        // ako:begin social
         // Sosyal giriş sağlayıcıları: yalnızca ayarı dolu olanlar kaydedilir.
         var authentication = services.AddAuthentication();
         foreach (var provider in ExternalProviders.All.Where(p => ExternalProviders.IsConfigured(configuration, p)))
@@ -41,12 +47,13 @@ public static class AuthSetup
             provider.Register(authentication, configuration.GetSection($"Auth:Providers:{provider.Scheme}"));
         }
 
-        services.AddDistributedMemoryCache();
         services.AddSingleton<LoginCodeStore>();
         services.AddSingleton<IdTokenValidator>();
         services.AddScoped<ExternalUserResolver>();
-        services.AddScoped<GuestAccounts>();
-        services.AddHostedService<GuestCleanupService>();
+        // ako:end social
+        services.AddDistributedMemoryCache(); // e-posta kodları (EmailCodes) için
+        services.AddScoped<GuestAccounts>(); // ako:guest
+        services.AddHostedService<GuestCleanupService>(); // ako:guest
         services.AddScoped<EmailCodes>();
         // E-posta: "Email:Smtp:Host" doluysa SMTP ile gönderilir, boşsa kod yalnızca log'a yazılır.
         services.Configure<EmailOptions>(configuration.GetSection("Email"));
@@ -63,6 +70,7 @@ public static class AuthSetup
         return services;
     }
 
+    // ako:begin social
     /// <summary>
     /// Sosyal giriş sonunda yönlendirilmesine izin verilen adresler (açık yönlendirme açığına karşı).
     /// Ör. "http://localhost:5173/auth/callback", "ako://auth/callback".
@@ -71,4 +79,5 @@ public static class AuthSetup
         Uri.TryCreate(returnUrl, UriKind.Absolute, out _)
         && (configuration.GetSection("Auth:AllowedReturnUrls").Get<string[]>() ?? [])
             .Any(allowed => returnUrl.StartsWith(allowed, StringComparison.OrdinalIgnoreCase));
+    // ako:end social
 }

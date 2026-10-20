@@ -40,12 +40,14 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       route: '/',
       icon: <LayoutDashboard size={18} aria-hidden />,
     },
+    // ako:begin sample
     {
       key: 'products',
       title: t('layout.menu.products'),
       route: '/products',
       icon: <Package size={18} aria-hidden />,
     },
+    // ako:end sample
     {
       key: 'users',
       title: t('layout.menu.users'),

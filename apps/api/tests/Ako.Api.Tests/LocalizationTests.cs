@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Ako.Api.Common;
+using Ako.Api.Features.Auth; // ako:auth
 using Ako.Api.Features.Localization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,18 +47,29 @@ public sealed class LocalizationTests(ApiFactory factory)
         var user = await factory.CreateUserClientAsync();
         user.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("de"));
 
+        // ako:begin todos
+        const string key = "todos.not_found";
+        const string noun = "Aufgabe";
+        Task<HttpResponseMessage> Call(Guid id) => user.GetAsync($"/todos/{id}");
+        // ako:else todos
+        //~ admin.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("de"));
+        //~ const string key = "auth.user_not_found";
+        //~ const string noun = "Benutzer";
+        //~ Task<HttpResponseMessage> Call(Guid id) => admin.PutAsJsonAsync($"/admin/users/{id}/roles", new SetUserRolesRequest([AppRoles.User]));
+        // ako:end todos
+
         var set = await admin.PutAsJsonAsync("/admin/localization/translations",
-            new SetTranslationRequest(TranslationNamespaces.Api, "de", "todos.not_found", "Aufgabe {0} fehlt."));
+            new SetTranslationRequest(TranslationNamespaces.Api, "de", key, noun + " {0} fehlt."));
         Assert.Equal(HttpStatusCode.OK, set.StatusCode);
         var cell = (await set.Content.ReadFromJsonAsync<TranslationEntryResponse>())!.Values["de"];
         Assert.True(cell.IsOverridden);
 
         var id = Guid.NewGuid();
-        Assert.Equal($"Aufgabe {id} fehlt.", await Detail(user.GetAsync($"/todos/{id}")));
+        Assert.Equal($"{noun} {id} fehlt.", await Detail(Call(id)));
 
         await admin.PutAsJsonAsync("/admin/localization/translations",
-            new SetTranslationRequest(TranslationNamespaces.Api, "de", "todos.not_found", null));
-        Assert.Equal($"Aufgabe '{id}' wurde nicht gefunden.", await Detail(user.GetAsync($"/todos/{id}")));
+            new SetTranslationRequest(TranslationNamespaces.Api, "de", key, null));
+        Assert.Equal($"{noun} '{id}' wurde nicht gefunden.", await Detail(Call(id)));
 
         static async Task<string?> Detail(Task<HttpResponseMessage> request) =>
             (await (await request).Content.ReadFromJsonAsync<ProblemDetails>())!.Detail;

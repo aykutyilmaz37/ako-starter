@@ -1,5 +1,9 @@
 import { applyFieldErrors, isApiError } from '@ako/api-client';
+// ako:begin social
 import { useGetAuthProviders, useLogin } from '@ako/api-client/auth';
+// ako:else social
+//~ import { useLogin } from '@ako/api-client/auth';
+// ako:end social
 import { LoginBody } from '@ako/api-client/zod/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert } from '@mari-ui/components/alert';
@@ -9,13 +13,14 @@ import { Input } from '@mari-ui/components/input';
 import { useState, type ReactNode } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { SocialButton } from '~/features/auth/components/social-button';
+import { SocialButton } from '~/features/auth/components/social-button'; // ako:social
 import { AUTH_ERROR_KEYS } from '~/features/auth/error-messages';
 import { useT } from '~/shared/i18n/i18n-provider';
 
 const Schema = LoginBody.pick({ email: true, password: true }).extend({ email: z.email() });
 type Values = z.infer<typeof Schema>;
 
+// ako:begin social
 const PROVIDER_LABELS: Record<string, string> = {
   google: 'Google',
   apple: 'Apple',
@@ -24,6 +29,7 @@ const PROVIDER_LABELS: Record<string, string> = {
   x: 'X',
   linkedin: 'LinkedIn',
 };
+// ako:end social
 
 interface LoginFormProps {
   /** Başarılı girişten sonra (oturum çerezi yazıldı). */
@@ -41,7 +47,7 @@ export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormP
     resolver: zodResolver(Schema),
     defaultValues: { email: '', password: '' },
   });
-  const providers = useGetAuthProviders();
+  const providers = useGetAuthProviders(); // ako:social
 
   const login = useLogin({
     mutation: {
@@ -92,6 +98,7 @@ export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormP
         {t('auth.login.submit')}
       </Button>
 
+      {/* ako:begin social */}
       {(providers.data?.external.length ?? 0) > 0 && (
         <div className="flex flex-col gap-2">
           {providers.data!.external.map((provider) => (
@@ -104,6 +111,7 @@ export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormP
           ))}
         </div>
       )}
+      {/* ako:end social */}
 
       {footer}
     </form>

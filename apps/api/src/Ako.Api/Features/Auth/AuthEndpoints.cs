@@ -59,8 +59,8 @@ public static class AuthEndpoints
     /// /auth altındaki tüm adresler:
     /// - Identity'nin hazır endpoint'leri: /register, /login, /refresh, /manage/info, /manage/2fa
     /// - E-posta kodları: /email/confirm(/send), /password/forgot, /password/reset, /email/change(/confirm)
-    /// - Sosyal giriş: /providers, /external/*, /exchange, /native/{provider}
-    /// - Misafir: /guest, /guest/claim
+    /// - Sosyal giriş: /providers, /external/*, /exchange, /native/{provider} // ako:social
+    /// - Misafir: /guest, /guest/claim // ako:guest
     /// - /me
     /// </summary>
     public static IEndpointRouteBuilder MapAuth(this IEndpointRouteBuilder app)
@@ -74,14 +74,14 @@ public static class AuthEndpoints
         identity.AddEndpointFilter(BlockEmailChangeViaManageInfo);
 
         GetMe.Map(group);
-        CreateGuest.Map(group);
+        CreateGuest.Map(group); // ako:guest
         EmailConfirmation.Map(group);
         PasswordReset.Map(group);
         ChangeEmail.Map(group);
-        GetProviders.Map(group);
-        ExternalLogin.Map(group);
-        ExchangeCode.Map(group);
-        NativeLogin.Map(group);
+        GetProviders.Map(group); // ako:social
+        ExternalLogin.Map(group); // ako:social
+        ExchangeCode.Map(group); // ako:social
+        NativeLogin.Map(group); // ako:social
 
         return app;
     }

@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Ako.Api.Common;
 using Ako.Api.Features.Auth;
-using Ako.Api.Features.Todos;
+using Ako.Api.Features.Todos; // ako:todos
 using Ako.Api.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.EntityFrameworkCore;
@@ -40,10 +40,10 @@ public sealed class GuestTests(ApiFactory factory)
     {
         var (client, _) = await factory.CreateGuestClientAsync();
 
-        var create = await client.PostAsJsonAsync("/todos", new CreateTodoRequest("Filtre kağıdı"));
+        var create = await client.PostAsJsonAsync("/todos", new CreateTodoRequest("Filtre kağıdı")); // ako:todos
         var changeEmail = await client.PostAsJsonAsync("/auth/email/change", new { newEmail = "x@test.local" });
 
-        Assert.Equal(HttpStatusCode.Created, create.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, create.StatusCode); // ako:todos
         Assert.Equal(HttpStatusCode.Forbidden, changeEmail.StatusCode);
     }
 
@@ -51,16 +51,18 @@ public sealed class GuestTests(ApiFactory factory)
     public async Task Misafir_hesabi_aldiginda_verisi_hesaba_gecer_ve_misafir_silinir()
     {
         var (guest, tokens) = await factory.CreateGuestClientAsync();
-        await guest.PostAsJsonAsync("/todos", new CreateTodoRequest("Süt"));
-        await guest.PostAsJsonAsync("/todos", new CreateTodoRequest("Çekirdek"));
+        await guest.PostAsJsonAsync("/todos", new CreateTodoRequest("Süt")); // ako:todos
+        await guest.PostAsJsonAsync("/todos", new CreateTodoRequest("Çekirdek")); // ako:todos
         var guestId = (await guest.GetFromJsonAsync<MeResponse>("/auth/me"))!.Id;
 
         var member = await factory.CreateUserClientAsync();
         var claim = await member.PostAsJsonAsync("/auth/guest/claim", new ClaimGuestRequest(tokens.RefreshToken));
 
         Assert.Equal(HttpStatusCode.NoContent, claim.StatusCode);
+        // ako:begin todos
         var todos = await member.GetFromJsonAsync<TodoResponse[]>("/todos");
         Assert.Equal(new[] { "Süt", "Çekirdek" }.Order(StringComparer.Ordinal), todos!.Select(t => t.Title).Order(StringComparer.Ordinal));
+        // ako:end todos
 
         using var scope = factory.Services.CreateScope();
         Assert.False(await scope.ServiceProvider.GetRequiredService<AppDbContext>().Users.AnyAsync(u => u.Id == guestId));
@@ -70,14 +72,14 @@ public sealed class GuestTests(ApiFactory factory)
     public async Task Talep_tekrarlanirsa_basarili_sayilir_ve_veri_ikilenmez()
     {
         var (guest, tokens) = await factory.CreateGuestClientAsync();
-        await guest.PostAsJsonAsync("/todos", new CreateTodoRequest("Tek"));
+        await guest.PostAsJsonAsync("/todos", new CreateTodoRequest("Tek")); // ako:todos
         var member = await factory.CreateUserClientAsync();
 
         await member.PostAsJsonAsync("/auth/guest/claim", new ClaimGuestRequest(tokens.RefreshToken));
         var again = await member.PostAsJsonAsync("/auth/guest/claim", new ClaimGuestRequest(tokens.RefreshToken));
 
         Assert.Equal(HttpStatusCode.NoContent, again.StatusCode);
-        Assert.Single(await member.GetFromJsonAsync<TodoResponse[]>("/todos") ?? []);
+        Assert.Single(await member.GetFromJsonAsync<TodoResponse[]>("/todos") ?? []); // ako:todos
     }
 
     [Fact]
@@ -126,7 +128,7 @@ public sealed class GuestTests(ApiFactory factory)
     {
         var (old, _) = await factory.CreateGuestClientAsync();
         var (fresh, _) = await factory.CreateGuestClientAsync();
-        await old.PostAsJsonAsync("/todos", new CreateTodoRequest("Eski"));
+        await old.PostAsJsonAsync("/todos", new CreateTodoRequest("Eski")); // ako:todos
         var oldId = (await old.GetFromJsonAsync<MeResponse>("/auth/me"))!.Id;
         var freshId = (await fresh.GetFromJsonAsync<MeResponse>("/auth/me"))!.Id;
 
@@ -139,7 +141,7 @@ public sealed class GuestTests(ApiFactory factory)
 
         Assert.True(removed >= 1);
         Assert.False(await db.Users.AnyAsync(u => u.Id == oldId));
-        Assert.False(await db.Todos.AnyAsync(t => t.UserId == oldId));
+        Assert.False(await db.Todos.AnyAsync(t => t.UserId == oldId)); // ako:todos
         Assert.True(await db.Users.AnyAsync(u => u.Id == freshId));
     }
 }

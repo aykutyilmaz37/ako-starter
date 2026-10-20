@@ -1,8 +1,9 @@
 // Özellik kapalı varyantların üretilmiş dosyalarını yeniler: API'nin EF migration setleri ve
 // backend'siz mobilin Drizzle migration'ları. Şablondaki model/şema değişince çalıştırılır:
 //   pnpm --filter create-ako-app variants              # hepsi
-//   pnpm --filter create-ako-app variants -- --only=drizzle   # yalnız Drizzle (dotnet gerekmez)
-//   pnpm --filter create-ako-app variants -- --only=ef
+//   pnpm --filter create-ako-app variants --only=drizzle   # yalnız Drizzle (dotnet gerekmez)
+//   pnpm --filter create-ako-app variants --only=ef        # tüm EF setleri (hepsi yeni zaman damgasıyla yeniden üretilir!)
+//   pnpm --filter create-ako-app variants --set=no-sample,no-sample-no-lang   # yalnız adı geçen EF setleri
 import { execFileSync } from 'node:child_process';
 import { cpSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -12,17 +13,32 @@ import { parseArgs } from 'node:util';
 import { variantName } from '../src/plan.mjs';
 import { resolveTemplate, scaffold } from '../src/scaffold.mjs';
 
-const { values } = parseArgs({ allowPositionals: true, options: { only: { type: 'string' } } });
-const want = (part) => !values.only || values.only === part;
+const { values } = parseArgs({
+  allowPositionals: true,
+  options: { only: { type: 'string' }, set: { type: 'string' } },
+});
+const onlySets = values.set?.split(',');
+const want = (part) =>
+  (!values.only || values.only === part) && !(values.set && part === 'drizzle');
 
 const here = dirname(fileURLToPath(import.meta.url));
 const MIGRATIONS = 'apps/api/src/Ako.Api/Infrastructure/Data/Migrations';
 
-// (auth, lang) ikilisinin açık/kapalı kombinasyonları; ikisi de açıksa şablonun kendi migration'ları geçerlidir.
+// (auth, misafir, örnek senaryo, lang) açık/kapalı kombinasyonları; hepsi açıksa şablonun kendi migration'ları geçerlidir.
+// Auth kapalıyken misafir de yoktur, bu yüzden ayrı set gerekmez.
 const SETS = [
   { auth: false, lang: true },
   { auth: true, lang: false },
   { auth: false, lang: false },
+  { auth: true, guest: false, lang: true },
+  { auth: true, guest: false, lang: false },
+  // Örnek senaryo kapalı: Products ve Todos tabloları yok.
+  { auth: true, sample: false, lang: true },
+  { auth: true, sample: false, lang: false },
+  { auth: false, sample: false, lang: true },
+  { auth: false, sample: false, lang: false },
+  { auth: true, guest: false, sample: false, lang: true },
+  { auth: true, guest: false, sample: false, lang: false },
 ];
 
 /** Backend'siz mobil: şemadan Drizzle migration'larını yeniden üretir (variants/no-backend/apps/mobile/drizzle). */
@@ -57,6 +73,7 @@ try {
           .map(([f]) => f),
       ),
     );
+    if (onlySets && !onlySets.includes(name)) continue;
     const target = join(tmp, name);
     scaffold({
       target,
