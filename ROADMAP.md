@@ -1,32 +1,27 @@
 # ako-starter — Yol haritası
 
-Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşama kendi başına commit'lenebilir, bir sonrakine başlamadan kapanır. Son durum: 2026-10-19, çalışma ağacı temiz (`4ffb35b`).
+Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşama kendi başına commit'lenebilir, bir sonrakine başlamadan kapanır. Son durum: 2026-10-21.
 
 ## Durum
 
-| Alan                                                                  | Durum           |
-| --------------------------------------------------------------------- | --------------- |
-| API (Auth, Products, Todos, Localization, Identity, ArchTests, xUnit) | Var             |
-| Web: site + backoffice (RR8 + Hono BFF + mari-ui), çoklu dil          | Var             |
-| api-client (Orval), web-core, shared                                  | Var             |
-| Akı Kahve senaryosu ve tasarım                                        | Var             |
-| Web testleri (Vitest/Playwright)                                      | Yok             |
-| CI (build, `generate:check`, audit)                                   | Yok             |
-| Mobil (`apps/mobile`)                                                 | Yalnızca README |
-| create-ako-app                                                        | Yok             |
-| Deploy hedefi                                                         | Karar bekliyor  |
-
-## Aşama 0 — Backoffice sidebar responsive
-
-- [x] Geniş ekranda `variant="hover"` şeridi, dar ekranda üst çubuktaki düğmeyle açılan `variant="drawer"` çekmecesi (`admin-layout.tsx`).
-- [ ] Tarayıcıda dar ekranda elle doğrula (tarayıcı paneli backoffice'e gitmiyor; Chrome ile `admin.localhost:5174`).
+| Alan                                                                  | Durum                         |
+| --------------------------------------------------------------------- | ----------------------------- |
+| API (Auth, Products, Todos, Localization, Identity, ArchTests, xUnit) | Var                           |
+| Web: site + backoffice (RR8 + Hono BFF + mari-ui), çoklu dil          | Var                           |
+| api-client (Orval), web-core, shared                                  | Var                           |
+| Akı Kahve senaryosu ve tasarım                                        | Var                           |
+| Web testleri (Vitest/Playwright)                                      | Var                           |
+| CI (build, `generate:check`, audit)                                   | Var                           |
+| Mobil (`apps/mobile`)                                                 | Var                           |
+| create-ako-app                                                        | Var (yayın talimat bekliyor)  |
+| Deploy hedefi                                                         | Bekliyor (henüz host/VPS yok) |
 
 ## Aşama 1 — Güvence (önce bu)
 
 Şablon sağlam olmadan üstüne bir şey eklemeyelim; sonraki aşamalardaki her değişiklik bu ağla kontrol edilir.
 
 - [x] GitHub Actions (`.github/workflows/ci.yml`; CI yeşil): `pnpm build`, `typecheck`, `lint`, `test`, `generate:check`, `dotnet test`, `pnpm audit`, `dotnet list package --vulnerable`.
-- [x] Vitest: `web-core` (BFF, oturum, token yenileme: 6 test) ve `api-client` (`apiFetch`, `ApiError`, `applyFieldErrors`: 8 test).
+- [x] Vitest: `web-core` (BFF, oturum, token yenileme; sayfa isteğinde (SSR) yenileme dahil: 9 test) ve `api-client` (`apiFetch`, `ApiError`, `applyFieldErrors`: 8 test).
 - [x] Playwright (`packages/e2e`, `pnpm --filter @ako/e2e test:e2e`): site ürün listesi + dil değiştirme, backoffice admin girişi + ürün ekleme. CI işi `e2e` yeşil.
 - [x] Dependabot: yalnızca güvenlik güncellemeleri, gruplu PR (`.github/dependabot.yml`). Rutin sürüm güncellemesi kapalı.
 - [x] Temiz klonda doğrulama: `pnpm i --frozen-lockfile` sonrası `generate:check`, `typecheck`, `lint`, `build`, `test` geçti (2026-10-19); kök `README.md` eklendi.
@@ -60,31 +55,28 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 Şablonun asıl ürünü bu; önce çıkarılacak parçalar temiz olmalı (Aşama 1–2).
 
 - [x] (kısmen) `packages/create-ako-app` iskeleti: web (site/backoffice) / mobil / ikisi seçimi, seçilmeyeni silme, CI/launch/README düzeltmesi, `verify` betiği (5 kombinasyon: install + typecheck + build + dotnet build geçti). `--no-auth` varyantı (API/site/mobil, auth'suz migration seti, `ako:` işaretleri) `--no-lang` varyantı (API/site/backoffice/mobil, dört migration seti) ve 10 kombinasyon doğrulaması tamam. Kalan sorular:
-- [ ] Sorular: web / mobil / ikisi; backend (API / yok, yalnız mobilde); auth (+ sağlayıcılar, misafir girişi); çoklu dil; reklam + rıza; analitik; uzaktan ayar; örnek senaryo (Akı Kahve) kalsın mı.
-- [ ] Silme kuralları: seçilmeyen uygulama klasörü, `Features/Auth` (`// ako:auth` işaretleri), `features/localization` + `:lang?` + `/localization`, Todos/Products örnekleri.
+- [x] Sorular: web / mobil / ikisi; backend (API / yok); auth; **misafir girişi** (`--guest`/`--no-guest`, migration varyantları `no-guest`, `no-guest-no-lang`); çoklu dil.
+- [x] Sosyal giriş aç/kapa (`--social`/`--no-social`; sağlayıcı bazında seçim yok, sağlayıcılar ayarla açılır: DECISIONS.md). `verify`: `no-social-both`, `no-social-no-guest-no-lang`.
+- [x] Örnek senaryo kalsın mı (`--sample`/`--no-sample`; boş iskelet, backend yokken kapatılamaz; altı yeni `*-no-sample` migration seti, DECISIONS.md). `verify`: `no-sample-both`, `no-sample-site`, `no-sample-no-auth`, `no-sample-no-guest-no-lang`.
+- [x] (kısmen) Silme kuralları: seçilmeyen uygulama klasörü, `Features/Auth` (`ako:auth`), localization (`ako:lang`), misafir (`ako:guest`). Sosyal giriş (`ako:social`) ve örnek senaryo (`ako:sample`, `ako:todos`) tamam.
 - [x] Backend'siz mobil varyantı (`--no-backend`, karar: DECISIONS.md): `expo-sqlite` + Drizzle, paketli migration'lar, Akı Kahve yerel veriyle (katalog paketli JSON, alışveriş listesi SQLite); `api-client`, oturum, sosyal giriş, API sözlüğü, compose/CI/turbo bağları temiz çıkar. `verify`: `no-backend`, `no-backend-no-lang` (Expo export dahil). **Cihazda/simülatörde elle denenmedi** (typecheck + Hermes paketleme ile doğrulandı).
 - [x] Mobil uygulama feature-tabanlı yapıya taşındı (`features/{auth,catalog,shopping-list,localization,theme}`, `shared/{components,lib}`; DECISIONS.md). Backend'siz varyantta ekranlardaki `ako:backend` işaretleri kalktı, varyant dosyaları hook'ları değiştirir. **Cihazda/simülatörde elle denenmedi** (typecheck + `verify`).
-- [ ] Reklam + rıza modülü: AdMob, iOS ATT, Google UMP; geliştirme derlemesi (EAS) yapılandırması.
-- [ ] Analitik ve uzaktan ayar modülü: Firebase (GA4, Remote Config) ya da CDN JSON ile zorunlu güncelleme kontrolü.
-- [ ] Her kombinasyon için otomatik sınama: üret → `build` + `typecheck` + `dotnet test` geçer mi.
-- [ ] `npm create ako-app` yayın akışı.
+- [x] mari-ui 0.4.0'a geçiş (Table `footer` + `Pagination`, Empty `actions`, mobilde alt yol importları + eslint `no-restricted-imports`); backend'siz varyant da güncellendi, `verify` geçti.
+- [x] ~~Her kombinasyonu CI'da otomatik üretip derleme~~: iptal, çok uzun sürüyor; yerelde `verify` yeterli.
+- [ ] `npm create ako-app` yayın akışı. **Talimat bekliyor.**
+- [ ] mari-ui CLI düzeltmesi gelince: mobilde `mari-ui sync` çalıştır, `ai-rules` script'ini geri ekle (0.4.0 native projeye web kuralları yazıyor).
 
 **Bitti:** en az 5 kombinasyon (yalnız web, yalnız mobil, ikisi, auth/dil kapalı, yalnız mobil + backend yok) üretilip derleniyor.
 
 ## Aşama 4 — Üretim hazırlığı
+
+**Bekliyor:** henüz host/VPS yok; deploy hedefi belli olunca başlanır.
 
 - [ ] Deploy hedefi kararı (VPS + Docker mı, bulut mu); `DECISIONS.md`'ye işle.
 - [ ] Production compose / Dockerfile'lar (web uygulamaları dahil), sağlık kontrolleri.
 - [ ] Migration stratejisi, gizli bilgi yönetimi, CDN önbellek başlıkları doğrulaması.
 - [ ] Gözlemlenebilirlik hedefi (OTLP alıcısı).
 - [ ] Bilinen sınır: sosyal girişten dönüşte dil kaybı (`/bff/external/callback`).
-
-## Aşama 5 — Cila (isteğe bağlı)
-
-- [ ] mari-ui `Image` fade-in titremesi.
-- [ ] `.github/copilot-instructions.md` kök dizine taşıma.
-- [ ] `@mari-ui/modules` adapter deseni (paket npm'e çıkınca).
-- [ ] Bun değerlendirmesi.
 
 ## Çalışma kuralları (token tasarrufu)
 
