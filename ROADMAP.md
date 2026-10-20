@@ -4,17 +4,17 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 ## Durum
 
-| Alan                                                                  | Durum                         |
-| --------------------------------------------------------------------- | ----------------------------- |
-| API (Auth, Products, Todos, Localization, Identity, ArchTests, xUnit) | Var                           |
-| Web: site + backoffice (RR8 + Hono BFF + mari-ui), çoklu dil          | Var                           |
-| api-client (Orval), web-core, shared                                  | Var                           |
-| Akı Kahve senaryosu ve tasarım                                        | Var                           |
-| Web testleri (Vitest/Playwright)                                      | Var                           |
-| CI (build, `generate:check`, audit)                                   | Var                           |
-| Mobil (`apps/mobile`)                                                 | Var                           |
-| create-ako-app                                                        | Var (yayın talimat bekliyor)  |
-| Deploy hedefi                                                         | Bekliyor (henüz host/VPS yok) |
+| Alan                                                                  | Durum                        |
+| --------------------------------------------------------------------- | ---------------------------- |
+| API (Auth, Products, Todos, Localization, Identity, ArchTests, xUnit) | Var                          |
+| Web: site + backoffice (RR8 + Hono BFF + mari-ui), çoklu dil          | Var                          |
+| api-client (Orval), web-core, shared                                  | Var                          |
+| Akı Kahve senaryosu ve tasarım                                        | Var                          |
+| Web testleri (Vitest/Playwright)                                      | Var                          |
+| CI (build, `generate:check`, audit)                                   | Var                          |
+| Mobil (`apps/mobile`)                                                 | Var                          |
+| create-ako-app                                                        | Var (yayın talimat bekliyor) |
+| Deploy hedefi                                                         | Gerçek projede seçilir       |
 
 ## Aşama 1 — Güvence (önce bu)
 
@@ -68,15 +68,16 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 **Bitti:** en az 5 kombinasyon (yalnız web, yalnız mobil, ikisi, auth/dil kapalı, yalnız mobil + backend yok) üretilip derleniyor.
 
-## Aşama 4 — Üretim hazırlığı
+## Aşama 4 — Üretilen projenin deploy'a hazırlığı
 
-**Bekliyor:** henüz host/VPS yok; deploy hedefi belli olunca başlanır.
+ako-starter kendisi deploy edilmez, npm paketi olarak yayınlanır; gerçek deploy üretilen projede yapılır. Bu aşama üretilen projenin deploy'a hazır çıkmasını sağlar (VPS gerekmez). Yayından önce bitirilir.
 
-- [ ] Deploy hedefi kararı (VPS + Docker mı, bulut mu); `DECISIONS.md`'ye işle.
-- [ ] Production compose / Dockerfile'lar (web uygulamaları dahil), sağlık kontrolleri.
-- [ ] Migration stratejisi, gizli bilgi yönetimi, CDN önbellek başlıkları doğrulaması.
-- [ ] Gözlemlenebilirlik hedefi (OTLP alıcısı).
+- [ ] Web uygulamaları (site, backoffice) için Dockerfile'lar (API'ninki var).
+- [ ] Örnek production compose (VPS + Docker başlangıç noktası) ve sağlık kontrolleri.
 - [ ] Bilinen sınır: sosyal girişten dönüşte dil kaybı (`/bff/external/callback`).
+- [ ] Üretilen projenin README'sine deploy notları: migration stratejisi, gizli bilgi yönetimi.
+
+Gerçek projeye bırakılanlar: deploy hedefi (VPS / bulut), CDN başlıklarının gerçek ortamda doğrulanması, gözlemlenebilirlik (OTLP) hedefi.
 
 ## Çalışma kuralları (token tasarrufu)
 

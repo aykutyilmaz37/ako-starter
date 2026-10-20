@@ -181,6 +181,6 @@ Her mobil uygulamanın sunucuya ihtiyacı yoktur: veri yalnızca cihazda durabil
 - ~~Form yönetimi~~ → **react-hook-form + Orval'ın ürettiği zod şemaları** (karar verildi).
 - ~~Testler~~ → **xUnit + Testcontainers** (.NET), **Vitest + Playwright** (web) (karar verildi).
 - ~~i18n gerekecek mi?~~ → **çoklu dil var** (bkz. "Çoklu dil"; karar verildi).
-- Deploy hedefi: VPS + Docker mı, bulut servisi mi? Henüz host/VPS yok; Aşama 4 bunu bekliyor.
+- ~~Deploy hedefi: VPS + Docker mı, bulut servisi mi?~~ → ako-starter deploy edilmez, yalnızca npm paketi (create-ako-app) olarak yayınlanır. Deploy hedefi her gerçek projede seçilir; şablon üretilen projeye Dockerfile'lar, örnek production compose (VPS + Docker) ve deploy notları verir.
 - ~~create-ako-app'te hangi seçenekler olacak?~~ → mevcut sorularla kapandı (web/mobil, backend, auth, misafir, sosyal giriş, örnek senaryo, çoklu dil; ayrıntılar yukarıda).
 - Her kombinasyonu CI'da otomatik üretip derlemek yapılmayacak (çok uzun sürüyor); yerelde `pnpm --filter create-ako-app verify` yeterli.
