@@ -1,6 +1,7 @@
 import type { AdminUserResponse, PagedResponseOfAdminUserResponse } from '@ako/api-client/model';
 import { Avatar } from '@mari-ui/components/avatar';
 import { Button } from '@mari-ui/components/button';
+import { Pagination } from '@mari-ui/components/pagination';
 import { Popconfirm } from '@mari-ui/components/popconfirm';
 import { Table, type ColumnDef } from '@mari-ui/components/table';
 import { Tag } from '@mari-ui/components/tag';
@@ -100,14 +101,17 @@ export function UsersTable({ users, loading, onPageChange }: UsersTableProps) {
       data={users?.items ?? []}
       columns={columns}
       skeleton={loading && !users}
-      paginationMode="server"
-      pagination={{
-        page: users?.page ?? 1,
-        pageSize: users?.pageSize ?? 20,
-        total: users?.totalCount ?? 0,
-        onPageChange,
-      }}
+      skeletonRows={users?.pageSize ?? 20}
       emptyState={{ title: t('users.empty') }}
+      footer={
+        <Pagination
+          currentPage={users?.page ?? 1}
+          pageSize={users?.pageSize ?? 20}
+          totalItems={users?.totalCount ?? 0}
+          onPageChange={onPageChange}
+          showTotal
+        />
+      }
     />
   );
 }

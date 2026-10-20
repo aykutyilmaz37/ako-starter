@@ -1,4 +1,5 @@
-import { Text, useTheme } from '@mari-ui/native';
+import { useTheme } from '@mari-ui/native/theme';
+import { Text } from '@mari-ui/native/typography';
 import type { ReactNode } from 'react';
 import { Text as RNText, View, type TextStyle } from 'react-native';
 import { FONT_HEADING } from '~/shared/lib/brand';

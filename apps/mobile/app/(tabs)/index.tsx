@@ -1,4 +1,8 @@
-import { Button, Paragraph, Tag, Text, useTheme } from '@mari-ui/native';
+// ako:begin sample
+import { Button } from '@mari-ui/native/button';
+import { Tag } from '@mari-ui/native/tag';
+import { useTheme } from '@mari-ui/native/theme';
+import { Paragraph, Text } from '@mari-ui/native/typography';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { ArrowRight, BookOpen, Flame, Truck } from 'lucide-react-native';
@@ -215,3 +219,27 @@ function CategoryThumb({ category }: { category: ProductCategory }) {
     />
   );
 }
+// ako:else sample
+//~ import { Paragraph } from '@mari-ui/native/typography';
+//~ import { ScrollView, View } from 'react-native';
+//~ import { useSafeAreaInsets } from 'react-native-safe-area-context';
+//~ import { useT } from '~/features/localization/i18n';
+//~ import { Heading } from '~/shared/components/ui';
+//~
+//~ /** Boş iskelet: kendi ana sayfanızı buraya yazın. */
+//~ export default function Home() {
+//~   const insets = useSafeAreaInsets();
+//~   const t = useT();
+//~
+//~   return (
+//~     <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
+//~       <View style={{ paddingTop: insets.top + 28, paddingHorizontal: 20, gap: 16 }}>
+//~         <Heading size={38}>{t('home.hero.title')}</Heading>
+//~         <Paragraph muted style={{ fontSize: 16, lineHeight: 24 }}>
+//~           {t('home.hero.text')}
+//~         </Paragraph>
+//~       </View>
+//~     </ScrollView>
+//~   );
+//~ }
+// ako:end sample

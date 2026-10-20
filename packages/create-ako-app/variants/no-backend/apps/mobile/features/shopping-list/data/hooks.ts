@@ -1,4 +1,4 @@
-import { useToast } from '@mari-ui/native';
+import { useToast } from '@mari-ui/native/toast';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { router } from 'expo-router';
 import type { Product } from '~/features/catalog/data/schema';

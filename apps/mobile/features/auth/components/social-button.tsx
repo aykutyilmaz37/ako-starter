@@ -1,5 +1,5 @@
 import { SOCIAL_BRANDS } from '@ako/shared';
-import { Text } from '@mari-ui/native';
+import { Text } from '@mari-ui/native/typography';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { RADIUS } from '~/shared/lib/brand';

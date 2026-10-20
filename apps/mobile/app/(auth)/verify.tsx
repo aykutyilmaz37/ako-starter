@@ -1,6 +1,10 @@
 import { applyFieldErrors, isApiError } from '@ako/api-client';
 import { useConfirmEmail, useSendConfirmationCode } from '@ako/api-client/auth';
-import { Alert, Button, Field, OtpInput, useToast } from '@mari-ui/native';
+import { Alert } from '@mari-ui/native/alert';
+import { Button } from '@mari-ui/native/button';
+import { Field } from '@mari-ui/native/field';
+import { OtpInput } from '@mari-ui/native/input';
+import { useToast } from '@mari-ui/native/toast';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';

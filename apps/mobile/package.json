@@ -8,17 +8,17 @@
     "ios": "expo start --ios",
     "android": "expo start --android",
     "typecheck": "tsc --noEmit",
-    "theme": "mari-ui theme --yes",
-    "ai-rules": "mari-ui sync"
+    "lint": "eslint .",
+    "theme": "mari-ui theme --yes"
   },
   "dependencies": {
     "@ako/api-client": "workspace:*",
     "@ako/shared": "workspace:*",
     "@expo-google-fonts/playfair-display": "^0.4.2",
     "@hookform/resolvers": "5.9.2",
-    "@mari-ui/core": "^0.3.1",
-    "@mari-ui/native": "^0.3.1",
-    "@mari-ui/tokens": "^0.3.1",
+    "@mari-ui/core": "^0.4.0",
+    "@mari-ui/native": "^0.4.0",
+    "@mari-ui/tokens": "^0.4.0",
     "@react-native-google-signin/google-signin": "^16.1.5",
     "@tanstack/react-query": "^5.104.4",
     "expo": "^57.0.30",
@@ -44,8 +44,10 @@
   },
   "devDependencies": {
     "@ako/tsconfig": "workspace:*",
-    "@mari-ui/cli": "0.3.1",
+    "@mari-ui/cli": "0.4.0",
     "@types/react": "~19.2.4",
+    "eslint": "^9.39.0",
+    "eslint-config-expo": "~57.0.2",
     "typescript": "^6.0.3"
   }
 }

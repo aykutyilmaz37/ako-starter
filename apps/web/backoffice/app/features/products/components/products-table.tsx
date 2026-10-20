@@ -1,6 +1,7 @@
 import type { PagedResponseOfProductResponse, ProductResponse } from '@ako/api-client/model';
 import { Button } from '@mari-ui/components/button';
 import { Image } from '@mari-ui/components/image';
+import { Pagination } from '@mari-ui/components/pagination';
 import { Popconfirm } from '@mari-ui/components/popconfirm';
 import { Table, type ColumnDef } from '@mari-ui/components/table';
 import { Tag } from '@mari-ui/components/tag';
@@ -118,17 +119,20 @@ export function ProductsTable({ products, loading, onPageChange, onEdit }: Produ
       data={products?.items ?? []}
       columns={columns}
       skeleton={loading && !products}
-      paginationMode="server"
-      pagination={{
-        page: products?.page ?? 1,
-        pageSize: products?.pageSize ?? 20,
-        total: products?.totalCount ?? 0,
-        onPageChange,
-      }}
+      skeletonRows={products?.pageSize ?? 20}
       emptyState={{
         title: t('products.empty.title'),
         description: t('products.empty.description'),
       }}
+      footer={
+        <Pagination
+          currentPage={products?.page ?? 1}
+          pageSize={products?.pageSize ?? 20}
+          totalItems={products?.totalCount ?? 0}
+          onPageChange={onPageChange}
+          showTotal
+        />
+      }
     />
   );
 }

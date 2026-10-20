@@ -10,13 +10,14 @@ allowBuilds:
   # ako:else backend
   #~ esbuild: true # drizzle-kit config dosyasını yüklerken kullanır
   # ako:end backend
+  unrs-resolver: false # eslint-config-expo (mobil); hazır derlenmiş paketi kullanır, kurulum betiği gerekmez
 
 minimumReleaseAgeExclude:
-  - '@mari-ui/cli@0.3.0 || 0.3.1'
-  - '@mari-ui/components@0.3.0 || 0.3.1'
-  - '@mari-ui/core@0.3.0 || 0.3.1'
-  - '@mari-ui/tokens@0.3.0 || 0.3.1'
-  - '@mari-ui/native@0.3.0 || 0.3.1'
+  - '@mari-ui/cli@0.3.0 || 0.3.1 || 0.4.0'
+  - '@mari-ui/components@0.3.0 || 0.3.1 || 0.4.0'
+  - '@mari-ui/core@0.3.0 || 0.3.1 || 0.4.0'
+  - '@mari-ui/tokens@0.3.0 || 0.3.1 || 0.4.0'
+  - '@mari-ui/native@0.3.0 || 0.3.1 || 0.4.0'
   - '@expo/cli@58.1.13'
   - '@expo/metro-config@58.0.15'
   - '@expo/router-server@58.0.15'

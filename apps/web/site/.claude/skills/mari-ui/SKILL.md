@@ -72,6 +72,7 @@ Kesin kurallar yalnız component kullanımı, token'lar ve erişilebilirlik içi
 - `Gauge` → `import { Gauge } from "@mari-ui/components/chart"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Image` → `import { Image } from "@mari-ui/components/image"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `ImageGallery` → `import { ImageGallery } from "@mari-ui/components/image"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
+- `ImageGallery` → `import { ImageGallery } from "@mari-ui/components/image-gallery"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `ImageViewer` → `import { ImageViewer } from "@mari-ui/components/image"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Input` → `import { Input } from "@mari-ui/components/input"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `InputNumber` → `import { InputNumber } from "@mari-ui/components/input-number"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
@@ -81,9 +82,13 @@ Kesin kurallar yalnız component kullanımı, token'lar ve erişilebilirlik içi
 - `ListItemMeta` → `import { ListItemMeta } from "@mari-ui/components/list"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Loading` → `import { Loading } from "@mari-ui/components/loading"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `MariLogo` → `import { MariLogo } from "@mari-ui/components/logo"` — sunucu bileşeni (RSC) olarak da render edilebilir
+- `MaskedInput` → `import { MaskedInput } from "@mari-ui/components/masked-input"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Masonry` → `import { Masonry } from "@mari-ui/components/masonry"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `MegaMenu` → `import { MegaMenu } from "@mari-ui/components/menu"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
+- `MentionInput` → `import { MentionInput } from "@mari-ui/components/mentions"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
+- `MentionTextarea` → `import { MentionTextarea } from "@mari-ui/components/mentions"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Modal` → `import { Modal } from "@mari-ui/components/modal"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
+- `MultiSelect` → `import { MultiSelect } from "@mari-ui/components/multi-select"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `OtpInput` → `import { OtpInput } from "@mari-ui/components/input"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Pagination` → `import { Pagination } from "@mari-ui/components/pagination"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Paragraph` → `import { Paragraph } from "@mari-ui/components/typography"` — sunucu bileşeni (RSC) olarak da render edilebilir
@@ -220,7 +225,7 @@ Brief'i projenin README'sine (ya da bir `docs/design-brief.md`ye) kısa not olar
 
 ### Sayfa kalıpları
 
-- **Liste/tablo sayfası:** başlık satırı (`Title` + birincil eylem `Button`), filtre satırı (`Input` arama, `Select`, `Segmented`), `Table` ya da `List`, altta `Pagination` (sunucu sayfalaması için Table `paginationMode="server"`). Uzun ve sürekli akışta `List` `onLoadMore`.
+- **Liste/tablo sayfası:** başlık satırı (`Title` + birincil eylem `Button`), filtre satırı (`Input` arama, `Select`, `Segmented`), `Table` ya da `List`, altta `Pagination` (Table'da `footer` yuvasına; tablo veriyi dilimlemez). Uzun ve sürekli akışta `List` `onLoadMore`.
 - **Detay sayfası:** `Breadcrumb`, başlık + eylemler, içerik `Card`'larda; ilgili alt kümeler `Tabs` ile.
 - **Form sayfası:** her alan `Field` içinde (etiket, ipucu, hata metni); uzun formu `Card` bölümlerine ayır; çok adımlıysa `Steps`; kaydet/vazgeç düğmeleri en altta, birincil eylem tek.
 - **Panel (dashboard):** üstte `Statistic` kartları (`grid sm:grid-cols-2 lg:grid-cols-4`, eğilim için altına `Sparkline`), altında grafik/tablo kartları; farklı yükseklikte kartlar için `Masonry`.

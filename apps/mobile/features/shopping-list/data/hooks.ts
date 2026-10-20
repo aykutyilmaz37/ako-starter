@@ -7,10 +7,14 @@ import {
   useListTodos,
   useUpdateTodo,
 } from '@ako/api-client/todos';
-import { useToast } from '@mari-ui/native';
+import { useToast } from '@mari-ui/native/toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useT } from '~/features/localization/i18n';
+// ako:begin guest
+// ako:else guest
+//~ import { useSession } from '~/features/auth/session';
+// ako:end guest
 
 /**
  * Alışveriş listesi: şablondaki "Todos" örnek özelliğinin bu senaryodaki karşılığı (kullanıcıya özel,
@@ -44,6 +48,10 @@ export function useAddToList() {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const t = useT();
+  // ako:begin guest
+  // ako:else guest
+  //~ const { status } = useSession();
+  // ako:end guest
   const create = useCreateTodo({
     mutation: {
       onSuccess: () => {
@@ -64,6 +72,12 @@ export function useAddToList() {
 
   return {
     isPending: create.isPending,
+    // ako:begin guest
     add: (product: ProductResponse) => create.mutate({ data: { title: product.name } }),
+    // ako:else guest
+    //~ // Misafir yok: kişisel liste için önce giriş gerekir.
+    //~ add: (product: ProductResponse) =>
+    //~   status === 'member' ? create.mutate({ data: { title: product.name } }) : router.push('/login'),
+    // ako:end guest
   };
 }
