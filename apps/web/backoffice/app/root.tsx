@@ -32,7 +32,9 @@ export const links: Route.LinksFunction = () => [
 ];
 
 /**
- * Backoffice'te giriş sayfası dışındaki her sayfa oturum ister: yoksa /login'e yönlendirilir.
+ * Backoffice'te giriş sayfası dışındaki her sayfa oturum ister: yoksa /login'e yönlendirilir; oturum açıkken
+ * /login de "/"a gider. İkisi de çerezin varlığına değil /me'nin sonucuna bakar: çerez var ama geçersizse
+ * (API'de kullanıcı silindi, API kapalı) iki yön birbirine yönlendirip döngüye girmesin.
  * Rol kontrolü girişte BFF'te yapılır (requiredRole: "Admin"); API de /admin adreslerinde ayrıca kontrol eder.
  */
 export async function loader({ request, context }: Route.LoaderArgs) {
@@ -47,6 +49,9 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 
   if (!me && !isLoginPage) {
     throw redirect('/login');
+  }
+  if (me && isLoginPage) {
+    throw redirect('/');
   }
   return { me, lang, defaultLang, languages, dictionary };
 }

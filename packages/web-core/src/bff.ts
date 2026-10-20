@@ -1,4 +1,4 @@
-import type { Context, Hono } from 'hono';
+import type { Context, Hono, Next } from 'hono';
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 import { getConnInfo } from '@hono/node-server/conninfo';
 import { createContext, RouterContextProvider } from 'react-router';
@@ -9,10 +9,10 @@ import { sealSession, unsealSession, type Session } from './session';
  *
  *   /api/*                  → API'ye iletilir; oturumdaki token sunucuda eklenir, 401'de sunucuda yenilenir
  *   POST /api/auth/login    → giriş; token'lar şifreli httpOnly çereze yazılır, tarayıcıya {} döner
- *   POST /api/auth/exchange → sosyal giriş kodu (aynı şekilde)
+ *   POST /api/auth/exchange → sosyal giriş kodu (aynı şekilde) // ako:social
  *   POST /bff/logout        → çerezi siler
- *   GET  /bff/external/:provider  → sosyal girişi başlatır (API'nin /auth/external adresine yönlendirir)
- *   GET  /bff/external/callback   → sağlayıcıdan dönüş: kod sunucuda token'a çevrilir, "/"a yönlendirir
+ *   GET  /bff/external/:provider  → sosyal girişi başlatır (API'nin /auth/external adresine yönlendirir) // ako:social
+ *   GET  /bff/external/callback   → sağlayıcıdan dönüş: kod sunucuda token'a çevrilir, "/"a yönlendirir // ako:social
  *
  * Böylece api-client'ın üretilen hook'ları (useLogin dahil) web'de de değişmeden çalışır.
  */
@@ -51,12 +51,31 @@ const DROPPED_RESPONSE_HEADERS = [
 interface TokenResponse {
   accessToken: string;
   refreshToken: string;
+  expiresIn: number; // saniye
 }
+
+const toSession = (tokens: TokenResponse): Session => ({
+  accessToken: tokens.accessToken,
+  refreshToken: tokens.refreshToken,
+  expiresAt: Date.now() + tokens.expiresIn * 1000,
+});
+
+// Bitişine bu kadar kalan token sayfa isteğinde önceden yenilenir (loader'lar arka arkaya API'ye gider).
+const REFRESH_MARGIN_MS = 60_000;
+
+const isExpired = (session: Session) =>
+  session.expiresAt === undefined || session.expiresAt - REFRESH_MARGIN_MS < Date.now();
+
+/** Sayfa (SSR) istekleri: /api, /bff ve dosya istekleri dışında kalanlar (React Router'ın .data istekleri dahil). */
+const isPageRequest = (path: string) =>
+  !path.startsWith('/api/') &&
+  !path.startsWith('/bff/') &&
+  (!/\.[a-z0-9]+$/i.test(path) || path.endsWith('.data'));
 
 export function createBff(options: BffOptions) {
   const cookieName = options.cookieName ?? 'ako_session';
   const secure = options.publicUrl.startsWith('https://');
-  const apiPublicUrl = options.apiPublicUrl ?? options.apiUrl;
+  const apiPublicUrl = options.apiPublicUrl ?? options.apiUrl; // ako:social
   const fetchApi = (path: string, init: RequestInit) =>
     (options.fetch ?? fetch)(options.apiUrl + path, init);
 
@@ -102,7 +121,7 @@ export function createBff(options: BffOptions) {
         403,
       );
     }
-    await writeSession(c, { accessToken: tokens.accessToken, refreshToken: tokens.refreshToken });
+    await writeSession(c, toSession(tokens));
     return c.json({});
   }
 
@@ -115,8 +134,7 @@ export function createBff(options: BffOptions) {
     if (!response.ok) {
       return null;
     }
-    const tokens = (await response.json()) as TokenResponse;
-    return { accessToken: tokens.accessToken, refreshToken: tokens.refreshToken };
+    return toSession((await response.json()) as TokenResponse);
   }
 
   function forwardHeaders(c: Context, accessToken?: string): Headers {
@@ -142,15 +160,23 @@ export function createBff(options: BffOptions) {
     const method = c.req.method;
 
     // Bu iki adres token döner; tarayıcıya değil çereze gider.
+    // ako:begin social
     if (
       method === 'POST' &&
       (path.startsWith('/auth/login') || path.startsWith('/auth/exchange'))
     ) {
+      // ako:else social
+      //~ if (method === 'POST' && path.startsWith('/auth/login')) {
+      // ako:end social
       const body = await c.req.arrayBuffer();
       return completeLogin(c, await fetchApi(path, { method, headers: forwardHeaders(c), body }));
     }
     // Token yenileme ve native giriş yalnızca BFF'in / mobilin işi; tarayıcıdan çağrılmaz.
+    // ako:begin social
     if (path.startsWith('/auth/refresh') || path.startsWith('/auth/native')) {
+      // ako:else social
+      //~ if (path.startsWith('/auth/refresh')) {
+      // ako:end social
       return c.notFound();
     }
 
@@ -177,8 +203,30 @@ export function createBff(options: BffOptions) {
     return toClientResponse(c, response);
   }
 
+  // Sayfa isteğinde yenilenen oturum, aynı isteğin getLoadContext'ine buradan geçer.
+  const pageSessions = new WeakMap<Request, Session | null>();
+
+  /**
+   * Sayfa isteklerinde süresi dolan access token'ı loader'lar çalışmadan yeniler. Yenilenmezse loader'lar
+   * API'ye geçersiz token'la gider (oturum var ama /me 401). Yenileme başarısızsa çerez silinir.
+   * React Router yanıtı hazır bir Response döndürdüğü için çerez next()'ten sonra yazılır.
+   */
+  async function refreshPageSession(c: Context, next: Next) {
+    if (!isPageRequest(c.req.path)) {
+      return next();
+    }
+    const stored = await readSession(c);
+    const session = stored && isExpired(stored) ? await refresh(stored) : stored;
+    pageSessions.set(c.req.raw, session);
+    await next();
+    if (session !== stored) {
+      await writeSession(c, session);
+    }
+  }
+
   /** Hono uygulamasına BFF route'larını ekler (react-router-hono-server'ın configure kancası). */
   function configure(app: Hono) {
+    app.use('*', refreshPageSession);
     app.all('/api/*', proxy);
 
     app.post('/bff/logout', async (c) => {
@@ -186,6 +234,7 @@ export function createBff(options: BffOptions) {
       return c.body(null, 204);
     });
 
+    // ako:begin social
     app.get('/bff/external/callback', async (c) => {
       const error = c.req.query('error');
       const code = c.req.query('code');
@@ -211,12 +260,16 @@ export function createBff(options: BffOptions) {
         `${apiPublicUrl}/auth/external/${encodeURIComponent(c.req.param('provider'))}?returnUrl=${encodeURIComponent(returnUrl)}`,
       );
     });
+    // ako:end social
   }
 
   /** Loader/action'lara oturumu verir (react-router-hono-server'ın getLoadContext kancası). */
   async function getLoadContext(c: Context) {
     const context = new RouterContextProvider();
-    context.set(sessionContext, await readSession(c));
+    const session = pageSessions.has(c.req.raw)
+      ? pageSessions.get(c.req.raw)!
+      : await readSession(c);
+    context.set(sessionContext, session);
     return context;
   }
 
@@ -248,6 +301,7 @@ function toClientResponse(c: Context, response: Response): Response {
   return c.newResponse(response.body, response.status as never, Object.fromEntries(headers));
 }
 
+// ako:begin social
 async function errorCode(response: Response): Promise<string> {
   try {
     return ((await response.clone().json()) as { code?: string }).code ?? 'auth.external_failed';
@@ -255,6 +309,7 @@ async function errorCode(response: Response): Promise<string> {
     return 'auth.external_failed';
   }
 }
+// ako:end social
 
 function clientAddress(c: Context): string | undefined {
   try {
