@@ -3,7 +3,7 @@ import { basename, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { createInterface } from 'node:readline/promises';
 import { finalize } from './finalize.mjs';
-import { WEB_APPS, normalizeChoices } from './plan.mjs';
+import { TEMPLATE_ONLY, WEB_APPS, normalizeChoices } from './plan.mjs';
 import { resolveTemplate, scaffold } from './scaffold.mjs';
 
 const HELP = `create-ako-app <klasör> [seçenekler]
@@ -176,7 +176,7 @@ export async function main(argv) {
       log: console.log,
     });
     console.log(
-      `Silinenler: ${plan.remove.filter((p) => p !== 'ROADMAP.md' && p !== 'packages/create-ako-app').join(', ') || '-'}`,
+      `Silinenler: ${plan.remove.filter((p) => !TEMPLATE_ONLY.includes(p)).join(', ') || '-'}`,
     );
 
     const install = values.install
@@ -185,7 +185,7 @@ export async function main(argv) {
         ? false
         : interactive
           ? await ask(rl, 'pnpm install çalıştırılsın mı?', true)
-          : false;
+          : true;
     finalize({ target, plan, install, git: !values['no-git'] });
 
     console.log(
