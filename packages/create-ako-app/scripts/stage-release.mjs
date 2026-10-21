@@ -3,8 +3,10 @@
 // (Staged Packages → Approve) ya da `npm stage approve <id>` ile 2FA'yla onaylanınca yayınlanır.
 //
 // Neden `changeset publish` değil: changesets taslak yüklemeyi bilmiyor.
-// Neden önce `pnpm pack`: prepack `template/`'i üretir, postpack siler (npm stage publish
-// bir tarball yükler).
+// Neden önce `npm pack`: prepack `template/`'i üretir, postpack siler (npm stage publish bir
+// tarball yükler). `pnpm pack` DEĞİL: kök .gitignore'u uygulayıp `bin/`'i ve şablonun lockfile'ını
+// düşürdü, 0.1.1 komutsuz yayınlandı. Paketin `workspace:*` bağımlılığı yok, pnpm'e gerek yok.
+// Yüklemeden önce tarball'da zorunlu dosyalar denetlenir (REQUIRED).
 //
 // Kimlik: GitHub OIDC (trusted publishing); token yok, provenance npm'ce eklenir.
 import { execFileSync } from 'node:child_process';
@@ -66,7 +68,31 @@ if (already) {
 if (already === null) console.log(`! ${name}: taslak listesi okunamadı, yine de yükleniyor.`);
 
 const outDir = mkdtempSync(join(tmpdir(), 'create-ako-app-stage-'));
-const tarball = run('pnpm', ['pack', '--pack-destination', outDir], { cwd: pkg }).split('\n').pop();
+const tarball = join(
+  outDir,
+  run('npm', ['pack', '--pack-destination', outDir], { cwd: pkg }).split('\n').pop(),
+);
+
+// Eksik paket bir daha npm'e gitmesin: komut, şablon ve lockfile'ı yoksa yükleme yapılmaz.
+const { bin } = JSON.parse(readFileSync(join(pkg, 'package.json'), 'utf8'));
+const REQUIRED = [
+  ...Object.values(bin).map((file) => file.replace(/^\.\//, '')),
+  'LICENSE',
+  'template/package.json',
+  'template/pnpm-lock.yaml',
+];
+const packed = new Set(
+  run('tar', ['-tzf', tarball])
+    .split('\n')
+    .map((line) => line.replace(/^package\//, '')),
+);
+const missing = REQUIRED.filter((file) => !packed.has(file));
+if (missing.length > 0) {
+  console.error(
+    `✖ ${name}@${version} tarball'ında eksik dosya: ${missing.join(', ')}. Yüklenmedi.`,
+  );
+  process.exit(1);
+}
 try {
   // Çıktı doğrudan log'a gider (stdio: inherit); `run` kullanılmaz, çünkü o zaman dönüş null olur ve
   // `.trim()` başarılı yüklemeyi hata sanıp "yüklenemedi" yazdırıyordu.
