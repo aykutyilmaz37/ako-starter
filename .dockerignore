@@ -1,0 +1,15 @@
+# Tüm imajlar için ortak dışlamalar (derleme bağlamı repo kökü). BuildKit, Dockerfile'ın yanındaki
+# <Dockerfile>.dockerignore'u öncelikli kullanır (ör. apps/web/Dockerfile.dockerignore); BuildKit'siz eski
+# derleyici yalnızca bu dosyayı okur, o yüzden yerel kurulum ve derleme çıktıları burada da dışlanır.
+.git
+**/node_modules
+**/build
+**/dist
+**/.react-router
+**/.turbo
+**/.expo
+**/bin
+**/obj
+**/.env
+packages/create-ako-app/variants
+packages/create-ako-app/template

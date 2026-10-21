@@ -1,0 +1,146 @@
+# Production için örnek kurulum: tek sunucu (VPS) + Docker. Geliştirme için compose.yaml kullanılır.
+#   cp .env.prod.example .env.prod   (değerleri doldurun)
+#   docker compose -f compose.prod.yaml --env-file .env.prod up -d --build
+#
+# - Önce "migrate" bir kez çalışır (migration'lar + ilk Admin hesabı), sonra API açılır.
+# - Uygulamalar yalnızca 127.0.0.1'e açılır: önüne HTTPS sonlandıran bir reverse proxy (Caddy, nginx…) konur;
+#   ör. site.example.com → 127.0.0.1:3000, admin.example.com → 127.0.0.1:3001 (SITE_PORT, BACKOFFICE_PORT).
+# - API dışarı açılmaz: web uygulamaları ona Docker ağı üzerinden (BFF) ulaşır. Mobil uygulama ya da sosyal giriş
+#   varsa API de proxy'den yayınlanmalı (API_PUBLIC_URL); o durumda admin uçları kapalı ayrı bir API örneği
+#   önerilir (DECISIONS.md → "Backoffice güvenliği").
+
+x-api-env: &api-env
+  ASPNETCORE_ENVIRONMENT: Production
+  ConnectionStrings__Default: Host=postgres;Port=5432;Database=${POSTGRES_DB:-ako};Username=${POSTGRES_USER:-ako};Password=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD zorunlu}
+  # Proxy arkasında gerçek istemci IP'si (rate limiting): Docker ağı güvenilir.
+  ForwardedHeaders__KnownNetworks__0: 172.16.0.0/12
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ako}
+      POSTGRES_USER: ${POSTGRES_USER:-ako}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD zorunlu}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Deploy adımı: migration'ları uygular, ("ADMIN_EMAIL" doluysa) ilk Admin hesabını açar ve çıkar.
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: ${IMAGE_PREFIX:-ako}-api
+    command: ['dotnet', 'Ako.Api.dll', 'migrate']
+    environment:
+      <<: *api-env
+      Auth__Admin__Email: ${ADMIN_EMAIL:-} # ako:auth
+      Auth__Admin__Password: ${ADMIN_PASSWORD:-} # ako:auth
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: 'no'
+
+  api:
+    image: ${IMAGE_PREFIX:-ako}-api
+    restart: unless-stopped
+    environment:
+      <<: *api-env
+      Api__EnableAdminEndpoints: 'true' # ako:auth
+      Email__FromAddress: ${EMAIL_FROM:-no-reply@example.com}
+      Email__Smtp__Host: ${SMTP_HOST:-}
+      Email__Smtp__Port: ${SMTP_PORT:-587}
+      Email__Smtp__UserName: ${SMTP_USERNAME:-}
+      Email__Smtp__Password: ${SMTP_PASSWORD:-}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+    # Mobil uygulama ya da sosyal giriş için API'yi proxy'den yayınlayacaksanız:
+    # ports:
+    #   - '127.0.0.1:8080:8080'
+    healthcheck:
+      # .NET imajında curl yok: bash'in /dev/tcp'siyle /health/live'a istek (sh/dash bunu desteklemez).
+      test:
+        [
+          'CMD',
+          'bash',
+          '-c',
+          'exec 3<>/dev/tcp/127.0.0.1/8080 && printf "GET /health/live HTTP/1.0\r\n\r\n" >&3 && grep -q " 200 " <&3',
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  # ako:begin site
+  site:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        APP: site
+    image: ${IMAGE_PREFIX:-ako}-site
+    restart: unless-stopped
+    environment:
+      API_URL: http://api:8080
+      API_PUBLIC_URL: ${API_PUBLIC_URL:-}
+      PUBLIC_URL: ${SITE_URL:?SITE_URL zorunlu (ör. https://example.com)}
+      SESSION_SECRET: ${SITE_SESSION_SECRET:?SITE_SESSION_SECRET zorunlu (openssl rand -base64 48)}
+    ports:
+      - '127.0.0.1:${SITE_PORT:-3000}:3000'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://localhost:3000/health').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      api:
+        condition: service_healthy
+  # ako:end site
+
+  # ako:begin backoffice
+  backoffice:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        APP: backoffice
+    image: ${IMAGE_PREFIX:-ako}-backoffice
+    restart: unless-stopped
+    environment:
+      API_URL: http://api:8080
+      API_PUBLIC_URL: ${API_PUBLIC_URL:-}
+      PUBLIC_URL: ${BACKOFFICE_URL:?BACKOFFICE_URL zorunlu (ör. https://admin.example.com)}
+      SESSION_SECRET: ${BACKOFFICE_SESSION_SECRET:?BACKOFFICE_SESSION_SECRET zorunlu (openssl rand -base64 48)}
+    ports:
+      - '127.0.0.1:${BACKOFFICE_PORT:-3001}:3000'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://localhost:3000/health').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      api:
+        condition: service_healthy
+  # ako:end backoffice
+
+volumes:
+  postgres-data:

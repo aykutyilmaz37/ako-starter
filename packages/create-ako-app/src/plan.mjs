@@ -195,6 +195,9 @@ const BACKEND_PATHS = [
   'packages/web-core',
   'packages/e2e',
   'compose.yaml',
+  'compose.prod.yaml',
+  '.env.prod.example',
+  '.dockerignore',
   // API'ye bağlanan mobil dosyalar: istemci yapılandırması ve adres.
   'apps/mobile/shared/lib/api.ts',
   'apps/mobile/shared/lib/config.ts',
@@ -406,6 +409,8 @@ export function buildPlan(choices) {
   if ((!auth && backend) || !sample) disabled.add('list');
   if (!auth || !sample) disabled.add('todos');
   if (!lang || !backend) disabled.add('api-lang');
+  //  - site / backoffice: seçilmeyen web uygulamasının satırları (ör. compose.prod.yaml servisleri).
+  for (const app of WEB_APPS) if (!web.includes(app)) disabled.add(app);
 
   if (!backend) {
     // Hazır yerel veri katmanı (şema, Drizzle migration'ları, ekranlar): variants/no-backend/.
@@ -544,5 +549,46 @@ export function renderReadme({
   );
   if (backend) lines.push('dotnet test apps/api/Ako.slnx');
   lines.push('```', '');
+  if (backend) lines.push(...deployLines({ web, mobile, auth, social }));
   return lines.join('\n');
+}
+
+/** Üretilen README'nin deploy bölümü: tek sunucu + Docker (compose.prod.yaml). */
+function deployLines({ web, mobile, auth, social }) {
+  const apps = ['API', ...web.map((app) => (app === 'site' ? 'site' : 'backoffice'))].join(', ');
+  const secrets = [
+    'veritabanı şifresi',
+    ...(web.length > 0 ? ['`*_SESSION_SECRET` (uygulama başına ayrı, en az 32 karakter)'] : []),
+    'SMTP bilgileri',
+    ...(social ? ['sosyal giriş anahtarları (`Auth__Providers__…`)'] : []),
+  ];
+  const lines = [
+    '## Deploy',
+    '',
+    `Tek sunucu (VPS) + Docker için hazır örnek: \`compose.prod.yaml\` (Postgres, ${apps}).`,
+    '',
+    '```bash',
+    'cp .env.prod.example .env.prod   # değerleri doldurun; gizli değerler: openssl rand -base64 48',
+    'docker compose -f compose.prod.yaml --env-file .env.prod up -d --build',
+    '```',
+    '',
+    "- **Migration:** her deploy'da API açılmadan önce `migrate` servisi bir kez çalışır (`dotnet Ako.Api.dll migrate`): bekleyen migration'ları uygular" +
+      (auth ? ', `ADMIN_EMAIL` doluysa ilk Admin hesabını açar' : '') +
+      '. Tekrar çalıştırmak güvenlidir. Geri alınamayan şema değişikliklerinden önce veritabanını yedekleyin.',
+    `- **Gizli bilgiler** yalnızca \`.env.prod\`'da (git'e girmez) ya da sunucunun ortam değişkenlerinde durur: ${secrets.join(', ')}.`,
+  ];
+  if (web.length > 0)
+    lines.push(
+      "- **HTTPS:** web uygulamaları yalnızca `127.0.0.1`'e açılır; önlerine HTTPS sonlandıran bir reverse proxy (Caddy, nginx…) konur. Sağlık kontrolü: `GET /health`.",
+    );
+  lines.push(
+    '- **API** varsayılan olarak dışarı açılmaz' +
+      (web.length > 0 ? ' (web uygulamaları ona Docker ağından ulaşır)' : '') +
+      (mobile || social
+        ? `. ${mobile ? 'Mobil uygulama' : 'Sosyal giriş'} için API'yi de proxy'den yayınlayın (\`compose.prod.yaml\`'daki \`ports\` ve \`API_PUBLIC_URL\`)`
+        : '') +
+      '. Sağlık kontrolü: `GET /health/live`, `GET /health/ready`.',
+    '',
+  );
+  return lines;
 }

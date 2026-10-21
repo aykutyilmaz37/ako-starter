@@ -12,7 +12,9 @@ import { sealSession, unsealSession, type Session } from './session';
  *   POST /api/auth/exchange → sosyal giriş kodu (aynı şekilde) // ako:social
  *   POST /bff/logout        → çerezi siler
  *   GET  /bff/external/:provider  → sosyal girişi başlatır (API'nin /auth/external adresine yönlendirir) // ako:social
- *   GET  /bff/external/callback   → sağlayıcıdan dönüş: kod sunucuda token'a çevrilir, "/"a yönlendirir // ako:social
+ *        ?next=/en&login=/en/login: dönüş adresleri (dil önekli olabilir; varsayılan "/" ve "/login") // ako:social
+ *   GET  /bff/external/callback   → sağlayıcıdan dönüş: kod sunucuda token'a çevrilir, `next`e yönlendirir // ako:social
+ *   GET  /health                  → canlılık kontrolü (API'ye gitmez)
  *
  * Böylece api-client'ın üretilen hook'ları (useLogin dahil) web'de de değişmeden çalışır.
  */
@@ -81,6 +83,22 @@ export function createBff(options: BffOptions) {
 
   const readSession = (c: Context) =>
     unsealSession(getCookie(c, cookieName), options.sessionSecret);
+
+  // ako:begin social
+  const returnCookie = `${cookieName}_return`;
+
+  /** Sosyal giriş dönüş adresleri; çerez okunur ve silinir. Yoksa ya da bozuksa varsayılanlar. */
+  function readReturn(c: Context): { next: string; login: string } {
+    const raw = getCookie(c, returnCookie);
+    deleteCookie(c, returnCookie, { path: '/bff/external' });
+    try {
+      const value = JSON.parse(raw ?? '{}') as { next?: string; login?: string };
+      return { next: safePath(value.next) ?? '/', login: safePath(value.login) ?? '/login' };
+    } catch {
+      return { next: '/', login: '/login' };
+    }
+  }
+  // ako:end social
 
   async function writeSession(c: Context, session: Session | null) {
     if (!session) {
@@ -236,12 +254,16 @@ export function createBff(options: BffOptions) {
       return c.body(null, 204);
     });
 
+    // Canlılık: süreç ayakta mı (load balancer, Docker healthcheck). API'ye gitmez, oturuma bakmaz.
+    app.get('/health', (c) => c.text('ok'));
+
     // ako:begin social
     app.get('/bff/external/callback', async (c) => {
+      const { next, login } = readReturn(c);
       const error = c.req.query('error');
       const code = c.req.query('code');
       if (error || !code) {
-        return c.redirect(`/login?error=${encodeURIComponent(error ?? 'auth.external_failed')}`);
+        return c.redirect(`${login}?error=${encodeURIComponent(error ?? 'auth.external_failed')}`);
       }
       const response = await completeLogin(
         c,
@@ -252,11 +274,23 @@ export function createBff(options: BffOptions) {
         }),
       );
       return response.ok
-        ? c.redirect('/')
-        : c.redirect(`/login?error=${encodeURIComponent(await errorCode(response))}`);
+        ? c.redirect(next)
+        : c.redirect(`${login}?error=${encodeURIComponent(await errorCode(response))}`);
     });
 
     app.get('/bff/external/:provider', (c) => {
+      // Dönüş adresleri sağlayıcıya gidip gelirken kısa ömürlü çerezde durur (dil önekini korumak için).
+      const back = {
+        next: safePath(c.req.query('next')) ?? '/',
+        login: safePath(c.req.query('login')) ?? '/login',
+      };
+      setCookie(c, returnCookie, JSON.stringify(back), {
+        httpOnly: true,
+        secure,
+        sameSite: 'Lax', // sağlayıcıdan dönüş üst düzey GET: Lax çerez gider
+        path: '/bff/external',
+        maxAge: 10 * 60,
+      });
       const returnUrl = `${options.publicUrl}/bff/external/callback`;
       return c.redirect(
         `${apiPublicUrl}/auth/external/${encodeURIComponent(c.req.param('provider'))}?returnUrl=${encodeURIComponent(returnUrl)}`,
@@ -304,6 +338,13 @@ function toClientResponse(c: Context, response: Response): Response {
 }
 
 // ako:begin social
+/** Açık yönlendirmeye karşı: yalnızca bu sitedeki göreli yol ("//…" ve "/\…" başka siteye gider). */
+function safePath(value: string | undefined): string | undefined {
+  return value && value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\')
+    ? value
+    : undefined;
+}
+
 async function errorCode(response: Response): Promise<string> {
   try {
     return ((await response.clone().json()) as { code?: string }).code ?? 'auth.external_failed';

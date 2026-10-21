@@ -23,7 +23,7 @@ import {
 
 const here = dirname(fileURLToPath(import.meta.url));
 const VARIANTS_DIR = resolve(here, '../variants');
-const MARKED_EXTENSIONS = /\.(cs|csproj|props|slnx|ts|tsx|mjs|yml|yaml|html|css|resx)$/;
+const MARKED_EXTENSIONS = /\.(cs|csproj|props|slnx|ts|tsx|mjs|yml|yaml|html|css|resx|example)$/;
 
 function listFilesRecursive(root, dir = '') {
   return readdirSync(join(root, dir), { withFileTypes: true }).flatMap((entry) => {

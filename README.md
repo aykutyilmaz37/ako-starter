@@ -39,3 +39,14 @@ pnpm --filter @ako/e2e install:browsers && pnpm --filter @ako/e2e test:e2e      
 ```
 
 CI (`.github/workflows/ci.yml`) aynı adımları her PR'da çalıştırır.
+
+## Deploy
+
+Tek sunucu (VPS) + Docker için örnek: [compose.prod.yaml](compose.prod.yaml) (Postgres, migrate, API, site, backoffice).
+
+```bash
+cp .env.prod.example .env.prod   # değerleri doldurun
+docker compose -f compose.prod.yaml --env-file .env.prod up -d --build
+```
+
+İmajlar: `apps/api/Dockerfile`, `apps/web/Dockerfile` (`--build-arg APP=site|backoffice`); derleme bağlamı repo kökü. Migration, gizli bilgiler ve HTTPS notları dosyaların başında.

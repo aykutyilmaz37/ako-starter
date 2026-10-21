@@ -85,7 +85,7 @@ Web, mobil ya da ikisini birden içeren projelerin türetileceği başlangıç �
 - **create-ako-app "Çoklu dil olsun mu?" diye sorar.** Hayırsa yalnızca varsayılan dil kalır: dil seçici, çeviri tablosu ve "Çeviriler" sayfası (`features/localization`) silinir; `t()` anahtarları tek dosyadan çözülmeye devam eder, `:lang?` segmenti ve `/localization` endpoint'leri çıkarılır.
 - **Mobil metinleri** de aynı modeldedir: dördüncü alan `mobile` (`GET /localization/{dil}/mobile`), varsayılanlar `apps/mobile/locales/*.json` (API'ye gömülür, `TranslationNamespaces.Mobile`). Uygulama aynı dosyaları paketler: ilk açılışta ve API'ye ulaşılamazken onlar, çevrimiçiyken sözlük üstüne yazar. Dil seçimi cihazda (SecureStore) tutulur, yoksa cihaz dili; `Accept-Language` buradan gider. "Çeviriler" sayfası yalnızca site metinlerini yönetir.
 - **Tema tercihi** (sistem / açık / koyu): web'de `ako_theme` çerezi ve `<head>`'de satır içi betik (`@ako/web-core/theme`; sunucuda yazılmaz, çünkü herkese açık sayfalar CDN'de ortak önbelleğe alınır), mobilde SecureStore. mari-ui teması `[data-theme]` / `prefers-color-scheme` ile zaten iki modu taşır.
-- Bilinen sınır: sosyal girişten dönüş (`/bff/external/callback`) varsayılan dildeki ana sayfaya düşer.
+- Sosyal girişte dil korunur: giriş düğmesi `/bff/external/{provider}?next=/en&login=/en/login` ile başlar; BFF dönüş adreslerini sağlayıcıya gidip gelirken kısa ömürlü httpOnly çerezde tutar (yalnızca bu sitedeki göreli yollar kabul edilir, açık yönlendirme yok) ve dönüşte `next`e, hatada `login`e gönderir.
 
 ## Tasarım ve örnek senaryo
 
@@ -139,8 +139,12 @@ Her mobil uygulamanın sunucuya ihtiyacı yoktur: veri yalnızca cihazda durabil
 
 ## Altyapı ve güvenlik
 
-- Docker Compose: Postgres + Mailpit (yerel SMTP, `localhost:8025`) + Aspire Dashboard (`localhost:18888`) + api (`--profile app`) + web.
+- Docker Compose (geliştirme, `compose.yaml`): Postgres + Mailpit (yerel SMTP, `localhost:8025`) + Aspire Dashboard (`localhost:18888`) + api (`--profile app`).
 - API Dockerfile: çok aşamalı, root olmayan kullanıcı, 8080. Sağlık kontrolü ortamda: `/health/live`, `/health/ready`.
+- Web Dockerfile (`apps/web/Dockerfile`, site ve backoffice için tek dosya, `--build-arg APP`): workspace paketleri (`@ako/*`) sunucu paketine gömülü; çalışma imajına `pnpm deploy --prod` ile yalnızca üretim bağımlılıkları girer. `react-router-hono-server` bu yüzden devDependency: çalışma anında içe aktarılmaz, `dependencies`'te olunca peer'leri (vite, @react-router/dev, TypeScript) imaja taşıyordu. Root olmayan `node` kullanıcısı, 3000. Canlılık: BFF'in `GET /health`'i (API'ye gitmez).
+- **Migration (production):** API açılışta migration uygulamaz (yalnızca Development'ta, `DevDataInitializer`). Deploy adımı ayrı: `dotnet Ako.Api.dll migrate` migration'ları uygular, `Auth:Admin` doluysa ilk Admin hesabını açar ve çıkar (`DatabaseMigrator`; tekrar çalıştırmak güvenli). Neden açılışta değil: birden çok API örneği aynı anda migration yarışına girmesin, şema değişikliği deploy'un görünür bir adımı olsun. Örnek ürünler (seed) production'da eklenmez.
+- **Production örneği** `compose.prod.yaml`: tek sunucu (VPS) + Docker; postgres → migrate (bir kez) → api (sağlıklı olunca) → site/backoffice. Web uygulamaları yalnızca 127.0.0.1'e açılır (önlerinde HTTPS sonlandıran reverse proxy), API dışarı açılmaz (BFF Docker ağından ulaşır; mobil/sosyal giriş varsa proxy'den yayınlanır). Ayarlar `.env.prod` (örneği `.env.prod.example`); zorunlu değerler eksikse compose açık hatayla durur. Kombinasyona göre `site`/`backoffice` servisleri ve auth ayarları işaretlerle çıkar; backend'siz projede dosyalar hiç üretilmez.
+- Kökteki `.dockerignore`, BuildKit'siz eski derleyici için ortak dışlamaları tutar (`node_modules`, `build`, `bin`/`obj`…); BuildKit her Dockerfile'ın yanındaki `<Dockerfile>.dockerignore`'u kullanır. Dockerfile'larda BuildKit'e özel özellik (`RUN --mount`) yok: iki derleyicide de çalışır.
 - Loglama: **Serilog** (dev'de konsol, diğer ortamlarda JSON). İzleme: **OpenTelemetry**, OTLP ile dışa aktarım; hedef araç projeye göre.
 - Rate limiting: .NET yerleşik; `/auth` POST'ları IP başına dakikada 10.
 - Denetim alanları (`IAuditable`) EF interceptor ile otomatik. DataProtection anahtarları veritabanında.

@@ -25,6 +25,13 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
+// Deploy adımı: "dotnet Ako.Api.dll migrate" veritabanını hazırlar ve çıkar; sunucu açılmaz (bkz. DatabaseMigrator).
+if (args.Contains("migrate"))
+{
+    await DatabaseMigrator.RunAsync(app.Services);
+    return;
+}
+
 // Proxy arkasında gerçek istemci IP'si (rate limiting ve loglar için). İlk sırada olmalı.
 app.UseForwardedHeaders();
 

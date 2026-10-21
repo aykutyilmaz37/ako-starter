@@ -1,0 +1,16 @@
+# Bağlam repo kökü; yalnızca web uygulamaları, workspace paketleri ve kurulum dosyaları girer.
+# Diğer workspace üyelerinin (api, mobile…) yalnızca package.json'ı gerekir: lockfile hepsini tanır.
+*
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!apps/*/package.json
+!apps/web
+!packages
+packages/create-ako-app/*
+!packages/create-ako-app/package.json
+**/node_modules
+**/build
+**/.react-router
+**/.turbo
+**/.env

@@ -39,7 +39,10 @@ services:
   # API'nin container sürümü. Yalnızca "--profile app" ile başlar; günlük geliştirmede "dotnet run" kullanılır.
   api:
     profiles: [app]
-    build: ./apps/api
+    # Bağlam repo kökü: Dockerfile web arayüzlerinin metin dosyalarını da kopyalar.
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development # migration + admin hesabı + Swagger
       ConnectionStrings__Default: Host=postgres;Port=5432;Database=ako;Username=ako;Password=ako

@@ -15,7 +15,11 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { SocialButton } from '~/features/auth/components/social-button'; // ako:social
 import { AUTH_ERROR_KEYS } from '~/features/auth/error-messages';
-import { useT } from '~/shared/i18n/i18n-provider';
+// ako:begin social
+import { useLocalePath, useT } from '~/shared/i18n/i18n-provider';
+// ako:else social
+//~ import { useT } from '~/shared/i18n/i18n-provider';
+// ako:end social
 
 const Schema = LoginBody.pick({ email: true, password: true }).extend({ email: z.email() });
 type Values = z.infer<typeof Schema>;
@@ -48,6 +52,7 @@ export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormP
     defaultValues: { email: '', password: '' },
   });
   const providers = useGetAuthProviders(); // ako:social
+  const localePath = useLocalePath(); // ako:social
 
   const login = useLogin({
     mutation: {
@@ -105,7 +110,8 @@ export function LoginForm({ onSuccess, onEmailNotConfirmed, footer }: LoginFormP
             <SocialButton
               key={provider}
               provider={provider}
-              href={`/bff/external/${provider}`}
+              // Dönüşte dil öneki korunur: BFF girişten sonra `next`e, hatada `login`e döner.
+              href={`/bff/external/${provider}?${new URLSearchParams({ next: localePath('/'), login: localePath('/login') })}`}
               label={t('auth.login.social', { provider: PROVIDER_LABELS[provider] ?? provider })}
             />
           ))}

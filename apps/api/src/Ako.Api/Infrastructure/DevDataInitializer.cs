@@ -1,58 +1,24 @@
-using Ako.Api.Common; // ako:auth
-using Ako.Api.Features.Auth; // ako:auth
 using Ako.Api.Features.Products; // ako:sample
-using Ako.Api.Infrastructure.Data;
-using Microsoft.AspNetCore.Identity; // ako:auth
-using Microsoft.EntityFrameworkCore;
+using Ako.Api.Infrastructure.Data; // ako:sample
 
 namespace Ako.Api.Infrastructure;
 
 /// <summary>
 /// Yalnızca Development'ta, uygulama açılırken çalışır:
-/// 1) Bekleyen migration'ları uygular (elle "dotnet ef database update" gerekmez).
-/// 2) Örnek ürünleri ekler (yoksa).
-/// 3) "Auth:Admin" ayarı doluysa Admin hesabını oluşturur.
-/// Production'da migration'lar deploy adımında ayrıca çalıştırılmalıdır.
+/// 1) Veritabanını hazırlar: migration'lar + ("Auth:Admin" doluysa) Admin hesabı (DatabaseMigrator).
+///    Elle "dotnet ef database update" gerekmez. Production'da aynısı deploy adımında: "dotnet Ako.Api.dll migrate".
+/// 2) Örnek ürünleri ekler (yoksa). Production'da eklenmez.
 /// </summary>
-// ako:begin auth
-internal sealed class DevDataInitializer(IServiceProvider services, IConfiguration configuration, ILogger<DevDataInitializer> logger)
-// ako:else auth
-//~ internal sealed class DevDataInitializer(IServiceProvider services)
-// ako:end auth
-    : IHostedService
+internal sealed class DevDataInitializer(IServiceProvider services) : IHostedService
 {
     public async Task StartAsync(CancellationToken ct)
     {
+        await DatabaseMigrator.RunAsync(services, ct);
+
+        // ako:begin sample
         using var scope = services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await db.Database.MigrateAsync(ct);
-        await ProductSeed.SeedAsync(db, ct); // ako:sample — örnek ürünler (Akı Kahve)
-
-        // ako:begin auth
-        var email = configuration["Auth:Admin:Email"];
-        var password = configuration["Auth:Admin:Password"];
-        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-        {
-            return;
-        }
-
-        var users = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-        if (await users.FindByEmailAsync(email) is not null)
-        {
-            return;
-        }
-
-        var admin = new AppUser { UserName = email, Email = email, EmailConfirmed = true };
-        var created = await users.CreateAsync(admin, password);
-        if (!created.Succeeded)
-        {
-            logger.LogWarning("Admin hesabı oluşturulamadı: {Errors}", string.Join(", ", created.Errors.Select(e => e.Code)));
-            return;
-        }
-
-        await users.AddToRolesAsync(admin, [AppRoles.Admin, AppRoles.User]);
-        logger.LogInformation("Admin hesabı oluşturuldu: {Email}", email);
-        // ako:end auth
+        await ProductSeed.SeedAsync(scope.ServiceProvider.GetRequiredService<AppDbContext>(), ct); // örnek ürünler (Akı Kahve)
+        // ako:end sample
     }
 
     public Task StopAsync(CancellationToken ct) => Task.CompletedTask;
