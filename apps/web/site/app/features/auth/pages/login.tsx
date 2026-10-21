@@ -1,9 +1,11 @@
 import { LoginForm } from '~/features/auth/components/login-form';
 import { AUTH_ERROR_KEYS } from '~/features/auth/error-messages';
+import { getMe } from '@ako/api-client/auth';
 import { sessionContext } from '@ako/web-core';
 import { Alert } from '@mari-ui/components/alert';
 import { redirect, useNavigate, useSearchParams } from 'react-router';
 import { AuthLayout } from '~/features/auth/components/auth-layout';
+import { apiInit } from '~/shared/i18n/api-init.server';
 import { localizePath, metaTranslator } from '~/shared/i18n/i18n';
 import { LocaleLink, useLocalePath, useT } from '~/shared/i18n/i18n-provider';
 import { languageContext } from '~/shared/i18n/language-context';
@@ -13,9 +15,15 @@ export function meta({ matches }: Route.MetaArgs) {
   return [{ title: metaTranslator(matches)('auth.login.meta') }];
 }
 
-export function loader({ context }: Route.LoaderArgs) {
+/**
+ * Girişli kullanıcı ana sayfaya gider. Karar çerezin varlığına değil /me'ye bakar: çerez var ama
+ * geçersizse (kullanıcı API'de silindi) giriş sayfası açık kalmalı, yoksa kullanıcı giriş yapamaz.
+ */
+export async function loader({ request, context }: Route.LoaderArgs) {
+  if (!context.get(sessionContext)) return null;
+  const me = await getMe(apiInit(context, request)).catch(() => null);
   const { lang, defaultLang } = context.get(languageContext);
-  return context.get(sessionContext) ? redirect(localizePath('/', lang, defaultLang)) : null;
+  return me ? redirect(localizePath('/', lang, defaultLang)) : null;
 }
 
 export default function LoginPage() {
