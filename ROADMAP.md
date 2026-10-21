@@ -4,17 +4,17 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 ## Durum
 
-| Alan                                                                  | Durum                        |
-| --------------------------------------------------------------------- | ---------------------------- |
-| API (Auth, Products, Todos, Localization, Identity, ArchTests, xUnit) | Var                          |
-| Web: site + backoffice (RR8 + Hono BFF + mari-ui), çoklu dil          | Var                          |
-| api-client (Orval), web-core, shared                                  | Var                          |
-| Akı Kahve senaryosu ve tasarım                                        | Var                          |
-| Web testleri (Vitest/Playwright)                                      | Var                          |
-| CI (build, `generate:check`, audit)                                   | Var                          |
-| Mobil (`apps/mobile`)                                                 | Var                          |
-| create-ako-app                                                        | Var (yayın talimat bekliyor) |
-| Deploy hedefi                                                         | Gerçek projede seçilir       |
+| Alan                                                                  | Durum                  |
+| --------------------------------------------------------------------- | ---------------------- |
+| API (Auth, Products, Todos, Localization, Identity, ArchTests, xUnit) | Var                    |
+| Web: site + backoffice (RR8 + Hono BFF + mari-ui), çoklu dil          | Var                    |
+| api-client (Orval), web-core, shared                                  | Var                    |
+| Akı Kahve senaryosu ve tasarım                                        | Var                    |
+| Web testleri (Vitest/Playwright)                                      | Var                    |
+| CI (build, `generate:check`, audit)                                   | Var                    |
+| Mobil (`apps/mobile`)                                                 | Var                    |
+| create-ako-app                                                        | npm'de yayında (0.1.1) |
+| Deploy hedefi                                                         | Gerçek projede seçilir |
 
 ## Aşama 1 — Güvence (önce bu)
 
@@ -65,7 +65,7 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 - [x] ~~Her kombinasyonu CI'da otomatik üretip derleme~~: iptal, çok uzun sürüyor; yerelde `verify` yeterli.
 - [x] `npm create ako-app` yayın hazırlığı: paket metadata'sı (MIT, 0.1.0), prepack/postpack ile `template/`, `.gitignore` → `_gitignore` dönüşümü, lockfile pakette; tarball'dan üretilen proje typecheck/lint/test/build geçti.
 - [x] Otomatik yayın düzeni (mari-ui ile aynı): changesets + `release.yml` (GitHub OIDC trusted publishing, `npm stage publish` ile taslak, npmjs.com'da 2FA onayı). `RELEASE_ENABLED` değişkeniyle kapalı başlar.
-- [ ] İlk yayın elle (`npm publish`, 0.1.0), ardından npmjs.com'da trusted publisher + token kapatma, GitHub'da `RELEASE_ENABLED=true` (adımlar: `packages/create-ako-app/README.md` → Yayın).
+- [x] Yayında: 0.1.0 elle, **0.1.1 otomatik akışla** (trusted publisher doğrulandı, provenance'lı). npm'de token'la yayın kapalı, GitHub'da `RELEASE_ENABLED=true`.
 - [x] mari-ui 0.5.0: CLI platform ayırıyor (`mari-ui.config.json` → `platform`: web ve mobilde ayrı); mobilde native kuralları yazıldı, `ai-rules` geri eklendi.
 
 **Bitti:** en az 5 kombinasyon (yalnız web, yalnız mobil, ikisi, auth/dil kapalı, yalnız mobil + backend yok) üretilip derleniyor.

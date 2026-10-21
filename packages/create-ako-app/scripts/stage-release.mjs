@@ -68,7 +68,9 @@ if (already === null) console.log(`! ${name}: taslak listesi okunamadı, yine de
 const outDir = mkdtempSync(join(tmpdir(), 'create-ako-app-stage-'));
 const tarball = run('pnpm', ['pack', '--pack-destination', outDir], { cwd: pkg }).split('\n').pop();
 try {
-  run('npm', ['stage', 'publish', tarball, '--access', 'public', '--tag', 'latest'], {
+  // Çıktı doğrudan log'a gider (stdio: inherit); `run` kullanılmaz, çünkü o zaman dönüş null olur ve
+  // `.trim()` başarılı yüklemeyi hata sanıp "yüklenemedi" yazdırıyordu.
+  execFileSync('npm', ['stage', 'publish', tarball, '--access', 'public', '--tag', 'latest'], {
     stdio: 'inherit',
   });
 } catch (error) {
