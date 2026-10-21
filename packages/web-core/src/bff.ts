@@ -216,7 +216,9 @@ export function createBff(options: BffOptions) {
       return next();
     }
     const stored = await readSession(c);
-    const session = stored && isExpired(stored) ? await refresh(stored) : stored;
+    // API'ye ulaşılamazsa (ağ hatası) oturum silinmez; sayfa eski token'la sürer, hatayı loader'lar karşılar.
+    const session =
+      stored && isExpired(stored) ? await refresh(stored).catch(() => stored) : stored;
     pageSessions.set(c.req.raw, session);
     await next();
     if (session !== stored) {

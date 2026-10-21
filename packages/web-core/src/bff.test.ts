@@ -110,6 +110,28 @@ describe('BFF', () => {
     expect(response.headers.get('set-cookie')).toMatch(/^ako_session=;.*Max-Age=0/);
   });
 
+  it("sayfa isteğinde API'ye ulaşılamazsa oturum korunur, sayfa düşmez", async () => {
+    const hono = new Hono();
+    const bff = createBff({
+      apiUrl: 'http://api',
+      publicUrl: 'http://site',
+      sessionSecret: SECRET,
+      fetch: (async () => {
+        throw new TypeError('fetch failed');
+      }) as typeof globalThis.fetch,
+    });
+    bff.configure(hono);
+    hono.get('*', async (c) => Response.json((await bff.getLoadContext(c)).get(sessionContext)));
+    const expired = { accessToken: 'A1', refreshToken: 'R1', expiresAt: Date.now() - 1000 };
+    const cookie = `ako_session=${await sealSession(expired, SECRET)}`;
+
+    const response = await hono.request('/', { headers: { cookie } });
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ accessToken: 'A1' });
+    expect(response.headers.get('set-cookie')).toBeNull();
+  });
+
   it('süresi dolmamış token sayfa isteğinde yenilenmez', async () => {
     const { hono, api } = app();
     const valid = { accessToken: 'A2', refreshToken: 'R2', expiresAt: Date.now() + 3_600_000 };
