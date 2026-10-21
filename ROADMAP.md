@@ -63,7 +63,9 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 - [x] Mobil uygulama feature-tabanlı yapıya taşındı (`features/{auth,catalog,shopping-list,localization,theme}`, `shared/{components,lib}`; DECISIONS.md). Backend'siz varyantta ekranlardaki `ako:backend` işaretleri kalktı, varyant dosyaları hook'ları değiştirir. **Cihazda/simülatörde elle denenmedi** (typecheck + `verify`).
 - [x] mari-ui 0.4.0'a geçiş (Table `footer` + `Pagination`, Empty `actions`, mobilde alt yol importları + eslint `no-restricted-imports`); backend'siz varyant da güncellendi, `verify` geçti.
 - [x] ~~Her kombinasyonu CI'da otomatik üretip derleme~~: iptal, çok uzun sürüyor; yerelde `verify` yeterli.
-- [ ] `npm create ako-app` yayın akışı. **Talimat bekliyor.**
+- [x] `npm create ako-app` yayın hazırlığı: paket metadata'sı (MIT, 0.1.0), prepack/postpack ile `template/`, `.gitignore` → `_gitignore` dönüşümü, lockfile pakette; tarball'dan üretilen proje typecheck/lint/test/build geçti.
+- [x] Otomatik yayın düzeni (mari-ui ile aynı): changesets + `release.yml` (GitHub OIDC trusted publishing, `npm stage publish` ile taslak, npmjs.com'da 2FA onayı). `RELEASE_ENABLED` değişkeniyle kapalı başlar.
+- [ ] İlk yayın elle (`npm publish`, 0.1.0), ardından npmjs.com'da trusted publisher + token kapatma, GitHub'da `RELEASE_ENABLED=true` (adımlar: `packages/create-ako-app/README.md` → Yayın).
 - [x] mari-ui 0.5.0: CLI platform ayırıyor (`mari-ui.config.json` → `platform`: web ve mobilde ayrı); mobilde native kuralları yazıldı, `ai-rules` geri eklendi.
 
 **Bitti:** en az 5 kombinasyon (yalnız web, yalnız mobil, ikisi, auth/dil kapalı, yalnız mobil + backend yok) üretilip derleniyor.

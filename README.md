@@ -1,7 +1,17 @@
 # ako-starter
 
 Web, mobil ya da ikisini birden içeren projeler için başlangıç şablonu: .NET 10 API + React Router 8/Hono web uygulamaları
-(+ ileride Expo mobil) + [mari-ui](https://github.com/aykutyilmaz37). Örnek senaryo: **Akı Kahve**.
+
+- Expo mobil + [mari-ui](https://github.com/aykutyilmaz37). Örnek senaryo: **Akı Kahve**.
+
+## Yeni proje
+
+```bash
+npm create ako-app@latest yeni-proje
+```
+
+Web / mobil / ikisi, backend, auth, misafir, sosyal giriş, örnek senaryo ve çoklu dil sorulur; seçilmeyen parçalar çıkarılır.
+Seçenekler: [packages/create-ako-app](packages/create-ako-app/README.md).
 
 Kararlar için [DECISIONS.md](DECISIONS.md), sıra ve durum için [ROADMAP.md](ROADMAP.md), güvenlik için [SECURITY.md](SECURITY.md).
 
