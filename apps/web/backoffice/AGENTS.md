@@ -1,5 +1,4 @@
 <!-- mari-ui:start -->
-
 # mari-ui Tasarım Sistemi Kuralları
 
 Bu dosya `npx @mari-ui/cli sync` ile OTOMATİK üretilir — `manifest.json` (component envanteri + prop sözleşmesi) ve projenin çözümlenmiş temasından türetilir. Elle düzenlemeyin; değişiklik için `mari-ui.config.json`ı güncelleyip `npx @mari-ui/cli sync`i tekrar çalıştırın.
@@ -69,6 +68,7 @@ Kesin kurallar yalnız component kullanımı, token'lar ve erişilebilirlik içi
 - `Gauge` → `import { Gauge } from "@mari-ui/components/chart"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Image` → `import { Image } from "@mari-ui/components/image"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `ImageGallery` → `import { ImageGallery } from "@mari-ui/components/image"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
+- `ImageGallery` → `import { ImageGallery } from "@mari-ui/components/image-gallery"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `ImageViewer` → `import { ImageViewer } from "@mari-ui/components/image"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Input` → `import { Input } from "@mari-ui/components/input"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `InputNumber` → `import { InputNumber } from "@mari-ui/components/input-number"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
@@ -78,9 +78,13 @@ Kesin kurallar yalnız component kullanımı, token'lar ve erişilebilirlik içi
 - `ListItemMeta` → `import { ListItemMeta } from "@mari-ui/components/list"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Loading` → `import { Loading } from "@mari-ui/components/loading"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `MariLogo` → `import { MariLogo } from "@mari-ui/components/logo"` — sunucu bileşeni (RSC) olarak da render edilebilir
+- `MaskedInput` → `import { MaskedInput } from "@mari-ui/components/masked-input"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Masonry` → `import { Masonry } from "@mari-ui/components/masonry"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `MegaMenu` → `import { MegaMenu } from "@mari-ui/components/menu"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
+- `MentionInput` → `import { MentionInput } from "@mari-ui/components/mentions"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
+- `MentionTextarea` → `import { MentionTextarea } from "@mari-ui/components/mentions"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Modal` → `import { Modal } from "@mari-ui/components/modal"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
+- `MultiSelect` → `import { MultiSelect } from "@mari-ui/components/multi-select"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `OtpInput` → `import { OtpInput } from "@mari-ui/components/input"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Pagination` → `import { Pagination } from "@mari-ui/components/pagination"` — `"use client"` gerektirir (sunucu bileşeninde doğrudan render edilemez)
 - `Paragraph` → `import { Paragraph } from "@mari-ui/components/typography"` — sunucu bileşeni (RSC) olarak da render edilebilir
@@ -136,26 +140,26 @@ Kesin kurallar yalnız component kullanımı, token'lar ve erişilebilirlik içi
 
 mari-ui component'leri beş paylaşılan eksenden konuşur — component'e özel isim UYDURMAYIN:
 
-| Eksen          | Geçerli değerler                                                                                                                             |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ColorRole`    | `primary`, `accent`, `success`, `error`, `warning`, `info`, `neutral`                                                                        |
-| `Size`         | `sm`, `md`, `lg`                                                                                                                             |
-| `ExtendedSize` | `sm`, `md`, `lg`, `xs`, `xl`                                                                                                                 |
-| `Variant`      | `solid`, `outline`, `soft`, `ghost`, `link`                                                                                                  |
-| `Radius`       | `sm`, `md`, `lg`, `xl`, `none`, `full`                                                                                                       |
-| `Placement`    | `top`, `top-start`, `top-end`, `right`, `right-start`, `right-end`, `bottom`, `bottom-start`, `bottom-end`, `left`, `left-start`, `left-end` |
+| Eksen | Geçerli değerler |
+|---|---|
+| `ColorRole` | `primary`, `accent`, `success`, `error`, `warning`, `info`, `neutral` |
+| `Size` | `sm`, `md`, `lg` |
+| `ExtendedSize` | `sm`, `md`, `lg`, `xs`, `xl` |
+| `Variant` | `solid`, `outline`, `soft`, `ghost`, `link` |
+| `Radius` | `sm`, `md`, `lg`, `xl`, `none`, `full` |
+| `Placement` | `top`, `top-start`, `top-end`, `right`, `right-start`, `right-end`, `bottom`, `bottom-start`, `bottom-end`, `left`, `left-start`, `left-end` |
 
 ## Token listesi (bu projenin ÇÖZÜMLENMİŞ tema değerleri)
 
-| Rol       | solid (dolgu) | solidContrast (dolgu üstü metin) | subtle (yumuşak dolgu) | text (yüzey üstü metin/ikon) |
-| --------- | ------------- | -------------------------------- | ---------------------- | ---------------------------- |
-| `primary` | `#6951ce`     | `#ffffff`                        | `#ebe6ff`              | `#6951ce`                    |
-| `accent`  | `#765991`     | `#ffffff`                        | `#eae3f2`              | `#765991`                    |
-| `success` | `#047857`     | `#ffffff`                        | `#d1fae5`              | `#047857`                    |
-| `error`   | `#dc2626`     | `#ffffff`                        | `#fee2e2`              | `#b91c1c`                    |
-| `warning` | `#fbbf24`     | `#201c19`                        | `#fef3c7`              | `#92400e`                    |
-| `info`    | `#0369a1`     | `#ffffff`                        | `#e0f2fe`              | `#0369a1`                    |
-| `neutral` | `#696579`     | `#ffffff`                        | `#f1effa`              | `#696579`                    |
+| Rol | solid (dolgu) | solidContrast (dolgu üstü metin) | subtle (yumuşak dolgu) | text (yüzey üstü metin/ikon) |
+|---|---|---|---|---|
+| `primary` | `#6951ce` | `#ffffff` | `#ebe6ff` | `#6951ce` |
+| `accent` | `#765991` | `#ffffff` | `#eae3f2` | `#765991` |
+| `success` | `#047857` | `#ffffff` | `#d1fae5` | `#047857` |
+| `error` | `#dc2626` | `#ffffff` | `#fee2e2` | `#b91c1c` |
+| `warning` | `#fbbf24` | `#201c19` | `#fef3c7` | `#92400e` |
+| `info` | `#0369a1` | `#ffffff` | `#e0f2fe` | `#0369a1` |
+| `neutral` | `#696579` | `#ffffff` | `#f1effa` | `#696579` |
 
 ## Anti-pattern'ler
 
@@ -182,5 +186,4 @@ mari-ui component'leri beş paylaşılan eksenden konuşur — component'e özel
 - ❌ `import { Button } from "@mari-ui/components/dist/button/Button"`
 - ✅ `import { Button } from "@mari-ui/components/button"`
 - Neden: İç yapı bir sürüm sonrasında değişebilir; sadece paketin `exports` haritasındaki subpath'ler kararlıdır.
-
 <!-- mari-ui:end -->

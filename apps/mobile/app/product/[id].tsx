@@ -1,4 +1,8 @@
-import { Button, Empty, Paragraph, Tag, Text, useTheme } from '@mari-ui/native';
+import { Button } from '@mari-ui/native/button';
+import { Empty } from '@mari-ui/native/empty';
+import { Tag } from '@mari-ui/native/tag';
+import { useTheme } from '@mari-ui/native/theme';
+import { Paragraph, Text } from '@mari-ui/native/typography';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { ArrowLeft, Clock, Plus, RefreshCcw, Truck } from 'lucide-react-native';

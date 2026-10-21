@@ -2,7 +2,13 @@ import { applyFieldErrors } from '@ako/api-client';
 import type { TodoResponse } from '@ako/api-client/model';
 import { CreateTodoBody } from '@ako/api-client/zod/todos';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Checkbox, Empty, Field, Input, Paragraph, Text, useTheme } from '@mari-ui/native';
+import { Button } from '@mari-ui/native/button';
+import { Checkbox } from '@mari-ui/native/checkbox';
+import { Empty } from '@mari-ui/native/empty';
+import { Field } from '@mari-ui/native/field';
+import { Input } from '@mari-ui/native/input';
+import { useTheme } from '@mari-ui/native/theme';
+import { Paragraph, Text } from '@mari-ui/native/typography';
 import { router } from 'expo-router';
 import { Heart, Plus, Trash2 } from 'lucide-react-native';
 import { Controller, useForm } from 'react-hook-form';
@@ -23,7 +29,11 @@ export default function ShoppingList() {
   const insets = useSafeAreaInsets();
   const t = useT();
   const { status } = useSession();
-  const list = useShoppingList(status === 'guest' || status === 'member');
+  // ako:begin guest
+  const list = useShoppingList(status === 'anonymous' || status === 'member');
+  // ako:else guest
+  //~ const list = useShoppingList(status === 'member');
+  // ako:end guest
 
   const form = useForm<z.infer<typeof Schema>>({
     resolver: zodResolver(Schema),
@@ -53,7 +63,7 @@ export default function ShoppingList() {
         <Muted>{t('list.description')}</Muted>
       </View>
 
-      {status === 'guest' ? (
+      {status === 'anonymous' ? (
         <View
           style={{
             gap: 14,
@@ -76,8 +86,13 @@ export default function ShoppingList() {
           >
             <Heart size={20} color={color.primary.subtleContrast} />
           </View>
+          {/* ako:begin guest */}
           <Heading size={20}>{t('list.guest.title')}</Heading>
           <Paragraph muted>{t('list.guest.text')}</Paragraph>
+          {/* ako:else guest */}
+          {/*~ <Heading size={20}>{t('list.login.title')}</Heading> */}
+          {/*~ <Paragraph muted>{t('list.login.text')}</Paragraph> */}
+          {/* ako:end guest */}
           <Button block onPress={() => router.push('/login')}>
             {t('account.login')}
           </Button>
@@ -87,7 +102,12 @@ export default function ShoppingList() {
         </View>
       ) : null}
 
+      {/* ako:begin guest */}
       <>
+        {/* ako:else guest */}
+        {/*~ {status === 'member' ? ( */}
+        {/*~ <> */}
+        {/* ako:end guest */}
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
           <View style={{ flex: 1 }}>
             <Controller
@@ -120,8 +140,15 @@ export default function ShoppingList() {
           <Empty
             title={t('list.empty.title')}
             description={t('list.empty.description')}
-            buttonText={t('list.empty.button')}
-            onPress={() => router.navigate({ pathname: '/shop', params: { category: 'Coffee' } })}
+            actions={
+              <Button
+                onPress={() =>
+                  router.navigate({ pathname: '/shop', params: { category: 'Coffee' } })
+                }
+              >
+                {t('list.empty.button')}
+              </Button>
+            }
           />
         ) : (
           <View style={{ gap: 24 }}>
@@ -141,7 +168,12 @@ export default function ShoppingList() {
             ) : null}
           </View>
         )}
+        {/* ako:begin guest */}
       </>
+      {/* ako:else guest */}
+      {/*~ </> */}
+      {/*~ ) : null} */}
+      {/* ako:end guest */}
     </ScrollView>
   );
 }

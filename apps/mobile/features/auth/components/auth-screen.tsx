@@ -1,4 +1,5 @@
-import { Paragraph, useTheme } from '@mari-ui/native';
+import { useTheme } from '@mari-ui/native/theme';
+import { Paragraph } from '@mari-ui/native/typography';
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import { Heading } from '~/shared/components/ui';

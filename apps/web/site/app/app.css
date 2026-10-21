@@ -12,6 +12,7 @@
   }
 }
 
+/* ako:begin social */
 /* Sosyal giriş düğmeleri: sağlayıcının marka renkleri (değişkenler social-button.tsx'ten gelir). */
 .social-button {
   background: var(--sb-bg);
@@ -30,3 +31,4 @@
     border-color: var(--sb-dark-border);
   }
 }
+/* ako:end social */

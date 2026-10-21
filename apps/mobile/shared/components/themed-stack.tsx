@@ -1,4 +1,4 @@
-import { useTheme } from '@mari-ui/native';
+import { useTheme } from '@mari-ui/native/theme';
 import { Stack } from 'expo-router';
 
 /** Ekran arka planı tema yüzeyi: native stack varsayılanı sistemin açık rengidir, koyu temada yazıları gizler. */

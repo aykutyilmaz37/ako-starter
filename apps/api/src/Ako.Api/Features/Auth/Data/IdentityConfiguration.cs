@@ -17,15 +17,15 @@ internal sealed class RoleConfiguration : IEntityTypeConfiguration<IdentityRole<
     // Sabit Id'ler: roller migration'da oluşur, her ortamda aynıdır.
     public static readonly Guid AdminRoleId = new("0199f2a0-0000-7000-8000-000000000001");
     public static readonly Guid UserRoleId = new("0199f2a0-0000-7000-8000-000000000002");
-    public static readonly Guid GuestRoleId = new("0199f2a0-0000-7000-8000-000000000003");
+    public static readonly Guid GuestRoleId = new("0199f2a0-0000-7000-8000-000000000003"); // ako:guest
 
     public void Configure(EntityTypeBuilder<IdentityRole<Guid>> builder)
     {
         builder.ToTable("roles");
         builder.HasData(
             new IdentityRole<Guid> { Id = AdminRoleId, Name = AppRoles.Admin, NormalizedName = "ADMIN", ConcurrencyStamp = "admin" },
-            new IdentityRole<Guid> { Id = UserRoleId, Name = AppRoles.User, NormalizedName = "USER", ConcurrencyStamp = "user" },
-            new IdentityRole<Guid> { Id = GuestRoleId, Name = AppRoles.Guest, NormalizedName = "GUEST", ConcurrencyStamp = "guest" });
+            new IdentityRole<Guid> { Id = UserRoleId, Name = AppRoles.User, NormalizedName = "USER", ConcurrencyStamp = "user" });
+        builder.HasData(new IdentityRole<Guid> { Id = GuestRoleId, Name = AppRoles.Guest, NormalizedName = "GUEST", ConcurrencyStamp = "guest" }); // ako:guest
     }
 }
 

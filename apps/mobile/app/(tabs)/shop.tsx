@@ -1,4 +1,7 @@
-import { Empty, SearchInput, Text, useTheme } from '@mari-ui/native';
+import { Empty } from '@mari-ui/native/empty';
+import { SearchInput } from '@mari-ui/native/input';
+import { useTheme } from '@mari-ui/native/theme';
+import { Text } from '@mari-ui/native/typography';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, Pressable, View } from 'react-native';

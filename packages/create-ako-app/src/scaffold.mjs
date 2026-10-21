@@ -23,7 +23,7 @@ import {
 
 const here = dirname(fileURLToPath(import.meta.url));
 const VARIANTS_DIR = resolve(here, '../variants');
-const MARKED_EXTENSIONS = /\.(cs|csproj|props|slnx|ts|tsx|mjs|yml|yaml|html|css)$/;
+const MARKED_EXTENSIONS = /\.(cs|csproj|props|slnx|ts|tsx|mjs|yml|yaml|html|css|resx)$/;
 
 function listFilesRecursive(root, dir = '') {
   return readdirSync(join(root, dir), { withFileTypes: true }).flatMap((entry) => {
@@ -51,6 +51,18 @@ export function setJsonKeys(text, values) {
       Object.assign(node, sorted);
     }
   }
+  return `${formatJson(json)}\n`;
+}
+
+/**
+ * Düz (noktalı) anahtarlı JSON'dan anahtar siler: `*` ile biten desen önek, diğerleri tam eşleşir.
+ * Yerelleştirme sözlükleri böyledir (`"home.hero.title": "…"`), `removeJsonKeys`'in yol mantığına uymaz.
+ */
+export function removeFlatKeys(text, patterns) {
+  const json = JSON.parse(text);
+  const matches = (key) =>
+    patterns.some((p) => (p.endsWith('*') ? key.startsWith(p.slice(0, -1)) : key === p));
+  for (const key of Object.keys(json)) if (matches(key)) delete json[key];
   return `${formatJson(json)}\n`;
 }
 
@@ -141,6 +153,14 @@ export function scaffold({ target, template, choices, skipVariants = false, log 
 
   for (const { file, keys } of plan.jsonRemove) {
     edit(file, (text) => removeJsonKeys(text, keys));
+  }
+
+  for (const { file: dir, keys } of plan.localeRemove) {
+    const root = join(target, dir);
+    if (!existsSync(root)) continue;
+    for (const name of readdirSync(root).filter((f) => f.endsWith('.json'))) {
+      edit(`${dir}/${name}`, (text) => removeFlatKeys(text, keys));
+    }
   }
 
   for (const { file, values } of plan.jsonSet) {

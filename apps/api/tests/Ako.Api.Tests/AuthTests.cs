@@ -49,6 +49,7 @@ public sealed class AuthTests(ApiFactory factory)
         Assert.Contains("Şifre en az 8 karakter olmalı.", problem!.Errors.SelectMany(e => e.Value));
     }
 
+    // ako:begin social
     [Fact]
     public async Task Ayar_yoksa_sosyal_saglayici_listesi_bostur()
     {
@@ -95,4 +96,5 @@ public sealed class AuthTests(ApiFactory factory)
         var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
         return ((JsonElement)problem!.Extensions["code"]!).GetString();
     }
+    // ako:end social
 }

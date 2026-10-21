@@ -5,6 +5,8 @@
 export interface Session {
   accessToken: string;
   refreshToken: string;
+  /** Access token'ın bitiş anı (ms). Eski çerezlerde yoktur; o zaman süresi dolmuş sayılır. */
+  expiresAt?: number;
 }
 
 const encoder = new TextEncoder();
@@ -29,7 +31,9 @@ function keyFor(secret: string): Promise<CryptoKey> {
 
 export async function sealSession(session: Session, secret: string): Promise<string> {
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  const data = encoder.encode(JSON.stringify({ a: session.accessToken, r: session.refreshToken }));
+  const data = encoder.encode(
+    JSON.stringify({ a: session.accessToken, r: session.refreshToken, e: session.expiresAt }),
+  );
   const cipher = new Uint8Array(
     await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await keyFor(secret), data),
   );
@@ -52,8 +56,12 @@ export async function unsealSession(
       await keyFor(secret),
       fromBase64Url(cipher!),
     );
-    const { a, r } = JSON.parse(new TextDecoder().decode(plain)) as { a: string; r: string };
-    return { accessToken: a, refreshToken: r };
+    const { a, r, e } = JSON.parse(new TextDecoder().decode(plain)) as {
+      a: string;
+      r: string;
+      e?: number;
+    };
+    return { accessToken: a, refreshToken: r, ...(e === undefined ? {} : { expiresAt: e }) };
   } catch {
     return null;
   }

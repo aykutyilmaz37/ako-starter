@@ -70,6 +70,8 @@
   "list.failed": "Something went wrong.",
   "list.guest.title": "Your list lives on this device for now",
   "list.guest.text": "If you sign up or sign in, your list moves to your account and is the same on all your devices.",
+  "list.login.title": "Your list is waiting",
+  "list.login.text": "Sign in to save the coffees you like; your list is the same on all your devices.",
   "account.eyebrow": "Account",
   "account.hello": "Hello",
   "account.join": "Join the Akı family",

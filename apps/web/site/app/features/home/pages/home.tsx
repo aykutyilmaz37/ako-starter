@@ -1,3 +1,4 @@
+// ako:begin sample
 import type { ProductCategory } from '@ako/api-client/model';
 import { listProducts } from '@ako/api-client/products';
 import { Button } from '@mari-ui/components/button';
@@ -10,10 +11,13 @@ import { Story } from '~/features/home/components/story';
 import { ProductGrid } from '~/features/products/components/product-card';
 import { CATEGORIES } from '~/shared/catalog';
 import { apiInit } from '~/shared/i18n/api-init.server';
-import { metaTranslator } from '~/shared/i18n/i18n';
-import { useLocalePath, useT } from '~/shared/i18n/i18n-provider';
 import { SectionHeading } from '~/shared/section-heading';
 import { useMe } from '~/shared/use-me'; // ako:auth
+// ako:else sample
+//~ import { Paragraph, Title } from '@mari-ui/components/typography';
+// ako:end sample
+import { metaTranslator } from '~/shared/i18n/i18n';
+import { useLocalePath, useT } from '~/shared/i18n/i18n-provider';
 import type { Route } from './+types/home';
 
 export function meta({ matches }: Route.MetaArgs) {
@@ -24,6 +28,7 @@ export function meta({ matches }: Route.MetaArgs) {
   ];
 }
 
+// ako:begin sample
 /** Öne çıkan kahveler + her kategorinin ürün sayısı ve ilk görseli; hepsi paralel, sunucuda. */
 export async function loader({ request, context }: Route.LoaderArgs) {
   const session = context.get(sessionContext);
@@ -46,7 +51,9 @@ export async function loader({ request, context }: Route.LoaderArgs) {
 export function headers({ loaderHeaders }: Route.HeadersArgs) {
   return { 'Cache-Control': loaderHeaders.get('Cache-Control') ?? 'private, no-store' };
 }
+// ako:end sample
 
+// ako:begin sample
 export default function HomePage({ loaderData }: Route.ComponentProps) {
   const { featured, tiles } = loaderData;
   const me = useMe(); // ako:auth
@@ -97,3 +104,19 @@ export default function HomePage({ loaderData }: Route.ComponentProps) {
     </>
   );
 }
+// ako:else sample
+//~ export default function HomePage() {
+//~   const t = useT();
+//~
+//~   return (
+//~     <section className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-24 sm:px-6">
+//~       <Title level={1} className="text-5xl leading-tight md:text-6xl">
+//~         {t('home.hero.title')}
+//~       </Title>
+//~       <Paragraph className="max-w-xl text-lg leading-relaxed text-mari-muted">
+//~         {t('home.hero.text')}
+//~       </Paragraph>
+//~     </section>
+//~   );
+//~ }
+// ako:end sample

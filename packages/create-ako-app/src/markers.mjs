@@ -9,6 +9,8 @@
 //   //~ özellik kapalıyken geçerli kod  → `//~ ` öneki kaldırılır, satır etkinleşir (JSX içinde `{/*~ <A /> */}`)
 //   // ako:end auth
 //
+// Blok içinde iç içe blok olabilir; else kolunda da (iç bloğun satırları yine `//~ ` önekiyle yazılır).
+//
 // İşaret sözdizimi dosya türüne bağlı değildir (`//`, `{/* */}`, `<!-- -->` hepsi çalışır): satırda `ako:begin <ad>` vb. aranır.
 
 const BEGIN = /ako:begin ([\w-]+)/;
@@ -53,8 +55,8 @@ export function applyMarkers(text, disabled, file = '<metin>') {
     }
     if (hidden()) return;
 
-    const top = stack.at(-1);
-    if (top?.inElse) {
+    // Else kolundaki satırlar, iç içe bloklarda da `//~ ` önekiyle yazılır (iç blok kapalıysa zaten gizlidir).
+    if (stack.some((s) => s.inElse)) {
       const enabled = line.match(ENABLED_LINE);
       out.push(enabled ? `${enabled[1]}${enabled[2] ?? enabled[3]}` : line);
       return;

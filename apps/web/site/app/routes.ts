@@ -7,10 +7,10 @@ export default [
   route(':lang?', 'shared/i18n/lang-layout.tsx', [
     // ako:end lang
     index('features/home/pages/home.tsx'),
-    route('products', 'features/products/pages/catalog.tsx'),
-    route('products/:id', 'features/products/pages/product-detail.tsx'),
+    route('products', 'features/products/pages/catalog.tsx'), // ako:sample
+    route('products/:id', 'features/products/pages/product-detail.tsx'), // ako:sample
     // ako:begin auth
-    route('list', 'features/todos/pages/todos.tsx'),
+    route('list', 'features/todos/pages/todos.tsx'), // ako:todos
     route('login', 'features/auth/pages/login.tsx'),
     route('register', 'features/auth/pages/register.tsx'),
     route('verify', 'features/auth/pages/verify.tsx'),

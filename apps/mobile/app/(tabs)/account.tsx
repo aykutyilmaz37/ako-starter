@@ -1,4 +1,8 @@
-import { Avatar, Button, Paragraph, Segmented, Text, useTheme } from '@mari-ui/native';
+import { Avatar } from '@mari-ui/native/avatar';
+import { Button } from '@mari-ui/native/button';
+import { Segmented } from '@mari-ui/native/segmented';
+import { useTheme } from '@mari-ui/native/theme';
+import { Paragraph, Text } from '@mari-ui/native/typography';
 import { router } from 'expo-router';
 import { Heart } from 'lucide-react-native';
 import { ScrollView, View } from 'react-native';

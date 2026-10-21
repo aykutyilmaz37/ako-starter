@@ -11,6 +11,9 @@ const HELP = `create-ako-app <klasör> [seçenekler]
   --web=site,backoffice|none   Web uygulamaları (varsayılan: ikisi)
   --mobile / --no-mobile       Expo mobil uygulaması (varsayılan: evet)
   --auth / --no-auth           Giriş, kayıt, misafir, Todos, yönetim (varsayılan: evet; kapalıyken backoffice olamaz)
+  --guest / --no-guest         Misafir girişi: mobilde açılışta anonim hesap, kayıtta veri taşınır (varsayılan: evet; auth kapalıyken yok)
+  --social / --no-social       Sosyal giriş: Google, Apple, GitHub… (varsayılan: evet; auth kapalıyken yok)
+  --sample / --no-sample       Örnek senaryo (Akı Kahve): ürünler, alışveriş listesi, görseller, seed (varsayılan: evet; backend yokken kapatılamaz)
   --backend / --no-backend     API (varsayılan: evet). Hayır: veri cihazda (SQLite), yalnız mobilde; auth ve web olmaz
   --install / --no-install     Üretimden sonra pnpm install (varsayılan: evet)
   --no-git                     git init + ilk commit yapma
@@ -40,6 +43,12 @@ export async function main(argv) {
       'no-auth': { type: 'boolean' },
       backend: { type: 'boolean' },
       'no-backend': { type: 'boolean' },
+      guest: { type: 'boolean' },
+      'no-guest': { type: 'boolean' },
+      social: { type: 'boolean' },
+      'no-social': { type: 'boolean' },
+      sample: { type: 'boolean' },
+      'no-sample': { type: 'boolean' },
       lang: { type: 'boolean' },
       'no-lang': { type: 'boolean' },
       install: { type: 'boolean' },
@@ -113,6 +122,40 @@ export async function main(argv) {
           ? await ask(rl, 'Auth (giriş, kayıt, misafir, yönetim) olsun mu?', true)
           : true;
 
+    // Misafir auth'un parçası: auth yoksa sorulmaz. Seçenekle zorlanırsa çelişki hatası verilir.
+    let guest = values.guest ? true : values['no-guest'] ? false : undefined;
+    if (guest && !auth)
+      throw new Error(
+        '--guest için auth gerekir (--no-auth ya da --no-backend ile birlikte olmaz).',
+      );
+    if (guest === undefined)
+      guest =
+        auth && rl
+          ? await ask(
+              rl,
+              'Misafir girişi olsun mu? (mobil açılışta anonim hesap, kayıtta veri taşınır)',
+              true,
+            )
+          : true;
+
+    // Sosyal giriş de auth'un parçası: auth yoksa sorulmaz.
+    let social = values.social ? true : values['no-social'] ? false : undefined;
+    if (social && !auth)
+      throw new Error(
+        '--social için auth gerekir (--no-auth ya da --no-backend ile birlikte olmaz).',
+      );
+    if (social === undefined)
+      social =
+        auth && rl ? await ask(rl, 'Sosyal giriş (Google, Apple, GitHub…) olsun mu?', true) : true;
+
+    // Backend'siz projede yerel veri katmanı örneğin kendisidir: kapatılamaz, sorulmaz.
+    let sample = values.sample ? true : values['no-sample'] ? false : undefined;
+    if (sample === undefined)
+      sample =
+        backend && rl
+          ? await ask(rl, 'Örnek senaryo (Akı Kahve: ürünler, alışveriş listesi) kalsın mı?', true)
+          : true;
+
     if (lang === undefined) lang = rl ? await ask(rl, 'Çoklu dil olsun mu?', true) : true;
 
     const choices = normalizeChoices({
@@ -120,6 +163,9 @@ export async function main(argv) {
       web,
       mobile,
       auth,
+      guest,
+      social,
+      sample,
       lang,
       backend,
     });

@@ -1,7 +1,7 @@
 using Ako.Api.Features.Auth; // ako:auth
 using Ako.Api.Features.Localization; // ako:lang
-using Ako.Api.Features.Products;
-using Ako.Api.Features.Todos; // ako:auth
+using Ako.Api.Features.Products; // ako:sample
+using Ako.Api.Features.Todos; // ako:todos
 using Ako.Api.Infrastructure;
 using Serilog;
 
@@ -34,11 +34,13 @@ app.UseSerilogRequestLogging();
 // Sonraki her şey (hata yanıtları dahil) isteğin dilinde üretilir.
 app.UseRequestLocalization();
 
+// ako:begin sample
 // wwwroot: ürün görselleri (/images/...). Web'de BFF üzerinden /api/images/... olarak gelir.
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx => ctx.Context.Response.Headers.CacheControl = "public, max-age=86400",
 });
+// ako:end sample
 
 // Yakalanmayan hatalar ve boş 4xx/5xx yanıtlar ProblemDetails olarak döner.
 app.UseExceptionHandler();
@@ -61,8 +63,8 @@ if (app.Environment.IsDevelopment())
 
 app.MapAppHealthChecks(); // /health/live, /health/ready
 app.MapAuth(); // ako:auth
-app.MapTodos(); // ako:auth
-app.MapProducts();
+app.MapTodos(); // ako:todos
+app.MapProducts(); // ako:sample
 app.MapLocalization(); // ako:lang
 
 // ako:begin auth
@@ -72,7 +74,7 @@ if (AdminEndpoints.IsEnabled(app.Configuration))
     app.MapAdmin(admin =>
     {
         admin.MapAuthAdmin(); // ako:auth
-        admin.MapProductsAdmin();
+        admin.MapProductsAdmin(); // ako:sample
         admin.MapLocalizationAdmin(); // ako:lang
     });
 }

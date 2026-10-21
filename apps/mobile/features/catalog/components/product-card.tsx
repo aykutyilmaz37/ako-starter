@@ -1,4 +1,6 @@
-import { Tag, Text, useTheme } from '@mari-ui/native';
+import { Tag } from '@mari-ui/native/tag';
+import { useTheme } from '@mari-ui/native/theme';
+import { Text } from '@mari-ui/native/typography';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Pressable, View } from 'react-native';

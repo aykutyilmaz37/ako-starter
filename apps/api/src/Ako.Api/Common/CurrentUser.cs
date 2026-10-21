@@ -8,8 +8,10 @@ public static class AppRoles
     public const string Admin = "Admin";
     public const string User = "User";
 
+    // ako:begin guest
     /// <summary>Anonim (misafir) kullanıcı: e-postası ve şifresi yoktur, kayıt/giriş olunca verisi hesaba taşınır.</summary>
     public const string Guest = "Guest";
+    // ako:end guest
 }
 
 /// <summary>Endpoint'lerde RequireAuthorization(AppPolicies.X) ile kullanılan yetki kuralları.</summary>
@@ -17,7 +19,7 @@ public static class AppPolicies
 {
     public const string Admin = "Admin";
 
-    /// <summary>Kayıtlı kullanıcı: token'ı olan ama <see cref="AppRoles.Guest"/> olmayan herkes. Yeni kişisel endpoint'lerin varsayılanı.</summary>
+    /// <summary>Kayıtlı kullanıcı: token'ı olan ve misafir (Guest rolü, varsa) olmayan herkes. Yeni kişisel endpoint'lerin varsayılanı.</summary>
     public const string Member = "Member";
 }
 

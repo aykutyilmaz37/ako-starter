@@ -23,6 +23,11 @@
     "fontFamilySans": "\"Inter Variable\", \"Inter\", ui-sans-serif, system-ui, sans-serif",
     "fontFamilyHeading": "\"Playfair Display Variable\", \"Playfair Display\", Georgia, serif"
   },
-  "density": { "radius": "lg", "spacing": "comfortable", "shadow": "soft" },
-  "motion": "calm"
+  "density": {
+    "radius": "lg",
+    "spacing": "comfortable",
+    "shadow": "soft"
+  },
+  "motion": "calm",
+  "platform": "web"
 }

@@ -36,6 +36,147 @@ const AUTH_PATHS = [
   'apps/mobile/features/shopping-list',
 ];
 
+/** Misafir girişi kapalıyken (auth açık) silinen yollar; auth kapalıyken zaten `AUTH_PATHS` ile gider. */
+const GUEST_PATHS = [
+  `${API}/Features/Auth/Actions/CreateGuest.cs`,
+  `${API}/Features/Auth/Services/GuestAccounts.cs`,
+  `${API}/Features/Auth/Services/GuestCleanupService.cs`,
+  `${API}/Features/Todos/Data/TodoGuestData.cs`,
+  `${API}/Common/GuestDataMerger.cs`,
+  'apps/api/tests/Ako.Api.Tests/GuestTests.cs',
+];
+
+/**
+ * Sosyal giriş kapalıyken (auth açık) silinen yollar; auth/backend kapalıyken zaten gider.
+ * Sağlayıcı bazında seçim yoktur: sağlayıcılar ayarla (`Auth:Providers:<Ad>:ClientId`) açılır, ayarsız sağlayıcı etkin olmaz.
+ */
+const SOCIAL_PATHS = [
+  `${API}/Features/Auth/Actions/ExternalLogin.cs`,
+  `${API}/Features/Auth/Actions/NativeLogin.cs`,
+  `${API}/Features/Auth/Actions/ExchangeCode.cs`,
+  `${API}/Features/Auth/Actions/GetProviders.cs`,
+  `${API}/Features/Auth/Services/ExternalProviders.cs`,
+  `${API}/Features/Auth/Services/ExternalUserResolver.cs`,
+  `${API}/Features/Auth/Services/IdTokenValidator.cs`,
+  `${API}/Features/Auth/Services/LoginCodeStore.cs`,
+  // Marka ikonları/renkleri yalnızca sosyal düğmelerde kullanılır.
+  'packages/shared',
+  'apps/web/site/app/features/auth/components/social-button.tsx',
+  'apps/mobile/features/auth/components/social-button.tsx',
+  'apps/mobile/features/auth/social-login.ts',
+];
+
+/** Sosyal giriş kapalıyken ayar dosyalarından çıkarılan anahtarlar (noktalı yol). */
+const SOCIAL_JSON_KEYS = [
+  {
+    file: 'apps/mobile/package.json',
+    keys: [
+      'dependencies.@ako/shared',
+      'dependencies.@react-native-google-signin/google-signin',
+      'dependencies.expo-apple-authentication',
+      'dependencies.expo-web-browser',
+    ],
+  },
+  { file: 'apps/web/site/package.json', keys: ['dependencies.@ako/shared'] },
+  { file: `${API}/appsettings.json`, keys: ['Auth.Providers', 'Auth.AllowedReturnUrls'] },
+  { file: `${API}/appsettings.Development.json`, keys: ['Auth.AllowedReturnUrls'] },
+];
+
+/**
+ * Örnek senaryo (Akı Kahve) kapalıyken silinen yollar: Products, Todos, görseller, seed ve onları kullanan ekranlar.
+ * Geriye boş iskelet kalır: auth, çoklu dil, kullanıcı yönetimi, ana sayfa, hesap.
+ */
+const SAMPLE_PATHS = [
+  `${API}/Features/Products`,
+  `${API}/Features/Todos`,
+  `${API}/wwwroot/images`,
+  'apps/api/tests/Ako.Api.Tests/ProductsTests.cs',
+  'apps/api/tests/Ako.Api.Tests/TodosTests.cs',
+  // Site: katalog, liste, ana sayfanın mağaza bölümleri (hero/faydalar/kategoriler/hikâye) ve kategori yardımcıları.
+  'apps/web/site/app/features/products',
+  'apps/web/site/app/features/todos',
+  'apps/web/site/app/features/home/components',
+  'apps/web/site/app/shared/catalog.ts',
+  'apps/web/site/app/shared/section-heading.tsx',
+  // Backoffice: ürün yönetimi ve stok uyarıları.
+  'apps/web/backoffice/app/features/products',
+  'apps/web/backoffice/app/features/dashboard/components/stock-alerts.tsx',
+  'apps/web/backoffice/app/shared/catalog.ts',
+  // Mobil: katalog, alışveriş listesi, mağaza/liste sekmeleri, ürün sayfası.
+  'apps/mobile/app/(tabs)/shop.tsx',
+  'apps/mobile/app/(tabs)/list.tsx',
+  'apps/mobile/app/product',
+  'apps/mobile/features/catalog',
+  'apps/mobile/features/shopping-list',
+];
+
+/**
+ * Örnek senaryo kapalıyken yerelleştirme dosyalarından çıkarılan anahtarlar. Anahtarlar düz ve noktalıdır;
+ * `*` ile biten önek eşleşir, diğerleri tam eşleşir.
+ */
+const SAMPLE_LOCALE_KEYS = [
+  {
+    file: 'apps/web/site/app/locales',
+    keys: [
+      'category.*',
+      'stock.*',
+      'layout.search',
+      'layout.myList',
+      'layout.menu.coffee',
+      'layout.menu.equipment',
+      'layout.menu.accessory',
+      'layout.footer.shop',
+      'layout.footer.coffee',
+      'layout.footer.equipment',
+      'layout.footer.accessory',
+      'layout.footer.list',
+      'home.hero.badge',
+      'home.hero.cta*',
+      'home.benefits.*',
+      'home.featured.*',
+      'home.categories.*',
+      'home.story.*',
+      'products.*',
+      'todos.*',
+    ],
+  },
+  {
+    file: 'apps/web/backoffice/app/locales',
+    keys: [
+      'category.*',
+      'layout.menu.products',
+      'dashboard.newProduct',
+      'dashboard.stat.products',
+      'dashboard.stat.out',
+      'dashboard.stat.low*',
+      'dashboard.stockValue*',
+      'dashboard.alerts.*',
+      'products.*',
+    ],
+  },
+  {
+    file: 'apps/mobile/locales',
+    keys: [
+      'tab.shop',
+      'tab.list',
+      'category.*',
+      'categoryBlurb.*',
+      'stock.*',
+      'home.hero.badge',
+      'home.hero.cta*',
+      'home.benefits.*',
+      'home.featured.*',
+      'home.loadFailed',
+      'home.categories.*',
+      'home.story.*',
+      'shop.*',
+      'product.*',
+      'list.*',
+      'products.*',
+    ],
+  },
+];
+
 const MIGRATIONS_DIR = `${API}/Infrastructure/Data/Migrations`;
 
 /** Backend'siz mobilde silinen yollar: API ve ona bağlanan her şey (kök dosyalar dahil). */
@@ -44,8 +185,6 @@ const BACKEND_PATHS = [
   'packages/api-client',
   'packages/web-core',
   'packages/e2e',
-  // Yalnızca site/backoffice ve auth'lu mobil kullanır (sosyal giriş markaları).
-  'packages/shared',
   'compose.yaml',
   // API'ye bağlanan mobil dosyalar: istemci yapılandırması ve adres.
   'apps/mobile/shared/lib/api.ts',
@@ -89,10 +228,8 @@ const NO_BACKEND_JSON_REMOVE = [
     file: 'apps/mobile/package.json',
     keys: [
       'dependencies.@ako/api-client',
-      'dependencies.@ako/shared',
       'dependencies.@tanstack/react-query',
       'dependencies.expo-secure-store',
-      'dependencies.expo-web-browser',
     ],
   },
   { file: 'turbo.json', keys: ['tasks.generate', 'tasks.generate:check'] },
@@ -122,21 +259,17 @@ const NO_BACKEND_JSON_SET = [
   },
 ];
 
-/** Kapalı özellik kümesinden varyant klasörü adı: 'no-auth', 'no-lang', 'no-auth-no-lang'; hiçbiri kapalıysa null. */
+/** Kapalı özellik kümesinden migration varyantı adı: 'no-auth', 'no-guest-no-sample', 'no-lang'…; hiçbiri kapalı değilse null. */
 export function variantName(disabled) {
-  const off = ['auth', 'lang'].filter((f) => disabled.has(f));
+  // Auth kapalıyken Identity yoktur; misafir de olmayacağından ad yalnızca `no-auth` kalır.
+  const off = ['auth', 'guest', 'sample', 'lang'].filter(
+    (f) => disabled.has(f) && !(f === 'guest' && disabled.has('auth')),
+  );
   return off.length === 0 ? null : off.map((f) => `no-${f}`).join('-');
 }
 
 /** Auth kapalıyken ayar dosyalarından çıkarılan anahtarlar (noktalı yol). */
 const AUTH_JSON_KEYS = [
-  {
-    file: 'apps/mobile/package.json',
-    keys: [
-      'dependencies.@react-native-google-signin/google-signin',
-      'dependencies.expo-apple-authentication',
-    ],
-  },
   { file: `${API}/appsettings.json`, keys: ['Auth', 'Api.EnableAdminEndpoints'] },
   { file: `${API}/appsettings.Development.json`, keys: ['Auth', 'Api.EnableAdminEndpoints'] },
 ];
@@ -145,7 +278,17 @@ const AUTH_JSON_KEYS = [
  * @param {{ name: string, web: string[], mobile: boolean }} choices
  * @returns {{ name: string, web: string[], mobile: boolean, auth: boolean }}
  */
-export function normalizeChoices({ name, web, mobile, auth = true, lang = true, backend = true }) {
+export function normalizeChoices({
+  name,
+  web,
+  mobile,
+  auth = true,
+  guest = true,
+  social = true,
+  sample = true,
+  lang = true,
+  backend = true,
+}) {
   const unknown = web.filter((app) => !WEB_APPS.includes(app));
   if (unknown.length > 0) {
     throw new Error(
@@ -170,12 +313,22 @@ export function normalizeChoices({ name, web, mobile, auth = true, lang = true, 
       "Backend yokken web uygulaması olamaz (web BFF'i API'ye bağlıdır). --no-web kullanın.",
     );
   }
+  if (!backend && !sample) {
+    throw new Error(
+      'Backend yokken örnek senaryo kapatılamaz: yerel veri katmanı (SQLite şeması, ekranlar) örneğin kendisidir. --sample ile kullanın.',
+    );
+  }
   // Backend'siz projede oturum açılacak bir sunucu yoktur: auth (misafir, sosyal giriş dahil) kapalı sayılır.
   return {
     name,
     web: WEB_APPS.filter((app) => web.includes(app)),
     mobile,
     auth: backend ? auth : false,
+    // Misafir, auth'un bir parçasıdır: auth yoksa yoktur.
+    guest: backend && auth ? guest : false,
+    // Sosyal giriş de auth'un parçası: auth yoksa yoktur.
+    social: backend && auth ? social : false,
+    sample,
     lang,
     backend,
   };
@@ -185,7 +338,7 @@ export function normalizeChoices({ name, web, mobile, auth = true, lang = true, 
  * @param {{ name: string, web: string[], mobile: boolean, auth?: boolean }} choices
  */
 export function buildPlan(choices) {
-  const { web, mobile, auth, lang, backend } = normalizeChoices(choices);
+  const { web, mobile, auth, guest, social, sample, lang, backend } = normalizeChoices(choices);
   const remove = [...TEMPLATE_ONLY];
 
   for (const app of WEB_APPS) {
@@ -198,11 +351,12 @@ export function buildPlan(choices) {
   if (!mobile) remove.push('apps/mobile');
 
   // Duman testi iki web uygulamasını birlikte çalıştırır; biri yoksa config'i bozulur. Şimdilik tümüyle çıkar.
-  const keepE2e = web.length === WEB_APPS.length && lang;
+  const keepE2e = web.length === WEB_APPS.length && lang && sample;
   if (!keepE2e) remove.push('packages/e2e');
 
   const disabled = new Set();
   const variants = [];
+  const localeRemove = [];
   const jsonRemove = [];
   const jsonSet = [];
   if (!backend) {
@@ -216,6 +370,22 @@ export function buildPlan(choices) {
     remove.push(...AUTH_PATHS);
     jsonRemove.push(...AUTH_JSON_KEYS);
   }
+  if (!guest) {
+    disabled.add('guest');
+    // Auth kapalıyken bu yollar zaten silinmiştir; yinelenen kayıt zararsızdır ama listeyi şişirmeyelim.
+    if (auth) remove.push(...GUEST_PATHS);
+  }
+  if (!social) {
+    disabled.add('social');
+    // Auth/backend kapalıyken yollar zaten silinmiştir; yalnız ayar anahtarları (bağımlılıklar) ortak çıkarılır.
+    remove.push(...SOCIAL_PATHS);
+    jsonRemove.push(...SOCIAL_JSON_KEYS);
+  }
+  if (!sample) {
+    disabled.add('sample');
+    remove.push(...SAMPLE_PATHS);
+    localeRemove.push(...SAMPLE_LOCALE_KEYS);
+  }
   if (!lang) {
     disabled.add('lang');
     remove.push(...LANG_PATHS);
@@ -223,7 +393,9 @@ export function buildPlan(choices) {
   // Türetilmiş işaretler: tek bir seçimle ifade edilemeyen koşullar.
   //  - list: alışveriş listesi API'li sürümde giriş ister, backend'siz sürümde cihazdadır.
   //  - api-lang: sözlük ve dil listesi API'den gelir; dil kapalıysa ya da API yoksa yalnızca paketli dosyalar.
-  if (!auth && backend) disabled.add('list');
+  //  - todos: kullanıcıya özel örnek veri (Todos); auth ya da örnek kapalıysa yoktur.
+  if ((!auth && backend) || !sample) disabled.add('list');
+  if (!auth || !sample) disabled.add('todos');
   if (!lang || !backend) disabled.add('api-lang');
 
   if (!backend) {
@@ -243,11 +415,13 @@ export function buildPlan(choices) {
     disabled,
     variants,
     jsonRemove,
+    /** Yerelleştirme dosyalarından çıkarılacak düz anahtarlar (klasör altındaki tüm `*.json`). */
+    localeRemove,
     jsonSet,
     copy: backend ? [] : COPY_ASSETS,
     backend,
     /** Üretimden sonra `pnpm generate` gerekir mi (API/OpenAPI şablondakinden farklıysa). */
-    needsGenerate: backend && (!auth || !lang),
+    needsGenerate: backend && (!auth || !guest || !social || !sample || !lang),
     keepE2e,
     /** `.claude/launch.json` içinde kalacak sunucular. */
     launchServers: backend ? ['api', ...web] : [],
@@ -292,7 +466,16 @@ export function formatJson(value, indent = '', lead = 0, width = 100) {
   return `${open}\n${body.join(',\n')}\n${indent}${close}`;
 }
 
-export function renderReadme({ name, web, mobile, auth = true, backend = true }) {
+export function renderReadme({
+  name,
+  web,
+  mobile,
+  auth = true,
+  guest = true,
+  social = true,
+  sample = true,
+  backend = true,
+}) {
   const lines = [
     `# ${name}`,
     '',
@@ -318,6 +501,21 @@ export function renderReadme({ name, web, mobile, auth = true, backend = true })
     lines.push(
       '',
       'Bu projede **auth yok**: giriş, kayıt, misafir, Todos ve yönetim (`/admin`) uçları çıkarıldı.',
+    );
+  if (backend && auth && !guest)
+    lines.push(
+      '',
+      `Bu projede **misafir girişi yok**: \`/auth/guest\` uçları, temizlik işi ve veri taşıma kancası (\`IGuestDataMerger\`) çıkarıldı${mobile ? '; mobil uygulama giriş yapılmadan yalnızca katalogu gösterir, kişisel ekranlar için giriş ister' : ''}.`,
+    );
+  if (backend && auth && !social)
+    lines.push(
+      '',
+      'Bu projede **sosyal giriş yok**: `/auth/external`, `/auth/native`, `/auth/exchange`, `/auth/providers` uçları, sağlayıcı paketleri, giriş düğmeleri ve `packages/shared` (marka ikonları) çıkarıldı; yalnızca e-posta + şifre vardır. `apps/api/README.md` ve `apps/web/README.md` içindeki sosyal giriş bölümleri bu projede geçerli değildir.',
+    );
+  if (!sample)
+    lines.push(
+      '',
+      `Bu projede **örnek senaryo yok** (Akı Kahve): ürünler, alışveriş listesi (Todos), görseller, seed${web.includes('backoffice') ? ', ürün yönetimi' : ''} ve ilgili ekranlar çıkarıldı; auth, çoklu dil ve kullanıcı yönetimi gibi seçtiğiniz özellikler boş iskelet olarak kaldı. Marka metinleri (Akı Kahve) ve \`apps/*/README.md\` içindeki Products/Todos anlatımları örnek olarak kalmıştır; kendi markanıza göre değiştirin.`,
     );
   lines.push('', '## Çalıştırma', '', '```bash', 'pnpm install');
   if (backend)

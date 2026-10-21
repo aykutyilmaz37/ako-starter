@@ -1,4 +1,4 @@
-import { useTheme } from '@mari-ui/native';
+import { useTheme } from '@mari-ui/native/theme';
 import { Tabs } from 'expo-router';
 import { Coffee, ListChecks, Store, User } from 'lucide-react-native';
 import { useT } from '~/features/localization/i18n';
@@ -25,6 +25,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color: c, size }) => <Coffee color={c} size={size} />,
         }}
       />
+      {/* ako:begin sample */}
       <Tabs.Screen
         name="shop"
         options={{
@@ -32,6 +33,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ color: c, size }) => <Store color={c} size={size} />,
         }}
       />
+      {/* ako:end sample */}
       {/* ako:begin list */}
       <Tabs.Screen
         name="list"

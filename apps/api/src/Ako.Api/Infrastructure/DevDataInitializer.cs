@@ -1,6 +1,6 @@
 using Ako.Api.Common; // ako:auth
 using Ako.Api.Features.Auth; // ako:auth
-using Ako.Api.Features.Products;
+using Ako.Api.Features.Products; // ako:sample
 using Ako.Api.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity; // ako:auth
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +26,7 @@ internal sealed class DevDataInitializer(IServiceProvider services, IConfigurati
         using var scope = services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await db.Database.MigrateAsync(ct);
-        await ProductSeed.SeedAsync(db, ct); // örnek ürünler (Akı Kahve)
+        await ProductSeed.SeedAsync(db, ct); // ako:sample — örnek ürünler (Akı Kahve)
 
         // ako:begin auth
         var email = configuration["Auth:Admin:Email"];

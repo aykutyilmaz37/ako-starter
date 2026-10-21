@@ -18,8 +18,9 @@ export function TodoList() {
       <Empty
         title={t('todos.empty.title')}
         description={t('todos.empty.description')}
-        buttonText={t('todos.empty.button')}
-        href={localePath('/products?category=Coffee')}
+        actions={
+          <Button href={localePath('/products?category=Coffee')}>{t('todos.empty.button')}</Button>
+        }
       />
     );
   }

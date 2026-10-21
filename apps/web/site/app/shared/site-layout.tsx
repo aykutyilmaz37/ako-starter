@@ -1,7 +1,11 @@
 import { Button } from '@mari-ui/components/button';
 import { BasicMenu } from '@mari-ui/components/menu';
 import { Text } from '@mari-ui/components/typography';
+// ako:begin sample
 import { ListChecks, LogOut, Search } from 'lucide-react';
+// ako:else sample
+//~ import { LogOut } from 'lucide-react';
+// ako:end sample
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { logout } from '~/shared/api'; // ako:auth
@@ -17,7 +21,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const t = useT();
   const localePath = useLocalePath();
-  const menu = [
+  const menu: { key: string; title: string; route: string }[] = [
+    // ako:begin sample
     {
       key: 'coffee',
       title: t('layout.menu.coffee'),
@@ -33,6 +38,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       title: t('layout.menu.accessory'),
       route: localePath('/products?category=Accessory'),
     },
+    // ako:end sample
   ];
 
   return (
@@ -65,6 +71,7 @@ function HeaderActions() {
     <div className="flex items-center gap-1">
       <LanguageSwitcher /> {/* ako:lang */}
       <ThemeSwitcher />
+      {/* ako:begin sample */}
       <Button
         href={localePath('/products')}
         variant="ghost"
@@ -72,9 +79,11 @@ function HeaderActions() {
         icon={<Search size={18} aria-hidden />}
         aria-label={t('layout.search')}
       />
+      {/* ako:end sample */}
       {/* ako:begin auth */}
       {me ? (
         <>
+          {/* ako:begin todos */}
           <Button
             href={localePath('/list')}
             variant="ghost"
@@ -83,6 +92,7 @@ function HeaderActions() {
           >
             {t('layout.myList')}
           </Button>
+          {/* ako:end todos */}
           <Button
             variant="ghost"
             size="sm"
@@ -103,7 +113,8 @@ function HeaderActions() {
 
 function SiteFooter() {
   const t = useT();
-  const footerLinks = [
+  const footerLinks: { title: string; links: { to: string; label: string }[] }[] = [
+    // ako:begin sample
     {
       title: t('layout.footer.shop'),
       links: [
@@ -112,13 +123,14 @@ function SiteFooter() {
         { to: '/products?category=Accessory', label: t('layout.footer.accessory') },
       ],
     },
+    // ako:end sample
     // ako:begin auth
     {
       title: t('layout.footer.account'),
       links: [
         { to: '/login', label: t('layout.footer.login') },
         { to: '/register', label: t('layout.footer.register') },
-        { to: '/list', label: t('layout.footer.list') },
+        { to: '/list', label: t('layout.footer.list') }, // ako:todos
       ],
     },
     // ako:end auth

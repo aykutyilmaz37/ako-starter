@@ -70,6 +70,8 @@
   "list.failed": "İşlem yapılamadı.",
   "list.guest.title": "Listen şimdilik bu cihazda",
   "list.guest.text": "Kayıt olursan ya da giriş yaparsan listen hesabına geçer ve tüm cihazlarında aynı olur.",
+  "list.login.title": "Listen seni bekliyor",
+  "list.login.text": "Beğendiğin kahveleri kaydetmek için giriş yap; liste tüm cihazlarında aynı olur.",
   "account.eyebrow": "Hesap",
   "account.hello": "Merhaba",
   "account.join": "Akı ailesine katıl",

@@ -1,5 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Checkbox, Empty, Field, Input, Text, useTheme } from '@mari-ui/native';
+import { Button } from '@mari-ui/native/button';
+import { Checkbox } from '@mari-ui/native/checkbox';
+import { Empty } from '@mari-ui/native/empty';
+import { Field } from '@mari-ui/native/field';
+import { Input } from '@mari-ui/native/input';
+import { useTheme } from '@mari-ui/native/theme';
+import { Text } from '@mari-ui/native/typography';
 import { router } from 'expo-router';
 import { Plus, Trash2 } from 'lucide-react-native';
 import { Controller, useForm } from 'react-hook-form';
@@ -76,8 +82,13 @@ export default function ShoppingList() {
         <Empty
           title={t('list.empty.title')}
           description={t('list.empty.description')}
-          buttonText={t('list.empty.button')}
-          onPress={() => router.navigate({ pathname: '/shop', params: { category: 'Coffee' } })}
+          actions={
+            <Button
+              onPress={() => router.navigate({ pathname: '/shop', params: { category: 'Coffee' } })}
+            >
+              {t('list.empty.button')}
+            </Button>
+          }
         />
       ) : (
         <View style={{ gap: 24 }}>

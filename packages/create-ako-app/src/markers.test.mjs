@@ -43,6 +43,31 @@ describe('applyMarkers', () => {
   });
 });
 
+describe('iç içe else', () => {
+  const text = [
+    '// ako:begin sample',
+    'S',
+    '// ako:else sample',
+    '// ako:begin auth',
+    '//~ A',
+    '// ako:end auth',
+    '//~ B',
+    '// ako:end sample',
+  ].join('\n');
+
+  it('else kolundaki iç bloğun satırları da etkinleşir', () => {
+    expect(applyMarkers(text, new Set(['sample']))).toBe('A\nB');
+  });
+
+  it('iç blok kapalıysa kendi satırları gizlenir, dış else yine çalışır', () => {
+    expect(applyMarkers(text, new Set(['sample', 'auth']))).toBe('B');
+  });
+
+  it('dış özellik açıkken else kolu (iç bloklarıyla) silinir', () => {
+    expect(applyMarkers(text, new Set(['auth']))).toBe('S');
+  });
+});
+
 describe('JSX else', () => {
   it('{/*~ ... */} satırını etkinleştirir', () => {
     const text =

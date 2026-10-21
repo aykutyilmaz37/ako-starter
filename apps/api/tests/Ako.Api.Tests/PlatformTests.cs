@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using Ako.Api.Features.Products;
+using Ako.Api.Features.Products; // ako:sample
 using Ako.Api.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +23,7 @@ public sealed class PlatformTests(ApiFactory factory)
     }
 
     // ako:begin auth
+    // ako:begin sample
     [Fact]
     public async Task Denetim_alanlari_otomatik_dolar()
     {
@@ -39,6 +40,7 @@ public sealed class PlatformTests(ApiFactory factory)
         Assert.Equal(me.Id, product.UpdatedBy);
         Assert.True(product.UpdatedAt > product.CreatedAt);
     }
+    // ako:end sample
 
     [Fact]
     public async Task Auth_POST_istekleri_sinirlanir_GET_ler_sinirlanmaz()
@@ -55,7 +57,8 @@ public sealed class PlatformTests(ApiFactory factory)
         Assert.Equal(HttpStatusCode.TooManyRequests, third.StatusCode);
         Assert.True(third.Headers.Contains("Retry-After"));
         Assert.Contains("rate_limited", await third.Content.ReadAsStringAsync());
-        Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/auth/providers")).StatusCode);
+        // GET'ler sınırlanmaz: /auth/me token olmadan 401 döner, 429 değil.
+        Assert.Equal(HttpStatusCode.Unauthorized, (await client.GetAsync("/auth/me")).StatusCode);
     }
     // ako:end auth
 }

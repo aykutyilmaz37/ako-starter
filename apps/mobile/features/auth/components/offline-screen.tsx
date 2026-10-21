@@ -1,4 +1,6 @@
-import { Button, Text, useTheme } from '@mari-ui/native';
+import { Button } from '@mari-ui/native/button';
+import { useTheme } from '@mari-ui/native/theme';
+import { Text } from '@mari-ui/native/typography';
 import { View } from 'react-native';
 import { useT } from '~/features/localization/i18n';
 import { useSession } from '~/features/auth/session';

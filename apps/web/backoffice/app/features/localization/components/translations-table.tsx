@@ -3,6 +3,7 @@ import type {
   PagedResponseOfTranslationEntryResponse,
   TranslationEntryResponse,
 } from '@ako/api-client/model';
+import { Pagination } from '@mari-ui/components/pagination';
 import { Table, type ColumnDef } from '@mari-ui/components/table';
 import { Text } from '@mari-ui/components/typography';
 import { TranslationCell } from '~/features/localization/components/translation-cell';
@@ -61,17 +62,20 @@ export function TranslationsTable({
       data={(translations?.items ?? []).map((entry) => ({ ...entry, id: entry.key }))}
       columns={columns}
       skeleton={loading && !translations}
-      paginationMode="server"
-      pagination={{
-        page: translations?.page ?? 1,
-        pageSize: translations?.pageSize ?? 20,
-        total: translations?.totalCount ?? 0,
-        onPageChange,
-      }}
+      skeletonRows={translations?.pageSize ?? 20}
       emptyState={{
         title: t('translations.empty.title'),
         description: t('translations.empty.description'),
       }}
+      footer={
+        <Pagination
+          currentPage={translations?.page ?? 1}
+          pageSize={translations?.pageSize ?? 20}
+          totalItems={translations?.totalCount ?? 0}
+          onPageChange={onPageChange}
+          showTotal
+        />
+      }
     />
   );
 }

@@ -11,17 +11,17 @@
   <data name="problem.404" xml:space="preserve"><value>Kaynak bulunamadı.</value></data>
   <data name="problem.409" xml:space="preserve"><value>Çakışma.</value></data>
   <data name="problem.500" xml:space="preserve"><value>Beklenmeyen bir hata oluştu.</value></data>
-  <data name="todos.not_found" xml:space="preserve"><value>'{0}' kimlikli görev bulunamadı.</value></data>
-  <data name="products.not_found" xml:space="preserve"><value>'{0}' kimlikli ürün bulunamadı.</value></data>
-  <data name="products.sku_taken" xml:space="preserve"><value>'{0}' SKU'su başka bir üründe kullanılıyor.</value></data>
-  <data name="products.sku_format" xml:space="preserve"><value>SKU yalnızca harf, rakam ve tire içerebilir.</value></data>
-  <data name="field.title" xml:space="preserve"><value>Başlık</value></data>
-  <data name="field.isDone" xml:space="preserve"><value>Tamamlandı</value></data>
-  <data name="field.sku" xml:space="preserve"><value>SKU</value></data>
+  <data name="todos.not_found" xml:space="preserve"><value>'{0}' kimlikli görev bulunamadı.</value></data> <!-- ako:todos -->
+  <data name="products.not_found" xml:space="preserve"><value>'{0}' kimlikli ürün bulunamadı.</value></data> <!-- ako:sample -->
+  <data name="products.sku_taken" xml:space="preserve"><value>'{0}' SKU'su başka bir üründe kullanılıyor.</value></data> <!-- ako:sample -->
+  <data name="products.sku_format" xml:space="preserve"><value>SKU yalnızca harf, rakam ve tire içerebilir.</value></data> <!-- ako:sample -->
+  <data name="field.title" xml:space="preserve"><value>Başlık</value></data> <!-- ako:todos -->
+  <data name="field.isDone" xml:space="preserve"><value>Tamamlandı</value></data> <!-- ako:todos -->
+  <data name="field.sku" xml:space="preserve"><value>SKU</value></data> <!-- ako:sample -->
   <data name="field.name" xml:space="preserve"><value>Ad</value></data>
   <data name="field.description" xml:space="preserve"><value>Açıklama</value></data>
-  <data name="field.price" xml:space="preserve"><value>Fiyat</value></data>
-  <data name="field.stock" xml:space="preserve"><value>Stok</value></data>
+  <data name="field.price" xml:space="preserve"><value>Fiyat</value></data> <!-- ako:sample -->
+  <data name="field.stock" xml:space="preserve"><value>Stok</value></data> <!-- ako:sample -->
   <data name="field.page" xml:space="preserve"><value>Sayfa</value></data>
   <data name="field.pageSize" xml:space="preserve"><value>Sayfa boyutu</value></data>
   <data name="field.search" xml:space="preserve"><value>Arama</value></data>
@@ -67,9 +67,9 @@
   <data name="auth.user_not_found" xml:space="preserve"><value>'{0}' kimlikli kullanıcı bulunamadı.</value></data>
   <data name="auth.cannot_remove_own_admin" xml:space="preserve"><value>Kendi Admin rolünüzü kaldıramazsınız.</value></data>
   <data name="field.roles" xml:space="preserve"><value>Roller</value></data>
-  <data name="products.image_url_format" xml:space="preserve"><value>Görsel adresi "/" ile başlayan bir yol ya da https adresi olmalı.</value></data>
-  <data name="field.category" xml:space="preserve"><value>Kategori</value></data>
-  <data name="field.imageUrl" xml:space="preserve"><value>Görsel</value></data>
+  <data name="products.image_url_format" xml:space="preserve"><value>Görsel adresi "/" ile başlayan bir yol ya da https adresi olmalı.</value></data> <!-- ako:sample -->
+  <data name="field.category" xml:space="preserve"><value>Kategori</value></data> <!-- ako:sample -->
+  <data name="field.imageUrl" xml:space="preserve"><value>Görsel</value></data> <!-- ako:sample -->
   <data name="localization.language_not_found" xml:space="preserve"><value>'{0}' dili bulunamadı.</value></data>
   <data name="localization.language_exists" xml:space="preserve"><value>'{0}' dili zaten var.</value></data>
   <data name="localization.language_is_default" xml:space="preserve"><value>Varsayılan dil silinemez.</value></data>

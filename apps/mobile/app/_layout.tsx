@@ -1,6 +1,7 @@
 import '~/shared/lib/api'; // ako:backend
 import { PlayfairDisplay_700Bold, useFonts } from '@expo-google-fonts/playfair-display';
-import { ThemeProvider, ToastProvider, useTheme } from '@mari-ui/native';
+import { ThemeProvider, useTheme } from '@mari-ui/native/theme';
+import { ToastProvider } from '@mari-ui/native/toast';
 // ako:begin backend
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // ako:else backend
@@ -43,9 +44,9 @@ function Routes() {
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: surface } }}>
       {/* Katalog herkese açık; giriş yalnızca alışveriş listesi gibi kişisel ekranlar için gerekir. */}
       <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="product/[id]" />
+      <Stack.Screen name="product/[id]" /> {/* ako:sample */}
       {/* ako:begin auth */}
-      <Stack.Protected guard={status === 'guest'}>
+      <Stack.Protected guard={status === 'anonymous'}>
         <Stack.Screen name="(auth)" />
       </Stack.Protected>
       {/* ako:end auth */}

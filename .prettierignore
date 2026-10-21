@@ -15,7 +15,12 @@ apps/api/dotnet-tools.json
 **/mari-ui-theme.css
 **/mari-ui-theme.ts
 **/.claude/skills/mari-ui/**
+**/.claude/skills/mari-ui-native/**
 **/.cursor/rules/mari-ui.mdc
+apps/**/AGENTS.md
+apps/**/CLAUDE.md
+apps/**/GEMINI.md
+apps/**/.github/copilot-instructions.md
 # Expo
 **/expo-env.d.ts
 # drizzle-kit'in ürettiği migration'lar (backend'siz mobil)

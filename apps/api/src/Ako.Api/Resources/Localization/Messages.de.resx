@@ -11,17 +11,17 @@
   <data name="problem.404" xml:space="preserve"><value>Ressource nicht gefunden.</value></data>
   <data name="problem.409" xml:space="preserve"><value>Konflikt.</value></data>
   <data name="problem.500" xml:space="preserve"><value>Ein unerwarteter Fehler ist aufgetreten.</value></data>
-  <data name="todos.not_found" xml:space="preserve"><value>Aufgabe '{0}' wurde nicht gefunden.</value></data>
-  <data name="products.not_found" xml:space="preserve"><value>Produkt '{0}' wurde nicht gefunden.</value></data>
-  <data name="products.sku_taken" xml:space="preserve"><value>Die SKU '{0}' wird bereits von einem anderen Produkt verwendet.</value></data>
-  <data name="products.sku_format" xml:space="preserve"><value>Die SKU darf nur Buchstaben, Ziffern und Bindestriche enthalten.</value></data>
-  <data name="field.title" xml:space="preserve"><value>Titel</value></data>
-  <data name="field.isDone" xml:space="preserve"><value>Erledigt</value></data>
-  <data name="field.sku" xml:space="preserve"><value>SKU</value></data>
+  <data name="todos.not_found" xml:space="preserve"><value>Aufgabe '{0}' wurde nicht gefunden.</value></data> <!-- ako:todos -->
+  <data name="products.not_found" xml:space="preserve"><value>Produkt '{0}' wurde nicht gefunden.</value></data> <!-- ako:sample -->
+  <data name="products.sku_taken" xml:space="preserve"><value>Die SKU '{0}' wird bereits von einem anderen Produkt verwendet.</value></data> <!-- ako:sample -->
+  <data name="products.sku_format" xml:space="preserve"><value>Die SKU darf nur Buchstaben, Ziffern und Bindestriche enthalten.</value></data> <!-- ako:sample -->
+  <data name="field.title" xml:space="preserve"><value>Titel</value></data> <!-- ako:todos -->
+  <data name="field.isDone" xml:space="preserve"><value>Erledigt</value></data> <!-- ako:todos -->
+  <data name="field.sku" xml:space="preserve"><value>SKU</value></data> <!-- ako:sample -->
   <data name="field.name" xml:space="preserve"><value>Name</value></data>
   <data name="field.description" xml:space="preserve"><value>Beschreibung</value></data>
-  <data name="field.price" xml:space="preserve"><value>Preis</value></data>
-  <data name="field.stock" xml:space="preserve"><value>Bestand</value></data>
+  <data name="field.price" xml:space="preserve"><value>Preis</value></data> <!-- ako:sample -->
+  <data name="field.stock" xml:space="preserve"><value>Bestand</value></data> <!-- ako:sample -->
   <data name="field.page" xml:space="preserve"><value>Seite</value></data>
   <data name="field.pageSize" xml:space="preserve"><value>Seitengröße</value></data>
   <data name="field.search" xml:space="preserve"><value>Suche</value></data>
@@ -67,9 +67,9 @@
   <data name="auth.user_not_found" xml:space="preserve"><value>Benutzer '{0}' wurde nicht gefunden.</value></data>
   <data name="auth.cannot_remove_own_admin" xml:space="preserve"><value>Sie können Ihre eigene Admin-Rolle nicht entfernen.</value></data>
   <data name="field.roles" xml:space="preserve"><value>Rollen</value></data>
-  <data name="products.image_url_format" xml:space="preserve"><value>Die Bild-URL muss ein mit "/" beginnender Pfad oder eine https-Adresse sein.</value></data>
-  <data name="field.category" xml:space="preserve"><value>Kategorie</value></data>
-  <data name="field.imageUrl" xml:space="preserve"><value>Bild</value></data>
+  <data name="products.image_url_format" xml:space="preserve"><value>Die Bild-URL muss ein mit "/" beginnender Pfad oder eine https-Adresse sein.</value></data> <!-- ako:sample -->
+  <data name="field.category" xml:space="preserve"><value>Kategorie</value></data> <!-- ako:sample -->
+  <data name="field.imageUrl" xml:space="preserve"><value>Bild</value></data> <!-- ako:sample -->
   <data name="localization.language_not_found" xml:space="preserve"><value>Die Sprache '{0}' wurde nicht gefunden.</value></data>
   <data name="localization.language_exists" xml:space="preserve"><value>Die Sprache '{0}' existiert bereits.</value></data>
   <data name="localization.namespace_not_found" xml:space="preserve"><value>Es gibt keinen Übersetzungsbereich namens '{0}'.</value></data>

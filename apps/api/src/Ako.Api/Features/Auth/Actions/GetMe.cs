@@ -8,9 +8,13 @@ namespace Ako.Api.Features.Auth;
 
 #region İş mantığı
 
+// ako:begin guest
 public sealed class GetMeHandler(UserManager<AppUser> users, GuestAccounts guests)
+// ako:else guest
+//~ public sealed class GetMeHandler(UserManager<AppUser> users)
+// ako:end guest
 {
-    /// <summary>Token'daki kullanıcıyı bulur; rollerini ve bağlı sosyal hesaplarını ekler.</summary>
+    /// <summary>Token'daki kullanıcıyı bulur; rollerini ve (sosyal giriş açıksa) bağlı sosyal hesaplarını ekler.</summary>
     public async Task<MeResponse?> HandleAsync(ClaimsPrincipal principal)
     {
         var user = await users.GetUserAsync(principal);
@@ -20,16 +24,22 @@ public sealed class GetMeHandler(UserManager<AppUser> users, GuestAccounts guest
         }
 
         var roles = await users.GetRolesAsync(user);
+        // ako:begin guest
         if (roles.Contains(Ako.Api.Common.AppRoles.Guest))
         {
             await guests.TouchAsync(user); // temizlik işi için "son görülme"
         }
+        // ako:end guest
 
+        // ako:begin social
         var logins = await users.GetLoginsAsync(user);
         return new MeResponse(
             user.Id, user.Email, user.UserName!, user.EmailConfirmed,
             [.. roles],
             [.. logins.Select(l => ExternalProviders.All.FirstOrDefault(p => p.Scheme == l.LoginProvider)?.Slug ?? l.LoginProvider)]);
+        // ako:else social
+        //~ return new MeResponse(user.Id, user.Email, user.UserName!, user.EmailConfirmed, [.. roles], []);
+        // ako:end social
     }
 }
 

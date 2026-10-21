@@ -1,18 +1,33 @@
 import { applyFieldErrors, isApiError } from '@ako/api-client';
+// ako:begin social
 import { useGetAuthProviders, useLogin } from '@ako/api-client/auth';
+// ako:else social
+//~ import { useLogin } from '@ako/api-client/auth';
+// ako:end social
 import { LoginBody } from '@ako/api-client/zod/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Button, Field, Input, Text } from '@mari-ui/native';
+// ako:begin social
+import { Alert } from '@mari-ui/native/alert';
+import { Button } from '@mari-ui/native/button';
+import { Field } from '@mari-ui/native/field';
+import { Input } from '@mari-ui/native/input';
+import { Text } from '@mari-ui/native/typography';
+// ako:else social
+//~ import { Alert } from '@mari-ui/native/alert';
+//~ import { Button } from '@mari-ui/native/button';
+//~ import { Field } from '@mari-ui/native/field';
+//~ import { Input } from '@mari-ui/native/input';
+// ako:end social
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Platform, View } from 'react-native';
+import { Platform, View } from 'react-native'; // ako:social
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { AuthScreen } from '~/features/auth/components/auth-screen';
-import { SocialButton } from '~/features/auth/components/social-button';
+import { SocialButton } from '~/features/auth/components/social-button'; // ako:social
 import { useSession } from '~/features/auth/session';
 import { useT } from '~/features/localization/i18n';
-import { PROVIDER_LABELS, nativeSupported, useSocialLogin } from '~/features/auth/social-login';
+import { PROVIDER_LABELS, nativeSupported, useSocialLogin } from '~/features/auth/social-login'; // ako:social
 
 const Schema = LoginBody.pick({ email: true, password: true }).extend({ email: z.email() });
 type Values = z.infer<typeof Schema>;
@@ -21,8 +36,8 @@ export default function LoginScreen() {
   const { verified } = useLocalSearchParams<{ verified?: string }>();
   const { signIn } = useSession();
   const t = useT();
-  const providers = useGetAuthProviders();
-  const social = useSocialLogin();
+  const providers = useGetAuthProviders(); // ako:social
+  const social = useSocialLogin(); // ako:social
   const [message, setMessage] = useState<string | null>(null);
   const form = useForm<Values>({
     resolver: zodResolver(Schema),
@@ -88,6 +103,7 @@ export default function LoginScreen() {
       <Button block loading={login.isPending} onPress={submit}>
         {t('auth.login.submit')}
       </Button>
+      {/* ako:begin social */}
       {(providers.data?.external.length ?? 0) > 0 ? (
         <View style={{ gap: 10 }}>
           <Text muted style={{ textAlign: 'center' }}>
@@ -117,6 +133,7 @@ export default function LoginScreen() {
           })}
         </View>
       ) : null}
+      {/* ako:end social */}
       <Button variant="link" onPress={() => router.push('/register')}>
         {t('auth.login.register')}
       </Button>

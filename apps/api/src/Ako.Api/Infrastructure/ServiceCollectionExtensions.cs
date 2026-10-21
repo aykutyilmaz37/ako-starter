@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(TimeProvider.System);
 
-        // ako:begin auth
+        // ako:begin guest
         // Misafir verisini taşıyan özellik kancaları (Common.IGuestDataMerger): kişisel veri tutan her özellik kendini ekler.
         var mergers = assembly.GetTypes()
             .Where(t => t is { IsClass: true, IsAbstract: false } && typeof(IGuestDataMerger).IsAssignableFrom(t));
@@ -56,7 +56,7 @@ public static class ServiceCollectionExtensions
         {
             services.AddScoped(typeof(IGuestDataMerger), merger);
         }
-        // ako:end auth
+        // ako:end guest
 
         // Sayılar yalnızca sayı olarak kabul edilir ("12" değil 12). Aksi hâlde OpenAPI şeması
         // her sayıyı "integer | string" yazar ve api-client tipleri number | string olur.

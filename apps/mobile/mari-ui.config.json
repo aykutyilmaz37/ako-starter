@@ -19,6 +19,11 @@
       "neutral-border": "#6e5e50"
     }
   },
-  "density": { "radius": "lg", "spacing": "comfortable", "shadow": "soft" },
-  "motion": "calm"
+  "density": {
+    "radius": "lg",
+    "spacing": "comfortable",
+    "shadow": "soft"
+  },
+  "motion": "calm",
+  "platform": "native"
 }
