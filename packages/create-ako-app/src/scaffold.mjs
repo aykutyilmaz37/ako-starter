@@ -9,7 +9,7 @@ import {
   writeFileSync,
   copyFileSync,
 } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { applyMarkers, hasMarkers } from './markers.mjs';
 import {
@@ -77,6 +77,15 @@ export function removeJsonKeys(text, keys) {
   return `${formatJson(json)}\n`;
 }
 
+/**
+ * npm yayınlanan paketten `.gitignore` dosyalarını düşürür; `build:template` onları bu adla saklar,
+ * üretimde eski adına döner.
+ */
+export const PACKED_GITIGNORE = '_gitignore';
+
+const targetPath = (file) =>
+  basename(file) === PACKED_GITIGNORE ? join(dirname(file), '.gitignore') : file;
+
 /** Yayınlanan pakette `template/` yanında durur; depodan çalışınca deponun kökü kullanılır. */
 export function resolveTemplate(explicit) {
   if (explicit) return resolve(explicit);
@@ -112,7 +121,7 @@ export function scaffold({ target, template, choices, skipVariants = false, log 
 
   for (const file of files) {
     const from = join(template, file);
-    const to = join(target, file);
+    const to = join(target, targetPath(file));
     mkdirSync(dirname(to), { recursive: true });
     if (plan.disabled.size > 0 && MARKED_EXTENSIONS.test(file)) {
       const text = readFileSync(from, 'utf8');
