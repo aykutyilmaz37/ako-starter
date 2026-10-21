@@ -1,5 +1,15 @@
 # create-ako-app
 
+## 0.2.0
+
+### Minor Changes
+
+- 6068d59: Üretilen projeler deploy'a hazır: web uygulamaları için Dockerfile, tek sunucu + Docker için `compose.prod.yaml` ve `.env.prod.example` (postgres → migrate → API → site/backoffice, sağlık kontrolleri), API'de `dotnet Ako.Api.dll migrate` deploy adımı (migration + ilk Admin hesabı) ve README'de deploy bölümü. Sosyal girişten dönüşte dil korunur. Web uygulamalarında `GET /health`.
+
+### Patch Changes
+
+- 6068d59: mari-ui 0.6.0: üretilen projelerde mari-ui CLI'ın yazdığı kural dosyaları (AGENTS.md, CLAUDE.md…) Prettier biçiminde; `.prettierignore` istisnaları kalktı. Bileşenlerde değişiklik yok.
+
 ## 0.1.2
 
 ### Patch Changes
