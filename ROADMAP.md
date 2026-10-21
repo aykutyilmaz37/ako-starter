@@ -63,7 +63,8 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 - [x] Mobil uygulama feature-tabanlı yapıya taşındı (`features/{auth,catalog,shopping-list,localization,theme}`, `shared/{components,lib}`; DECISIONS.md). Backend'siz varyantta ekranlardaki `ako:backend` işaretleri kalktı, varyant dosyaları hook'ları değiştirir. **Cihazda/simülatörde elle denenmedi** (typecheck + `verify`).
 - [x] mari-ui 0.4.0'a geçiş (Table `footer` + `Pagination`, Empty `actions`, mobilde alt yol importları + eslint `no-restricted-imports`); backend'siz varyant da güncellendi, `verify` geçti.
 - [x] ~~Her kombinasyonu CI'da otomatik üretip derleme~~: iptal, çok uzun sürüyor; yerelde `verify` yeterli.
-- [ ] `npm create ako-app` yayın akışı. **Talimat bekliyor.**
+- [x] `npm create ako-app` yayın hazırlığı: paket metadata'sı (MIT, 0.1.0), prepack/postpack ile `template/`, `.gitignore` → `_gitignore` dönüşümü, lockfile pakette; tarball'dan üretilen proje typecheck/lint/test/build geçti.
+- [ ] İlk yayın (`npm publish`, 0.1.0). **Talimat bekliyor.**
 - [x] mari-ui 0.5.0: CLI platform ayırıyor (`mari-ui.config.json` → `platform`: web ve mobilde ayrı); mobilde native kuralları yazıldı, `ai-rules` geri eklendi.
 
 **Bitti:** en az 5 kombinasyon (yalnız web, yalnız mobil, ikisi, auth/dil kapalı, yalnız mobil + backend yok) üretilip derleniyor.
