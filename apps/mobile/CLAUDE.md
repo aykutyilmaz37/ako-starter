@@ -1,4 +1,5 @@
 <!-- mari-ui:start -->
+
 ## mari-ui (React Native)
 
 Bu proje mari-ui'ın React Native katmanını (`@mari-ui/native`) kullanıyor.
@@ -16,4 +17,5 @@ Kesin kurallar:
 6. **Etkileşim `onPress`, erişilebilirlik zorunlu.** Dokunma olayı `onPress` / `onLongPress`. Kendi dokunulabilir öğende (`Pressable`) `accessibilityRole` ve `accessibilityLabel` zorunlu; yalnız ikonlu `Button`, `AppBarAction`, `FloatButton` için `accessibilityLabel` ver. Form kontrolü `Field` içinde ya da `accessibilityLabel` ile adlı. _Neden:_ Ekran okuyucu (VoiceOver/TalkBack) adı ve rolü yalnız bu prop'lardan okur.
 7. **Gezinme router'la.** Sayfa geçişi router'ın gezinme fonksiyonuyla yapılır (ör. `onPress={() => router.push("/orders")}`). `Sidebar` için `onNavigate`, `BottomNavigation` için `onChange` içinde router'ı çağır. Adres string'iyle çalışan bağlantı öğesi yok. _Neden:_ React Native'de bağlantı etiketi yoktur; geçmiş, geri tuşu ve derin bağlantı router'da yönetilir.
 8. **Yüklenme `skeleton` ile.** Veri beklenirken component'in kendi `skeleton` prop'unu kullan (aynı boyutta iskelet çizer). Elle iskelet ya da tek başına spinner çizme. _Neden:_ Ekran yüklenince yerleşim zıplamaz; tüm uygulamada aynı yükleme dili.
+
 <!-- mari-ui:end -->

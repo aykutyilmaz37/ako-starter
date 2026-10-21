@@ -2,7 +2,9 @@
 name: mari-ui-native
 description: mari-ui React Native (@mari-ui/native) ile ekran, form ya da component kurarken kullan — component envanteri, prop sözleşmesi, kesin kurallar, ekran kalıpları ve component seçimi.
 ---
+
 <!-- mari-ui:start -->
+
 # mari-ui Tasarım Sistemi Kuralları — React Native (`@mari-ui/native`)
 
 Bu dosya `npx @mari-ui/cli sync` ile OTOMATİK üretilir — `manifest.json` (component envanteri + prop sözleşmesi) ve projenin çözümlenmiş temasından türetilir. Elle düzenlemeyin; değişiklik için `mari-ui.config.json`ı güncelleyip `npx @mari-ui/cli sync`i tekrar çalıştırın.
@@ -118,26 +120,26 @@ Kesin kurallar yalnız component kullanımı, token'lar ve erişilebilirlik içi
 
 mari-ui component'leri beş paylaşılan eksenden konuşur — component'e özel isim UYDURMAYIN:
 
-| Eksen | Geçerli değerler |
-|---|---|
-| `ColorRole` | `primary`, `accent`, `success`, `error`, `warning`, `info`, `neutral` |
-| `Size` | `sm`, `md`, `lg` |
-| `ExtendedSize` | `sm`, `md`, `lg`, `xs`, `xl` |
-| `Variant` | `solid`, `outline`, `soft`, `ghost`, `link` |
-| `Radius` | `sm`, `md`, `lg`, `xl`, `none`, `full` |
-| `Placement` | `top`, `top-start`, `top-end`, `right`, `right-start`, `right-end`, `bottom`, `bottom-start`, `bottom-end`, `left`, `left-start`, `left-end` |
+| Eksen          | Geçerli değerler                                                                                                                             |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ColorRole`    | `primary`, `accent`, `success`, `error`, `warning`, `info`, `neutral`                                                                        |
+| `Size`         | `sm`, `md`, `lg`                                                                                                                             |
+| `ExtendedSize` | `sm`, `md`, `lg`, `xs`, `xl`                                                                                                                 |
+| `Variant`      | `solid`, `outline`, `soft`, `ghost`, `link`                                                                                                  |
+| `Radius`       | `sm`, `md`, `lg`, `xl`, `none`, `full`                                                                                                       |
+| `Placement`    | `top`, `top-start`, `top-end`, `right`, `right-start`, `right-end`, `bottom`, `bottom-start`, `bottom-end`, `left`, `left-start`, `left-end` |
 
 ## Token listesi (bu projenin ÇÖZÜMLENMİŞ tema değerleri)
 
-| Rol | solid (dolgu) | solidContrast (dolgu üstü metin) | subtle (yumuşak dolgu) | text (yüzey üstü metin/ikon) |
-|---|---|---|---|---|
-| `primary` | `#78340b` | `#ffffff` | `#f8d0b8` | `#78340b` |
-| `accent` | `#ae5e3d` | `#ffffff` | `#f1e0d8` | `#7b432b` |
-| `success` | `#047857` | `#ffffff` | `#d1fae5` | `#047857` |
-| `error` | `#dc2626` | `#ffffff` | `#fee2e2` | `#b91c1c` |
-| `warning` | `#fbbf24` | `#201c19` | `#fef3c7` | `#92400e` |
-| `info` | `#0369a1` | `#ffffff` | `#e0f2fe` | `#0369a1` |
-| `neutral` | `#6e5e50` | `#ffffff` | `#f3ece2` | `#6e5e50` |
+| Rol       | solid (dolgu) | solidContrast (dolgu üstü metin) | subtle (yumuşak dolgu) | text (yüzey üstü metin/ikon) |
+| --------- | ------------- | -------------------------------- | ---------------------- | ---------------------------- |
+| `primary` | `#78340b`     | `#ffffff`                        | `#f8d0b8`              | `#78340b`                    |
+| `accent`  | `#ae5e3d`     | `#ffffff`                        | `#f1e0d8`              | `#7b432b`                    |
+| `success` | `#047857`     | `#ffffff`                        | `#d1fae5`              | `#047857`                    |
+| `error`   | `#dc2626`     | `#ffffff`                        | `#fee2e2`              | `#b91c1c`                    |
+| `warning` | `#fbbf24`     | `#201c19`                        | `#fef3c7`              | `#92400e`                    |
+| `info`    | `#0369a1`     | `#ffffff`                        | `#e0f2fe`              | `#0369a1`                    |
+| `neutral` | `#6e5e50`     | `#ffffff`                        | `#f3ece2`              | `#6e5e50`                    |
 
 ## Anti-pattern'ler
 
@@ -190,7 +192,10 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   const scheme = useColorScheme();
   const insets = useSafeAreaInsets();
   return (
-    <ThemeProvider theme={scheme === "dark" ? mariTheme.dark : mariTheme.light} insets={insets}>
+    <ThemeProvider
+      theme={scheme === "dark" ? mariTheme.dark : mariTheme.light}
+      insets={insets}
+    >
       <ToastProvider>{children}</ToastProvider>
     </ThemeProvider>
   );
@@ -205,7 +210,10 @@ Token boyutları `"1rem"`, `"8px"` gibi string'dir; React Native sayı ister. Pr
 
 ```ts
 // src/theme/px.ts
-export const px = (value: string) => (value.endsWith("rem") ? Number.parseFloat(value) * 16 : Number.parseFloat(value));
+export const px = (value: string) =>
+  value.endsWith("rem")
+    ? Number.parseFloat(value) * 16
+    : Number.parseFloat(value);
 ```
 
 ```tsx
@@ -218,9 +226,21 @@ import { px } from "../theme/px";
 export function EmptyCart({ onShop }: { onShop: () => void }) {
   const theme = useTheme();
   return (
-    <View style={[styles.box, { backgroundColor: theme.color.canvas.surfaceAlt, gap: px(theme.spacing[3]), padding: px(theme.spacing[4]), borderRadius: px(theme.radius.lg) }]}>
+    <View
+      style={[
+        styles.box,
+        {
+          backgroundColor: theme.color.canvas.surfaceAlt,
+          gap: px(theme.spacing[3]),
+          padding: px(theme.spacing[4]),
+          borderRadius: px(theme.radius.lg),
+        },
+      ]}
+    >
       <Text muted>Sepetiniz boş.</Text>
-      <Button color="primary" onPress={onShop}>Alışverişe başla</Button>
+      <Button color="primary" onPress={onShop}>
+        Alışverişe başla
+      </Button>
     </View>
   );
 }
@@ -267,19 +287,20 @@ Brief'i projenin README'sine (ya da bir `docs/design-brief.md`ye) kısa not olar
 
 ### Component seçimi
 
-| Durum | Kullan | Kullanma |
-|---|---|---|
-| Kısa karar ya da onay | `Dialog` / `Modal` | Uzun form için Modal |
-| Alttan açılan içerik, filtre, uzun seçim | `BottomSheet` | Tek bir onay sorusu için BottomSheet |
-| Eylem menüsü (düzenle, paylaş, sil…) | `ActionSheet` | Değer seçimi → `Select` |
-| Tetikleyiciye bağlı kısa içerik | `Popover` | |
-| 2–5 seçenekten biri, hepsi görünsün | `Segmented` ya da `RadioGroup` | Uzun liste → `Select` |
-| Anında uygulanan aç/kapa | `Switch` | Gönderilecek formda onay → `Checkbox` |
-| İşlem sonrası geçici bildirim | `useToast().showToast({ title, type })` | Kalıcı uyarı → `Alert` |
-| Kayıt yok / sonuç yok | `Empty` (`actions` ile) | Boş ekran |
+| Durum                                    | Kullan                                  | Kullanma                              |
+| ---------------------------------------- | --------------------------------------- | ------------------------------------- |
+| Kısa karar ya da onay                    | `Dialog` / `Modal`                      | Uzun form için Modal                  |
+| Alttan açılan içerik, filtre, uzun seçim | `BottomSheet`                           | Tek bir onay sorusu için BottomSheet  |
+| Eylem menüsü (düzenle, paylaş, sil…)     | `ActionSheet`                           | Değer seçimi → `Select`               |
+| Tetikleyiciye bağlı kısa içerik          | `Popover`                               |                                       |
+| 2–5 seçenekten biri, hepsi görünsün      | `Segmented` ya da `RadioGroup`          | Uzun liste → `Select`                 |
+| Anında uygulanan aç/kapa                 | `Switch`                                | Gönderilecek formda onay → `Checkbox` |
+| İşlem sonrası geçici bildirim            | `useToast().showToast({ title, type })` | Kalıcı uyarı → `Alert`                |
+| Kayıt yok / sonuç yok                    | `Empty` (`actions` ile)                 | Boş ekran                             |
 
 ### Tema
 
 - Kişilik (`persona`) renk, font, köşe, boşluk ve hareketi birlikte seçer; `mari-ui.config.json` değişince `npx @mari-ui/cli theme --yes` ve `npx @mari-ui/cli sync`. Kodda tema değeri sabitleme.
 - Koyu mod: `ThemeProvider`a doğru temayı vermek yeter; component'ler ve `useTheme()` değerleri ona göre döner, ayrıca renk dalı yazma.
+
 <!-- mari-ui:end -->
