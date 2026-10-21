@@ -71,4 +71,4 @@ docker compose -f compose.prod.yaml --env-file .env.prod up -d --build
 pnpm --filter create-ako-app changeset
 ```
 
-Ayrıntı: [packages/create-ako-app → Yayın](packages/create-ako-app/README.md#yayın).
+Ayrıntı: [packages/create-ako-app/RELEASING.md](packages/create-ako-app/RELEASING.md).
