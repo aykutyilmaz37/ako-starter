@@ -2,8 +2,17 @@
 
 export const WEB_APPS = ['site', 'backoffice'];
 
-/** Şablonun kendisine ait olan, üretilen projeye hiç girmeyen yollar (lisans: proje kendi lisansını seçer). */
-export const TEMPLATE_ONLY = ['ROADMAP.md', 'LICENSE', 'packages/create-ako-app'];
+/**
+ * Şablonun kendisine ait olan, üretilen projeye hiç girmeyen yollar: lisans (proje kendi lisansını
+ * seçer) ve create-ako-app'in npm yayın düzeni (changesets, release iş akışı).
+ */
+export const TEMPLATE_ONLY = [
+  'ROADMAP.md',
+  'LICENSE',
+  '.changeset',
+  '.github/workflows/release.yml',
+  'packages/create-ako-app',
+];
 
 /** Auth kapalıyken silinen yollar (API tarafı). İstemci tarafı sonraki adımda eklenir. */
 const API = 'apps/api/src/Ako.Api';

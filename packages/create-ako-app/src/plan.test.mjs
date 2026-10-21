@@ -15,7 +15,13 @@ const both = { name: 'demo', web: ['site', 'backoffice'], mobile: true };
 describe('buildPlan', () => {
   it('her şey seçiliyken yalnızca şablona ait yolları çıkarır', () => {
     const plan = buildPlan(both);
-    expect(plan.remove).toEqual(['ROADMAP.md', 'LICENSE', 'packages/create-ako-app']);
+    expect(plan.remove).toEqual([
+      'ROADMAP.md',
+      'LICENSE',
+      '.changeset',
+      '.github/workflows/release.yml',
+      'packages/create-ako-app',
+    ]);
     expect(plan.keepE2e).toBe(true);
   });
 

@@ -43,10 +43,14 @@
     "build:template": "node scripts/build-template.mjs",
     "verify": "node scripts/verify-combos.mjs",
     "variants": "node scripts/refresh-variants.mjs",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "node scripts/stage-release.mjs",
     "prepack": "node scripts/build-template.mjs",
     "postpack": "node scripts/build-template.mjs --clean"
   },
   "devDependencies": {
+    "@changesets/cli": "3.0.3",
     "@types/node": "^26.6.5",
     "vitest": "^5.0.5"
   }

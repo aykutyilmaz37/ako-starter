@@ -1,0 +1,61 @@
+name: Release
+
+# main'e changeset'li bir PR birleşince changesets/action bir "sürüm paketleri" PR'ı açar
+# (create-ako-app sürümü + CHANGELOG). O PR merge edilince npm'de olmayan sürüm TASLAK olarak
+# yüklenir (packages/create-ako-app/scripts/stage-release.mjs, `npm stage publish`); npmjs.com →
+# Staged Packages'tan 2FA ile onaylanınca yayınlanır.
+# Kimlik GitHub OIDC (trusted publishing): token yok, provenance npm'ce eklenir.
+# Bu dosya şablona aittir; üretilen projeye girmez (create-ako-app TEMPLATE_ONLY).
+
+on:
+  push:
+    branches: [main]
+  # Elle çalıştırma (Actions → Release → Run workflow): ayarlar sonradan tamamlandığında
+  # ya da yarım kalan yayını yeniden denemek için.
+  workflow_dispatch:
+
+concurrency: release-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+  # npm trusted publishing (OIDC) ve provenance; repo public olmalı.
+  id-token: write
+
+jobs:
+  release:
+    name: Version PR / npm yayını
+    # Repo değişkeni RELEASE_ENABLED=true yapılana kadar çalışmaz (npm'de trusted publisher
+    # tanımlanmadan her main push'unda yayın denenip düşerdi).
+    if: vars.RELEASE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      # CI ile aynı Node (.nvmrc). `registry-url` YOK: setup-node'un yazdığı .npmrc'deki boş
+      # `_authToken`, npm'in OIDC değişimini engelleyebiliyor.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # `npm stage publish` npm CLI 11.15.0+ ister.
+      - name: npm CLI (staged publishing)
+        run: npm install -g npm@^11.15.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Version PR ya da yayın
+        uses: changesets/action@v2
+        with:
+          version-script: pnpm --filter create-ako-app version-packages
+          publish-script: pnpm --filter create-ako-app release
+          pr-title: 'chore: sürüm paketleri'
+          commit-message: 'chore: sürüm paketleri'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Taslak onaylanmadan "yayınlandı" sayılmasın: sürüm etiketi / GitHub Release yok.
+          create-github-releases: false
+          push-git-tags: false

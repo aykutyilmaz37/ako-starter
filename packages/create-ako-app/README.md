@@ -42,14 +42,18 @@ Depodan çalıştırmak: `node packages/create-ako-app/bin/create-ako-app.mjs ..
 
 ## Yayın
 
-Şablon deponun **commit'lenmiş** dosyalarından üretilir (`git ls-files`); commit'lenmemiş değişiklik pakete girmez.
+Otomatik, mari-ui ile aynı düzen: changesets + GitHub OIDC (trusted publishing, token yok) + taslak yayın.
 
-```bash
-pnpm --filter create-ako-app verify                 # tüm kombinasyonlar geçmeli
-cd packages/create-ako-app
-npm version <patch|minor>                            # sürüm
-npm pack --dry-run                                   # içerik kontrolü (prepack template/ üretir, postpack siler)
-npm publish
-```
+1. Şablonda kullanıcıyı etkileyen her PR bir changeset taşır: `pnpm --filter create-ako-app changeset` (`0.x`'te kırıcı değişiklik `minor`, gerisi `patch`).
+2. PR main'e birleşince `.github/workflows/release.yml` bir **"chore: sürüm paketleri"** PR'ı açar (sürüm + `CHANGELOG.md`).
+3. O PR merge edilince paket npm'e **taslak** olarak yüklenir (`scripts/stage-release.mjs`, `npm stage publish`).
+4. npmjs.com → **Staged Packages** → Approve (2FA) ile yayınlanır.
 
-Pakette: `bin`, `src`, `variants`, `template/` (deponun kopyası; `.gitignore`'lar `_gitignore` adıyla, üretimde geri döner), `LICENSE`. Kökteki `LICENSE` ve `ROADMAP.md` üretilen projeye girmez.
+Şablon deponun **commit'lenmiş** dosyalarından üretilir (`git ls-files`). Pakette: `bin`, `src`, `variants`, `template/` (deponun kopyası; `.gitignore`'lar `_gitignore` adıyla, üretimde geri döner; prepack üretir, postpack siler), `LICENSE`. Kökteki `LICENSE`, `ROADMAP.md`, `.changeset/` ve `release.yml` üretilen projeye girmez. Yayından önce `pnpm --filter create-ako-app verify` ile tüm kombinasyonların geçtiğini doğrulayın.
+
+### Bir kerelik kurulum
+
+- **İlk sürüm elle:** npm'de trusted publisher paket sayfasından tanımlandığı için paket önce var olmalı. `npm login`, sonra main'den `cd packages/create-ako-app && npm publish`.
+- **Trusted publisher:** npmjs.com → `create-ako-app` → Settings → Trusted Publisher → GitHub Actions: kullanıcı `aykutyilmaz37`, depo `ako-starter`, iş akışı `release.yml` (environment boş).
+- **Token'ları kapat:** aynı sayfada Publishing access → "Require two-factor authentication and disallow tokens".
+- **İş akışını aç:** GitHub → Settings → Secrets and variables → Actions → Variables → `RELEASE_ENABLED` = `true`. Ayrıca Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests" açık olmalı (sürüm PR'ı için).
