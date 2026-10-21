@@ -80,7 +80,8 @@ tarayıcı ──/api/*──▶ Hono BFF ──Bearer token──▶ .NET API
 - Token'lar AES-GCM ile şifrelenmiş httpOnly çerezde; sunucuda oturum deposu yok.
 - `/api/*` API'ye iletilir; 401'de token sunucuda yenilenir ve çerez güncellenir.
 - `useLogin` ve `useExchangeLoginCode` web'de de aynen çalışır: BFF token'ı çereze yazar, tarayıcıya `{}` döner.
-- Sosyal giriş: `/bff/external/<sağlayıcı>` (tam sayfa yönlendirme) → API → sağlayıcı → `/bff/external/callback`.
+- Sosyal giriş: `/bff/external/<sağlayıcı>?next=…&login=…` (tam sayfa yönlendirme) → API → sağlayıcı → `/bff/external/callback` → `next` (hatada `login`); dönüş adresleri dil önekini korur.
+- Docker: `apps/web/Dockerfile` (`docker build -f apps/web/Dockerfile --build-arg APP=site .`), çalışma imajı 3000'de dinler; canlılık `GET /health`. Örnek kurulum: kökteki `compose.prod.yaml`.
 - Çıkış: `logout()` (`app/shared/api.ts`) → `POST /bff/logout`.
 - Backoffice: `requiredRole: 'Admin'`; Admin olmayan kullanıcı girişte 403 alır.
 - Gerçek istemci IP'si `X-Forwarded-For` ile API'ye iletilir (rate limiting için). API bu başlığa yalnızca

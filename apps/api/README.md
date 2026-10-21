@@ -155,8 +155,9 @@ Derleme bağlamı repo köküdür, çünkü web arayüzlerinin metin dosyaları 
 `docker build -f apps/api/Dockerfile -t ako-api .` (bağlama girenler `Dockerfile.dockerignore`'da).
 Ayarlar ortam değişkeniyle verilir (`ConnectionStrings__Default`, `Email__Smtp__Host`, `OTEL_EXPORTER_OTLP_ENDPOINT`…).
 Sağlık kontrolü imajda değil, çalıştıran ortamda tanımlanır (`/health/live`, `/health/ready`).
-Production'da migration'lar açılışta otomatik uygulanmaz; deploy adımında `dotnet ef database update`
-ya da `dotnet ef migrations bundle` ile çalıştırılır.
+Production'da migration'lar açılışta otomatik uygulanmaz; deploy adımında aynı imajla bir kez çalıştırılır:
+`dotnet Ako.Api.dll migrate` bekleyen migration'ları uygular, `Auth:Admin` doluysa ilk Admin hesabını açar ve çıkar
+(`Infrastructure/DatabaseMigrator.cs`; tekrar çalıştırmak güvenli). Kökteki `compose.prod.yaml`'da `migrate` servisi bunu yapar.
 
 ## Hatalar
 

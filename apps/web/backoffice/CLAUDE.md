@@ -1,4 +1,5 @@
 <!-- mari-ui:start -->
+
 ## mari-ui
 
 Bu proje mari-ui tasarım sistemini kullanıyor. Sayfa, form ya da component
@@ -15,4 +16,5 @@ Kesin kurallar:
 5. **Yüklenme `skeleton` ile.** Veri beklenirken component'in kendi `skeleton` prop'unu kullan (aynı boyutta iskelet çizer). Elle iskelet ya da tek başına spinner çizme. _Neden:_ Sayfa yüklenince yerleşim zıplamaz; tüm uygulamada aynı yükleme dili.
 6. **Erişilebilirlik temeli.** Yalnız ikonlu düğmelerde `aria-label`; her form kontrolü `Field` (ya da `label`/`aria-label`) ile adlı; tıklanabilir öğe `button`/`a`, `div onClick` değil. _Neden:_ Ekran okuyucu ve klavye kullanıcıları için asgari şart; component'ler gerisini çözüyor.
 7. **Linkler düz `<a href>`.** Menü/breadcrumb gibi component'lere `href` ver; SPA geçişi için `onNavigate` prop'una router'ın gezinme fonksiyonunu geçir. Router'a özel Link sarmalayıcısı yazma. _Neden:_ Component'ler router'dan bağımsız; yeni sekmede açma, dış link ve erişilebilirlik bu şekilde doğru çalışır.
+
 <!-- mari-ui:end -->

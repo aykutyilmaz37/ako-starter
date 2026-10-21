@@ -2,7 +2,9 @@
 name: mari-ui
 description: mari-ui tasarım sistemiyle sayfa, form ya da component kurarken kullan — component envanteri, prop sözleşmesi, kesin kurallar, sayfa kalıpları ve hangi durumda hangi component rehberi.
 ---
+
 <!-- mari-ui:start -->
+
 # mari-ui Tasarım Sistemi Kuralları
 
 Bu dosya `npx @mari-ui/cli sync` ile OTOMATİK üretilir — `manifest.json` (component envanteri + prop sözleşmesi) ve projenin çözümlenmiş temasından türetilir. Elle düzenlemeyin; değişiklik için `mari-ui.config.json`ı güncelleyip `npx @mari-ui/cli sync`i tekrar çalıştırın.
@@ -144,26 +146,26 @@ Kesin kurallar yalnız component kullanımı, token'lar ve erişilebilirlik içi
 
 mari-ui component'leri beş paylaşılan eksenden konuşur — component'e özel isim UYDURMAYIN:
 
-| Eksen | Geçerli değerler |
-|---|---|
-| `ColorRole` | `primary`, `accent`, `success`, `error`, `warning`, `info`, `neutral` |
-| `Size` | `sm`, `md`, `lg` |
-| `ExtendedSize` | `sm`, `md`, `lg`, `xs`, `xl` |
-| `Variant` | `solid`, `outline`, `soft`, `ghost`, `link` |
-| `Radius` | `sm`, `md`, `lg`, `xl`, `none`, `full` |
-| `Placement` | `top`, `top-start`, `top-end`, `right`, `right-start`, `right-end`, `bottom`, `bottom-start`, `bottom-end`, `left`, `left-start`, `left-end` |
+| Eksen          | Geçerli değerler                                                                                                                             |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ColorRole`    | `primary`, `accent`, `success`, `error`, `warning`, `info`, `neutral`                                                                        |
+| `Size`         | `sm`, `md`, `lg`                                                                                                                             |
+| `ExtendedSize` | `sm`, `md`, `lg`, `xs`, `xl`                                                                                                                 |
+| `Variant`      | `solid`, `outline`, `soft`, `ghost`, `link`                                                                                                  |
+| `Radius`       | `sm`, `md`, `lg`, `xl`, `none`, `full`                                                                                                       |
+| `Placement`    | `top`, `top-start`, `top-end`, `right`, `right-start`, `right-end`, `bottom`, `bottom-start`, `bottom-end`, `left`, `left-start`, `left-end` |
 
 ## Token listesi (bu projenin ÇÖZÜMLENMİŞ tema değerleri)
 
-| Rol | solid (dolgu) | solidContrast (dolgu üstü metin) | subtle (yumuşak dolgu) | text (yüzey üstü metin/ikon) |
-|---|---|---|---|---|
-| `primary` | `#6951ce` | `#ffffff` | `#ebe6ff` | `#6951ce` |
-| `accent` | `#765991` | `#ffffff` | `#eae3f2` | `#765991` |
-| `success` | `#047857` | `#ffffff` | `#d1fae5` | `#047857` |
-| `error` | `#dc2626` | `#ffffff` | `#fee2e2` | `#b91c1c` |
-| `warning` | `#fbbf24` | `#201c19` | `#fef3c7` | `#92400e` |
-| `info` | `#0369a1` | `#ffffff` | `#e0f2fe` | `#0369a1` |
-| `neutral` | `#696579` | `#ffffff` | `#f1effa` | `#696579` |
+| Rol       | solid (dolgu) | solidContrast (dolgu üstü metin) | subtle (yumuşak dolgu) | text (yüzey üstü metin/ikon) |
+| --------- | ------------- | -------------------------------- | ---------------------- | ---------------------------- |
+| `primary` | `#6951ce`     | `#ffffff`                        | `#ebe6ff`              | `#6951ce`                    |
+| `accent`  | `#765991`     | `#ffffff`                        | `#eae3f2`              | `#765991`                    |
+| `success` | `#047857`     | `#ffffff`                        | `#d1fae5`              | `#047857`                    |
+| `error`   | `#dc2626`     | `#ffffff`                        | `#fee2e2`              | `#b91c1c`                    |
+| `warning` | `#fbbf24`     | `#201c19`                        | `#fef3c7`              | `#92400e`                    |
+| `info`    | `#0369a1`     | `#ffffff`                        | `#e0f2fe`              | `#0369a1`                    |
+| `neutral` | `#696579`     | `#ffffff`                        | `#f1effa`              | `#696579`                    |
 
 ## Anti-pattern'ler
 
@@ -181,7 +183,7 @@ mari-ui component'leri beş paylaşılan eksenden konuşur — component'e özel
 
 ### Runtime'da Tailwind class string'i üretme
 
-- ❌ ``bg-mari-${color}-solid`  (template literal ile class ismi kurma)`
+- ❌ ``bg-mari-${color}-solid` (template literal ile class ismi kurma)`
 - ✅ `Literal bir Record<ColorRole, string> lookup tablosu kullan (ya da doğrudan mari-ui component'inin kendi color/variant prop'unu kullan)`
 - Neden: Tailwind derleme-zamanı statik tarayıcıdır — template literal ile kurulan class asla üretilmez. Bu, projenin kendi geçmişinde Skeleton/Tag/Loading'i SESSİZCE bozan gerçek bir bug'dı (plan Faz 3).
 
@@ -233,25 +235,25 @@ Brief'i projenin README'sine (ya da bir `docs/design-brief.md`ye) kısa not olar
 
 ### Component seçimi
 
-| Durum | Kullan | Kullanma |
-|---|---|---|
-| Kullanıcının odaklanması gereken kısa karar/form | `Modal` | Uzun form için Modal |
-| Bağlamı kaybetmeden yan panelde düzenleme/detay | `Drawer` | Tek bir onay sorusu için Drawer |
-| Bir eylemin hemen yanında "emin misiniz?" | `Popconfirm` | Geri alınamaz büyük işlem → `Modal` |
-| Kısa açıklama, yalnız metin, etkileşim yok | `Tooltip` | İçinde düğme/link → `Popover` |
-| Tetikleyiciye bağlı zengin içerik (form, liste) | `Popover` | |
-| Eylem menüsü (düzenle, sil…) | `Dropdown` | Değer seçimi için Dropdown → `Select` |
-| 2–5 seçenekten biri, hepsi görünsün | `Segmented` ya da `RadioGroup` | Uzun liste → `Select` |
-| Çok seçenekten biri/birkaçı | `Select` | |
-| Anında uygulanan aç/kapa | `Switch` | Gönderilecek formda onay → `Checkbox` |
-| İşlem sonrası geçici bildirim | Toast (`ToastProvider` + `useToast`) | Kalıcı uyarı → `Alert` |
-| Sayfada kalıcı uyarı/bilgi | `Alert` | |
-| Aynı seviyede içerik grupları arası geçiş | `Tabs` | Sıralı süreç → `Steps` |
-| Kayıt yok / sonuç yok | `Empty` (eylem düğmesiyle) | Boş beyaz alan |
-| Zaman içinde değişim (aylık gelir, günlük ziyaret) | `LineChart` (`area` ile alan) | Kategori karşılaştırması için çizgi |
-| Kategoriler arası büyüklük (kanal, bölge, ürün) | `BarChart` (uzun adlarda `layout="horizontal"`, parça–bütün için `stacked`) | 6'dan çok parçalı pasta |
-| Bir bütünün 2–6 parçası | `PieChart` (`donut` ile toplam ortada) | Parçaları hassas karşılaştırmak → `BarChart` |
-| Tek değerin aralıktaki yeri (doluluk, hedef, skor) | `Gauge` (eşikler için `segments`) | Doğrusal ilerleme → `Progress` |
+| Durum                                              | Kullan                                                                      | Kullanma                                     |
+| -------------------------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------- |
+| Kullanıcının odaklanması gereken kısa karar/form   | `Modal`                                                                     | Uzun form için Modal                         |
+| Bağlamı kaybetmeden yan panelde düzenleme/detay    | `Drawer`                                                                    | Tek bir onay sorusu için Drawer              |
+| Bir eylemin hemen yanında "emin misiniz?"          | `Popconfirm`                                                                | Geri alınamaz büyük işlem → `Modal`          |
+| Kısa açıklama, yalnız metin, etkileşim yok         | `Tooltip`                                                                   | İçinde düğme/link → `Popover`                |
+| Tetikleyiciye bağlı zengin içerik (form, liste)    | `Popover`                                                                   |                                              |
+| Eylem menüsü (düzenle, sil…)                       | `Dropdown`                                                                  | Değer seçimi için Dropdown → `Select`        |
+| 2–5 seçenekten biri, hepsi görünsün                | `Segmented` ya da `RadioGroup`                                              | Uzun liste → `Select`                        |
+| Çok seçenekten biri/birkaçı                        | `Select`                                                                    |                                              |
+| Anında uygulanan aç/kapa                           | `Switch`                                                                    | Gönderilecek formda onay → `Checkbox`        |
+| İşlem sonrası geçici bildirim                      | Toast (`ToastProvider` + `useToast`)                                        | Kalıcı uyarı → `Alert`                       |
+| Sayfada kalıcı uyarı/bilgi                         | `Alert`                                                                     |                                              |
+| Aynı seviyede içerik grupları arası geçiş          | `Tabs`                                                                      | Sıralı süreç → `Steps`                       |
+| Kayıt yok / sonuç yok                              | `Empty` (eylem düğmesiyle)                                                  | Boş beyaz alan                               |
+| Zaman içinde değişim (aylık gelir, günlük ziyaret) | `LineChart` (`area` ile alan)                                               | Kategori karşılaştırması için çizgi          |
+| Kategoriler arası büyüklük (kanal, bölge, ürün)    | `BarChart` (uzun adlarda `layout="horizontal"`, parça–bütün için `stacked`) | 6'dan çok parçalı pasta                      |
+| Bir bütünün 2–6 parçası                            | `PieChart` (`donut` ile toplam ortada)                                      | Parçaları hassas karşılaştırmak → `BarChart` |
+| Tek değerin aralıktaki yeri (doluluk, hedef, skor) | `Gauge` (eşikler için `segments`)                                           | Doğrusal ilerleme → `Progress`               |
 
 ### Tema ve ölçek
 
@@ -265,4 +267,5 @@ Brief'i projenin README'sine (ya da bir `docs/design-brief.md`ye) kısa not olar
 - Sayfa dosyaları ince kalsın: veri yükleme + kalıbı oluşturan bölüm component'leri.
 - Birden fazla sayfada tekrar eden UI, projenin ortak component klasörüne; yalnız bir özelliğe ait olanlar o özelliğin klasörüne.
 - Proje component'i mari-ui component'lerini sarmalar ve aynı eksen adlarını (`size`, `color`, `variant`…) kullanır; yeni prop adı uydurma.
+
 <!-- mari-ui:end -->

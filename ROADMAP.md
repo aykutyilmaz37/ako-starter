@@ -74,10 +74,10 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 
 ako-starter kendisi deploy edilmez, npm paketi olarak yayınlanır; gerçek deploy üretilen projede yapılır. Bu aşama üretilen projenin deploy'a hazır çıkmasını sağlar (VPS gerekmez). Yayından önce bitirilir.
 
-- [ ] Web uygulamaları (site, backoffice) için Dockerfile'lar (API'ninki var).
-- [ ] Örnek production compose (VPS + Docker başlangıç noktası) ve sağlık kontrolleri.
-- [ ] Bilinen sınır: sosyal girişten dönüşte dil kaybı (`/bff/external/callback`).
-- [ ] Üretilen projenin README'sine deploy notları: migration stratejisi, gizli bilgi yönetimi.
+- [x] Web uygulamaları için Dockerfile (`apps/web/Dockerfile`, `--build-arg APP`); `react-router-hono-server` devDependency (imaj 501 → 342 MB bağımlılık).
+- [x] `compose.prod.yaml` + `.env.prod.example`: postgres → migrate → api → site/backoffice, sağlık kontrolleri (web `GET /health`, API `/health/live`). Docker'da uçtan uca denendi: hepsi sağlıklı, admin girişi ve yönetim API'si çalıştı. Geliştirme compose'undaki API derleme bağlamı düzeltildi.
+- [x] Sosyal girişten dönüşte dil korunur (`next`/`login` dönüş adresleri, açık yönlendirme korumalı).
+- [x] Production migration'ı: `dotnet Ako.Api.dll migrate` (`DatabaseMigrator`, ilk Admin hesabı dahil). Üretilen README'de deploy bölümü (kombinasyona göre).
 
 Gerçek projeye bırakılanlar: deploy hedefi (VPS / bulut), CDN başlıklarının gerçek ortamda doğrulanması, gözlemlenebilirlik (OTLP) hedefi.
 

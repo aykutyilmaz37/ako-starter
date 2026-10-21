@@ -70,7 +70,9 @@ describe("backend'siz mobil", () => {
 
   it("auth kapalı sayılır; alışveriş listesi kalır, sözlük API'den gelmez", () => {
     const { disabled } = buildPlan(noBackend);
-    expect(disabled).toEqual(new Set(['backend', 'auth', 'guest', 'social', 'todos', 'api-lang']));
+    expect(disabled).toEqual(
+      new Set(['backend', 'auth', 'guest', 'social', 'todos', 'api-lang', 'site', 'backoffice']),
+    );
   });
 
   it('dil kapalıysa migration varyantı değişmez, yalnızca dil dosyaları çıkar', () => {
@@ -90,7 +92,7 @@ describe("backend'siz mobil", () => {
 
   it("API'li auth kapalı: liste ve sözlük işaretleri doğru türer", () => {
     expect(buildPlan({ ...both, web: ['site'], auth: false }).disabled).toEqual(
-      new Set(['auth', 'guest', 'social', 'list', 'todos']),
+      new Set(['auth', 'guest', 'social', 'list', 'todos', 'backoffice']),
     );
     expect(buildPlan({ ...both, lang: false }).disabled).toEqual(new Set(['lang', 'api-lang']));
     expect(buildPlan({ ...both, lang: false }).needsGenerate).toBe(true);

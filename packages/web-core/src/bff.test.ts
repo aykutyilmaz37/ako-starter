@@ -18,6 +18,10 @@ function fakeApi(roles = ['User']) {
       auth: headers.get('authorization'),
       forwardedFor: headers.get('x-forwarded-for'),
     });
+    if (path === '/auth/exchange')
+      return String(init?.body).includes('bad-code')
+        ? json(400, { code: 'auth.external_failed' })
+        : json(200, { accessToken: 'A1', refreshToken: 'R1', expiresIn: 3600 });
     if (path.startsWith('/auth/login'))
       return json(200, { accessToken: 'A1', refreshToken: 'R1', expiresIn: 3600 });
     if (path === '/auth/refresh')
@@ -58,7 +62,11 @@ describe('BFF', () => {
     expect(await response.json()).toEqual({});
     const cookie = cookieOf(response);
     expect(cookie).toMatch(/^ako_session=/);
-    expect(cookie).not.toContain('A1');
+    // Çerez şifreli: açık hâli (base64'ten çözülmüş) token'ı içermez. ("A1"in çerez metninde geçmemesine
+    // bakmak rastgele şifreli metinde ara sıra tutmuyordu.)
+    for (const part of cookie.split('=')[1]!.split('.')) {
+      expect(Buffer.from(part, 'base64url').toString('utf8')).not.toContain('"A1"');
+    }
     expect(response.headers.get('set-cookie')).toContain('HttpOnly');
     expect(await unsealSession(cookie.split('=')[1], SECRET)).toMatchObject({
       accessToken: 'A1',
@@ -175,5 +183,46 @@ describe('BFF', () => {
         encodeURIComponent('http://site/bff/external/callback'),
     );
   });
+
+  it('sosyal girişte dönüş adresi (dil öneki) korunur', async () => {
+    const { hono } = app();
+    const start = await hono.request('/bff/external/github?next=%2Fen&login=%2Fen%2Flogin');
+    const returnCookie = cookieOf(start);
+    expect(returnCookie).toMatch(/^ako_session_return=/);
+
+    const ok = await hono.request('/bff/external/callback?code=good', {
+      headers: { cookie: returnCookie },
+    });
+    expect(ok.headers.get('location')).toBe('/en');
+
+    const failed = await hono.request('/bff/external/callback?code=bad-code', {
+      headers: { cookie: returnCookie },
+    });
+    expect(failed.headers.get('location')).toBe('/en/login?error=auth.external_failed');
+  });
+
+  it('sosyal girişte başka siteye dönüş adresi kabul edilmez', async () => {
+    const { hono } = app();
+    const start = await hono.request(
+      '/bff/external/github?next=%2F%2Fevil.example&login=https%3A%2F%2Fevil.example',
+    );
+    const response = await hono.request('/bff/external/callback?error=auth.cancelled', {
+      headers: { cookie: cookieOf(start) },
+    });
+    expect(response.headers.get('location')).toBe('/login?error=auth.cancelled');
+
+    const ok = await hono.request('/bff/external/callback?code=good', {
+      headers: { cookie: cookieOf(start) },
+    });
+    expect(ok.headers.get('location')).toBe('/');
+  });
   // ako:end social
+
+  it("sağlık kontrolü API'ye gitmeden yanıt verir", async () => {
+    const { hono, api } = app();
+    const response = await hono.request('/health');
+    expect(response.status).toBe(200);
+    expect(await response.text()).toBe('ok');
+    expect(api.calls).toEqual([]);
+  });
 });
