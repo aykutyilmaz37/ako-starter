@@ -1,5 +1,11 @@
 # create-ako-app
 
+## 0.2.1
+
+### Patch Changes
+
+- 6d78aef: npm sayfasındaki README kullanıcıya göre yeniden yazıldı: ne ürettiği, sorular (koşullarıyla), sorusuz kullanım, seçenekler, gereksinimler. Bakımcıya yönelik geliştirme ve yayın notları pakete girmeyen `RELEASING.md`'ye taşındı.
+
 ## 0.2.0
 
 ### Minor Changes
