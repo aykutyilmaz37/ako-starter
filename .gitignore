@@ -11,6 +11,8 @@ build/
 # .NET
 bin/
 obj/
+# create-ako-app'in komutu .NET çıktısı değil; yok sayılırsa pakete girmez (0.1.1/0.1.2 bunsuz kaldı).
+!packages/create-ako-app/bin/
 *.user
 
 # Expo

@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- 3cc3b3b: 0.1.1 pakette `bin/create-ako-app.mjs` ve şablonun `pnpm-lock.yaml`'ı olmadan yayınlandı (`npx create-ako-app` → "command not found"). Yayın artık `npm pack` ile paketlenir ve yüklemeden önce zorunlu dosyalar denetlenir.
+- 3cc3b3b: 0.1.1 pakette `bin/create-ako-app.mjs` ve şablonun `pnpm-lock.yaml`'ı olmadan yayınlandı (`npx create-ako-app` → "command not found"). Komut dosyası kök `.gitignore`'daki `bin/` kuralı yüzünden git'e hiç girmemişti (yerelde paketlenen 0.1.0'da vardı); artık depoda. Yayın `npm pack` ile paketlenir (pnpm lockfile'ı düşürüyordu) ve yüklemeden önce zorunlu dosyalar denetlenir.
 
 ## 0.1.1
 
