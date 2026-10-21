@@ -13,5 +13,6 @@
     "spacing": "normal",
     "shadow": "normal"
   },
-  "motion": "normal"
+  "motion": "normal",
+  "platform": "web"
 }

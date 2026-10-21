@@ -64,7 +64,7 @@ Kararlar `DECISIONS.md`'de; burada **sıra** ve **bitti tanımı** var. Her aşa
 - [x] mari-ui 0.4.0'a geçiş (Table `footer` + `Pagination`, Empty `actions`, mobilde alt yol importları + eslint `no-restricted-imports`); backend'siz varyant da güncellendi, `verify` geçti.
 - [x] ~~Her kombinasyonu CI'da otomatik üretip derleme~~: iptal, çok uzun sürüyor; yerelde `verify` yeterli.
 - [ ] `npm create ako-app` yayın akışı. **Talimat bekliyor.**
-- [ ] mari-ui CLI düzeltmesi gelince: mobilde `mari-ui sync` çalıştır, `ai-rules` script'ini geri ekle (0.4.0 native projeye web kuralları yazıyor).
+- [x] mari-ui 0.5.0: CLI platform ayırıyor (`mari-ui.config.json` → `platform`: web ve mobilde ayrı); mobilde native kuralları yazıldı, `ai-rules` geri eklendi.
 
 **Bitti:** en az 5 kombinasyon (yalnız web, yalnız mobil, ikisi, auth/dil kapalı, yalnız mobil + backend yok) üretilip derleniyor.
 
