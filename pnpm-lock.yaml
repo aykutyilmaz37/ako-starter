@@ -136,14 +136,14 @@ importers:
         specifier: 5.9.2
         version: 5.9.2(@sinclair/typebox@0.27.12)(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.2.18)(react@19.2.3))(valibot@1.5.0(typescript@6.0.3))(zod@4.6.7)
       '@mari-ui/core':
-        specifier: ^0.6.0
-        version: 0.6.0(react@19.2.3)
+        specifier: ^0.6.1
+        version: 0.6.1(react@19.2.3)
       '@mari-ui/native':
-        specifier: ^0.6.0
-        version: 0.6.0(react-native-svg@15.15.4(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
+        specifier: ^0.6.1
+        version: 0.6.1(react-native-svg@15.15.4(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
       '@mari-ui/tokens':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.6.1
+        version: 0.6.1
       '@react-native-google-signin/google-signin':
         specifier: ^16.1.5
         version: 16.1.5(expo@57.0.30)(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
@@ -215,8 +215,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/tsconfig
       '@mari-ui/cli':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.6.1
+        version: 0.6.1
       '@types/react':
         specifier: ~19.2.4
         version: 19.2.18
@@ -242,14 +242,14 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2(@sinclair/typebox@0.27.12)(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
       '@mari-ui/components':
-        specifier: ^0.6.0
-        version: 0.6.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: ^0.6.1
+        version: 0.6.1(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@mari-ui/core':
-        specifier: ^0.6.0
-        version: 0.6.0(react@19.3.1)
+        specifier: ^0.6.1
+        version: 0.6.1(react@19.3.1)
       '@mari-ui/tokens':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.6.1
+        version: 0.6.1
       '@react-router/node':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
@@ -291,8 +291,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/tsconfig
       '@mari-ui/cli':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.6.1
+        version: 0.6.1
       '@react-router/dev':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
@@ -342,14 +342,14 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2(@sinclair/typebox@0.27.12)(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
       '@mari-ui/components':
-        specifier: ^0.6.0
-        version: 0.6.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: ^0.6.1
+        version: 0.6.1(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@mari-ui/core':
-        specifier: ^0.6.0
-        version: 0.6.0(react@19.3.1)
+        specifier: ^0.6.1
+        version: 0.6.1(react@19.3.1)
       '@mari-ui/tokens':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.6.1
+        version: 0.6.1
       '@react-router/node':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
@@ -391,8 +391,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/tsconfig
       '@mari-ui/cli':
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.6.1
+        version: 0.6.1
       '@react-router/dev':
         specifier: ^8.4.0
         version: 8.4.0(react-router@8.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@7.0.2)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1))
@@ -1542,12 +1542,12 @@ packages:
     resolution: {integrity: sha512-6QEf6yqFbETdwGITKq57aYoPfX/3K8XFNwsAlx0C1M7o8cb79sv1M3w+tWuWvIcSbNqrLF7OD7YpZMVVz335hQ==}
     engines: {node: '>=20.0.0'}
 
-  '@mari-ui/cli@0.6.0':
-    resolution: {integrity: sha512-1FWLjxa4APbZl9i6LdwCh3fIqnkLmaXNOPH1k2TzUr++akOWWXK+yRlTli8IuT2l7chfyJWmqNAdh22nB0hPcg==}
+  '@mari-ui/cli@0.6.1':
+    resolution: {integrity: sha512-+usFiBXTVmbYLA8SK4+hAOfz696V1t0sbB94LRoeyVeNqqhzby3bfGkXw9QYscncS0ZA9u77hhT+argl1HjRFA==}
     hasBin: true
 
-  '@mari-ui/components@0.6.0':
-    resolution: {integrity: sha512-VSTBoz5K1UwNR54Llf4CokEdwWJt0Dq8wWu5lYLjxtDH1qQLUVc9l6er1pVHtSbq9RcDAa9BAtZ6AbTQFQLLpA==}
+  '@mari-ui/components@0.6.1':
+    resolution: {integrity: sha512-5d6/TCsctD1VeiEl7Ww9uWY0VjyJdjpvP/Gyfh+G/wThHAk5Xodg+Qoxz0ZHORKT6n/d2OWtkFkzzqwTCjwn3A==}
     peerDependencies:
       embla-carousel-autoplay: ^8.0.0
       embla-carousel-react: ^8.0.0
@@ -1559,20 +1559,20 @@ packages:
       embla-carousel-react:
         optional: true
 
-  '@mari-ui/core@0.6.0':
-    resolution: {integrity: sha512-C8zuJVi4N3SwUJzZTFOibABG9jxc+nY5RNQlxRL74Ys2LJ0tEbpMm5zR/ytQzZqXndA4dV4QL0borAd/fzN/JQ==}
+  '@mari-ui/core@0.6.1':
+    resolution: {integrity: sha512-uJDca7nTyqEJJ5WyKdmdNiD2VQhn3l18aHFhRf2Rcdt3MQ0/HhIJ7sAsE5OKLYRh0ckttQIBevXLrMU7y9+eAA==}
     peerDependencies:
       react: '>=18'
 
-  '@mari-ui/native@0.6.0':
-    resolution: {integrity: sha512-Q3aYqGsNFEDP3Bpok0MNGHlsvGF2K/T68XiwdwUenOIpXA6KAYnony6/SBkkKWZWIUQjoXYK8619G5Fm+uDn5A==}
+  '@mari-ui/native@0.6.1':
+    resolution: {integrity: sha512-S/tFqE8/ho45/n4zevUkt34rLe+TJQmXsC0ahbC3EV0pz1F1XLHWOPslz6puMpJHWM6mQ5m+vAB0PoPYzcoCCQ==}
     peerDependencies:
       react: '>=18.2.0'
       react-native: '>=0.76.0'
       react-native-svg: '>=15.0.0'
 
-  '@mari-ui/tokens@0.6.0':
-    resolution: {integrity: sha512-KE1MaJ9A7DmJjm962DuATCTG3RKOh3K7AJbXSDgjM2DM5Z23ZFPcQxmAOutXAM2mxSLL8jBLy5G1QykRlWZ5Qg==}
+  '@mari-ui/tokens@0.6.1':
+    resolution: {integrity: sha512-z/otRmLtvh8wBK1QOpO6pq37xhf7N9HfGySBr5BmWpA1wzGy259Arw6fRfjh6Vqjyah32BSPCmCZI987OqSE5Q==}
 
   '@napi-rs/wasm-runtime@1.2.5':
     resolution: {integrity: sha512-HshSvXzmBxNzqejd3k/KemgQ3hdREUYFRRrgxOZ+gPljDIsO2SDZrVZMd4Z/HsxudQbE62OVyVFE8z9BCurfjA==}
@@ -7133,15 +7133,15 @@ snapshots:
       tinyglobby: 0.2.17
       yaml: 2.9.1
 
-  '@mari-ui/cli@0.6.0':
+  '@mari-ui/cli@0.6.1':
     dependencies:
       '@clack/prompts': 1.8.1
-      '@mari-ui/tokens': 0.6.0
+      '@mari-ui/tokens': 0.6.1
 
-  '@mari-ui/components@0.6.0(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@mari-ui/components@0.6.1(@types/react@19.3.0)(embla-carousel-autoplay@8.6.0(embla-carousel@8.6.0))(embla-carousel-react@8.6.0(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@mari-ui/core': 0.6.0(react@19.3.1)
-      '@mari-ui/tokens': 0.6.0
+      '@mari-ui/core': 0.6.1(react@19.3.1)
+      '@mari-ui/tokens': 0.6.1
       '@react-input/mask': 2.0.4(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       lucide-react: 0.511.0(react@19.3.1)
       qrcode-generator: 1.5.2
@@ -7153,30 +7153,30 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@mari-ui/core@0.6.0(react@19.2.3)':
+  '@mari-ui/core@0.6.1(react@19.2.3)':
     dependencies:
-      '@mari-ui/tokens': 0.6.0
+      '@mari-ui/tokens': 0.6.1
       clsx: 2.1.1
       react: 19.2.3
       tailwind-merge: 3.7.0
 
-  '@mari-ui/core@0.6.0(react@19.3.1)':
+  '@mari-ui/core@0.6.1(react@19.3.1)':
     dependencies:
-      '@mari-ui/tokens': 0.6.0
+      '@mari-ui/tokens': 0.6.1
       clsx: 2.1.1
       react: 19.3.1
       tailwind-merge: 3.7.0
 
-  '@mari-ui/native@0.6.0(react-native-svg@15.15.4(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)':
+  '@mari-ui/native@0.6.1(react-native-svg@15.15.4(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)':
     dependencies:
-      '@mari-ui/core': 0.6.0(react@19.2.3)
-      '@mari-ui/tokens': 0.6.0
+      '@mari-ui/core': 0.6.1(react@19.2.3)
+      '@mari-ui/tokens': 0.6.1
       qrcode-generator: 1.5.2
       react: 19.2.3
       react-native: 0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1)
       react-native-svg: 15.15.4(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
 
-  '@mari-ui/tokens@0.6.0': {}
+  '@mari-ui/tokens@0.6.1': {}
 
   '@napi-rs/wasm-runtime@1.2.5(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
