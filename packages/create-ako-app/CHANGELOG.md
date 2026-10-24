@@ -1,5 +1,11 @@
 # create-ako-app
 
+## 0.2.2
+
+### Patch Changes
+
+- ab107fb: mari-ui 0.6.1: üretilen projeler `@mari-ui/*` paketlerinin 0.6.1 sürümüyle kurulur.
+
 ## 0.2.1
 
 ### Patch Changes
