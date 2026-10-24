@@ -1,6 +1,6 @@
 {
   "name": "create-ako-app",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "description": "ako-starter şablonundan web / mobil / ikisini içeren yeni bir proje üretir.",
   "keywords": [
