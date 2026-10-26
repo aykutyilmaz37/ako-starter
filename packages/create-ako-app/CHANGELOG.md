@@ -1,5 +1,11 @@
 # create-ako-app
 
+## 0.3.2
+
+### Patch Changes
+
+- 41a891a: mari-ui 0.6.3: üretilen projeler `@mari-ui/*` paketlerinin 0.6.3 sürümüyle kurulur; AI kural dosyalarındaki link kuralı uygulama içi linkler için router `Link`'ini söylüyor.
+
 ## 0.3.1
 
 ### Patch Changes
