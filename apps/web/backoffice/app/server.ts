@@ -1,4 +1,4 @@
-import { createBff } from '@ako/web-core';
+import { createBff, noIndex } from '@ako/web-core';
 import { createHonoServer } from 'react-router-hono-server/node';
 import { getCookie } from 'hono/cookie';
 import { env } from './env.server';
@@ -23,6 +23,7 @@ export default await createHonoServer({
       // (Hono HEAD isteklerini GET route'larına yönlendirdiği için app.on('HEAD') eşleşmez; middleware gerekir.)
       app.use('/', async (c, next) => (c.req.method === 'HEAD' ? c.body(null, 200) : next()));
     }
+    app.use('*', noIndex);
     bff.configure(app);
   },
   // Loader'lara oturum (BFF) ve arayüz dili (ako_lang çerezi) verilir.

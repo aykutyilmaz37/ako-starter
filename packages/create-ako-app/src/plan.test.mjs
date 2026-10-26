@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildManifest,
   buildPlan,
   filterLaunch,
   isRemoved,
@@ -268,5 +269,25 @@ describe('yardımcılar', () => {
   it('filterLaunch istenmeyen sunucuları çıkarır', () => {
     const json = JSON.stringify({ configurations: [{ name: 'api' }, { name: 'site' }] });
     expect(JSON.parse(filterLaunch(json, ['api'])).configurations).toEqual([{ name: 'api' }]);
+  });
+});
+
+describe('buildManifest', () => {
+  it('sürümü ve seçimleri yazar, proje adını yazmaz', () => {
+    const choices = normalizeChoices({ ...both, lang: false });
+    expect(buildManifest(choices, '0.3.0')).toEqual({
+      generator: 'create-ako-app',
+      version: '0.3.0',
+      choices: {
+        web: ['site', 'backoffice'],
+        mobile: true,
+        auth: true,
+        guest: true,
+        social: true,
+        sample: true,
+        lang: false,
+        backend: true,
+      },
+    });
   });
 });

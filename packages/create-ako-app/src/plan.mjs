@@ -459,6 +459,16 @@ export function filterLaunch(launchJson, keep) {
   return formatJson(launch);
 }
 
+/**
+ * Üretilen projenin köküne yazılan `.ako.json`: hangi sürümle ve hangi seçimlerle üretildiği. Şablon sonradan
+ * değişince bir projeye hangi değişikliklerin gerektiği (ve ileride `upgrade` komutunun aynı seçimlerle iki sürümü
+ * üretip farkı çıkarması) buradan bilinir. Elle düzenlenmez.
+ */
+export function buildManifest(choices, version) {
+  const { name, ...selections } = choices;
+  return { generator: 'create-ako-app', version, choices: selections };
+}
+
 /** Prettier'ın JSON çıktısına yakın biçim: sığan diziler tek satırda kalır (CI `format:check` değişmez). */
 export function formatJson(value, indent = '', lead = 0, width = 100) {
   if (value === null || typeof value !== 'object') return JSON.stringify(value);

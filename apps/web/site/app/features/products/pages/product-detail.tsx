@@ -7,6 +7,7 @@ import { List, ListItem, ListItemMeta } from '@mari-ui/components/list';
 import { Tag } from '@mari-ui/components/tag';
 import { Paragraph, Text, Title } from '@mari-ui/components/typography';
 import { ListPlus, Package, RefreshCw, Truck } from 'lucide-react';
+import { publicCacheControl, sessionContext } from '@ako/web-core';
 import { data } from 'react-router';
 import { ProductGrid } from '~/features/products/components/product-card';
 import { useAddToList } from '~/features/products/hooks/use-add-to-list'; // ako:auth
@@ -25,7 +26,14 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
     throw error;
   });
   const related = await listProducts({ category: product.category, pageSize: 5 }, init);
-  return { product, related: related.items.filter((p) => p.id !== product.id).slice(0, 4) };
+  return data(
+    { product, related: related.items.filter((p) => p.id !== product.id).slice(0, 4) },
+    { headers: { 'Cache-Control': publicCacheControl(context.get(sessionContext)) } },
+  );
+}
+
+export function headers({ loaderHeaders }: Route.HeadersArgs) {
+  return { 'Cache-Control': loaderHeaders.get('Cache-Control') ?? 'private, no-store' };
 }
 
 export function meta({ loaderData, matches }: Route.MetaArgs) {
@@ -37,6 +45,25 @@ export function meta({ loaderData, matches }: Route.MetaArgs) {
     { name: 'description', content: product.description ?? '' },
     { property: 'og:title', content: product.name },
     { property: 'og:image', content: productImageSrc(product.imageUrl) ?? '' },
+    { property: 'og:type', content: 'product' },
+    // Yapısal veri (JSON-LD): arama sonucunda fiyat/stok gösterimi için.
+    {
+      'script:ld+json': {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.name,
+        description: product.description ?? undefined,
+        sku: product.sku,
+        image: productImageSrc(product.imageUrl) ?? undefined,
+        offers: {
+          '@type': 'Offer',
+          priceCurrency: 'TRY',
+          price: product.price,
+          availability:
+            product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+        },
+      },
+    },
   ];
 }
 

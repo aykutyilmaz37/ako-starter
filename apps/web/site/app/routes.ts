@@ -3,6 +3,9 @@ import { index, route, type RouteConfig } from '@react-router/dev/routes';
 // Adres → sayfa eşlemesi. Sayfalar özellik klasörlerinde durur (features/<özellik>/pages).
 // Tüm sayfalar isteğe bağlı dil segmentinin altındadır: varsayılan dilde "/products", diğerlerinde "/en/products".
 export default [
+  // Arama motorları için: dil önekinin dışında, tek adreste durur.
+  route('sitemap.xml', 'features/seo/pages/sitemap.ts'),
+  route('robots.txt', 'features/seo/pages/robots.ts'),
   // ako:begin lang
   route(':lang?', 'shared/i18n/lang-layout.tsx', [
     // ako:end lang
