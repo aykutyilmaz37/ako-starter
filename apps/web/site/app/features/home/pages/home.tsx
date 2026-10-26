@@ -2,7 +2,7 @@
 import type { ProductCategory } from '@ako/api-client/model';
 import { listProducts } from '@ako/api-client/products';
 import { Button } from '@mari-ui/components/button';
-import { sessionContext } from '@ako/web-core';
+import { publicCacheControl, sessionContext } from '@ako/web-core';
 import { data } from 'react-router';
 import { Benefits } from '~/features/home/components/benefits';
 import { CategoryTiles } from '~/features/home/components/category-tiles';
@@ -42,10 +42,10 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     count: perCategory[i]!.totalCount,
     imageUrl: perCategory[i]!.items[0]?.imageUrl ?? null,
   }));
-  const cacheControl = session
-    ? 'private, no-store'
-    : 'public, s-maxage=60, stale-while-revalidate=300';
-  return data({ featured: featured.items, tiles }, { headers: { 'Cache-Control': cacheControl } });
+  return data(
+    { featured: featured.items, tiles },
+    { headers: { 'Cache-Control': publicCacheControl(session) } },
+  );
 }
 
 export function headers({ loaderHeaders }: Route.HeadersArgs) {

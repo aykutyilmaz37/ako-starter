@@ -1,6 +1,6 @@
 import { listProducts } from '@ako/api-client/products';
 import type { ProductCategory } from '@ako/api-client/model';
-import { sessionContext } from '@ako/web-core';
+import { publicCacheControl, sessionContext } from '@ako/web-core';
 import { Empty } from '@mari-ui/components/empty';
 import { SearchInput } from '@mari-ui/components/input';
 import { Pagination } from '@mari-ui/components/pagination';
@@ -47,10 +47,10 @@ export async function loader({ request, context }: Route.LoaderArgs) {
     { page, pageSize: PAGE_SIZE, search, category },
     apiInit(context, request),
   );
-  const cacheControl = session
-    ? 'private, no-store'
-    : 'public, s-maxage=60, stale-while-revalidate=300';
-  return data({ products, category }, { headers: { 'Cache-Control': cacheControl } });
+  return data(
+    { products, category },
+    { headers: { 'Cache-Control': publicCacheControl(session) } },
+  );
 }
 
 export function headers({ loaderHeaders }: Route.HeadersArgs) {

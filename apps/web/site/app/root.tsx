@@ -77,6 +77,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        {root && <link rel="canonical" href={root.origin + location.pathname} />}
         {alternates.map((l) => (
           <link
             key={l.code}

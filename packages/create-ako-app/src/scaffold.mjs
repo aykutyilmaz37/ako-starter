@@ -13,6 +13,7 @@ import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { applyMarkers, hasMarkers } from './markers.mjs';
 import {
+  buildManifest,
   buildPlan,
   filterLaunch,
   formatJson,
@@ -22,6 +23,7 @@ import {
 } from './plan.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
+const VERSION = JSON.parse(readFileSync(resolve(here, '../package.json'), 'utf8')).version;
 const VARIANTS_DIR = resolve(here, '../variants');
 const MARKED_EXTENSIONS = /\.(cs|csproj|props|slnx|ts|tsx|mjs|yml|yaml|html|css|resx|example)$/;
 
@@ -184,6 +186,7 @@ export function scaffold({ target, template, choices, skipVariants = false, log 
   edit('.claude/launch.json', (text) => filterLaunch(text, plan.launchServers));
   if (!plan.keepE2e) edit('.github/workflows/ci.yml', stripE2eJob);
   writeFileSync(join(target, 'README.md'), renderReadme(choices));
+  writeFileSync(join(target, '.ako.json'), `${formatJson(buildManifest(choices, VERSION))}\n`);
 
   log(`${files.length} dosya yazıldı.`);
   return plan;
