@@ -19,7 +19,7 @@ Bunlar her zaman geçerli; sapma yok.
 4. **Gölge, köşe, katman skaladan.** `shadow-mari-*`, `rounded-sm/md/lg/xl`, `z-mari-*`. `shadow-2xl`, `rounded-[10px]`, `z-[999]` yok. _Neden:_ Radius ön ayarı ve katman sırası (modal > dropdown > tooltip) tek skaladan yönetiliyor.
 5. **Yüklenme `skeleton` ile.** Veri beklenirken component'in kendi `skeleton` prop'unu kullan (aynı boyutta iskelet çizer). Elle iskelet ya da tek başına spinner çizme. _Neden:_ Sayfa yüklenince yerleşim zıplamaz; tüm uygulamada aynı yükleme dili.
 6. **Erişilebilirlik temeli.** Yalnız ikonlu düğmelerde `aria-label`; her form kontrolü `Field` (ya da `label`/`aria-label`) ile adlı; tıklanabilir öğe `button`/`a`, `div onClick` değil. _Neden:_ Ekran okuyucu ve klavye kullanıcıları için asgari şart; component'ler gerisini çözüyor.
-7. **Linkler düz `<a href>`.** Menü/breadcrumb gibi component'lere `href` ver; SPA geçişi için `onNavigate` prop'una router'ın gezinme fonksiyonunu geçir. Router'a özel Link sarmalayıcısı yazma. _Neden:_ Component'ler router'dan bağımsız; yeni sekmede açma, dış link ve erişilebilirlik bu şekilde doğru çalışır.
+7. **Component linkleri `href` + `onNavigate`.** Menü/breadcrumb gibi mari-ui component'lerine `href` ver; SPA geçişi için `onNavigate` prop'una router'ın gezinme fonksiyonunu geçir, component'i Link'e sarma. Kendi yazdığın uygulama içi linklerde router'ın link component'ini kullan (React Router/Next `Link`); düz `<a href>` yalnız dış adres, dosya indirme ve tam sayfa yüklemesi gereken geçişler (OAuth/sosyal giriş) için. _Neden:_ Component'ler router'dan bağımsız; yeni sekmede açma, dış link ve erişilebilirlik bu şekilde doğru çalışır. Uygulama içi düz `<a href>` her tıklamada sayfayı baştan yükler.
 
 ## Serbest alanlar
 
