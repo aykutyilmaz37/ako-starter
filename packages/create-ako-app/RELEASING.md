@@ -31,6 +31,6 @@ Otomatik, mari-ui ile aynı düzen: changesets + GitHub OIDC (trusted publishing
 ### Bir kerelik kurulum (yapıldı: 2026-10-21)
 
 - **İlk sürüm elle:** npm'de trusted publisher paket sayfasından tanımlandığı için paket önce var olmalı. `npm login`, sonra main'den `cd packages/create-ako-app && npm publish`.
-- **Trusted publisher:** npmjs.com → `create-ako-app` → Settings → Trusted Publisher → GitHub Actions: kullanıcı `aykutyilmaz37`, depo `ako-starter`, iş akışı `release.yml` (environment boş).
+- **Trusted publisher:** npmjs.com → `create-ako-app` → Settings → Trusted Publisher → GitHub Actions: org `tfcs-istanbul`, depo `ako-starter`, iş akışı `release.yml` (environment boş).
 - **Token'ları kapat:** aynı sayfada Publishing access → "Require two-factor authentication and disallow tokens".
 - **İş akışını aç:** GitHub → Settings → Secrets and variables → Actions → Variables → `RELEASE_ENABLED` = `true`. Ayrıca Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests" açık olmalı (sürüm PR'ı için).
