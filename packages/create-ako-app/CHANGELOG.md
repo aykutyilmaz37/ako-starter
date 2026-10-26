@@ -1,5 +1,11 @@
 # create-ako-app
 
+## 0.3.1
+
+### Patch Changes
+
+- 9920408: Depo `tfcs-istanbul` organizasyonuna taşındı; paket bağlantıları yeni adrese güncellendi.
+
 ## 0.3.0
 
 ### Minor Changes
