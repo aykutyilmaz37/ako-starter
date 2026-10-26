@@ -1,6 +1,6 @@
 # create-ako-app
 
-Web, mobil ya da ikisini birden içeren yeni bir proje üretir. Kaynak: [ako-starter](https://github.com/aykutyilmaz37/ako-starter) şablonu.
+Web, mobil ya da ikisini birden içeren yeni bir proje üretir. Kaynak: [ako-starter](https://github.com/tfcs-istanbul/ako-starter) şablonu.
 
 ```bash
 npx create-ako-app@latest yeni-proje
@@ -13,7 +13,7 @@ Seçtiğiniz parçalar kalır, gerisi çıkarılır; ardından bağımlılıklar
 - **API** (`apps/api`): .NET 10, PostgreSQL + EF Core. Giriş / kayıt (e-posta kodu ile doğrulama, şifre sıfırlama), misafir girişi, sosyal giriş, roller, çoklu dil, rate limiting, sağlık kontrolleri, testler.
 - **Web** (`apps/web/site`, `apps/web/backoffice`): React Router 8 (SSR) + Hono. Tarayıcı API'ye doğrudan gitmez; oturum şifreli çerezde, istekler sunucudan iletilir (BFF). Backoffice yalnızca Admin rolüne açık yönetim panelidir.
 - **Mobil** (`apps/mobile`): Expo + expo-router. API'ye bağlı ya da backend'siz (veri cihazda, SQLite).
-- **Ortak**: OpenAPI'den üretilen tipli API istemcisi, [mari-ui](https://github.com/aykutyilmaz37/mari-ui) tasarım sistemi (web ve mobil aynı tema), GitHub Actions CI, tek sunucu + Docker için deploy dosyaları.
+- **Ortak**: OpenAPI'den üretilen tipli API istemcisi, [mari-ui](https://github.com/tfcs-istanbul/mari-ui) tasarım sistemi (web ve mobil aynı tema), GitHub Actions CI, tek sunucu + Docker için deploy dosyaları.
 - **Örnek senaryo** (isteğe bağlı): Akı Kahve. Ürün kataloğu, alışveriş listesi, ürün yönetimi; kapatılırsa boş iskelet kalır.
 
 ## Sorular

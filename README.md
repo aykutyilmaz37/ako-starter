@@ -1,6 +1,6 @@
 # ako-starter
 
-Web, mobil ya da ikisini birden içeren projeler için başlangıç şablonu: .NET 10 API, React Router 8 + Hono web uygulamaları (site ve backoffice), Expo mobil uygulama ve [mari-ui](https://github.com/aykutyilmaz37/mari-ui) tasarım sistemi. Örnek senaryo: **Akı Kahve** (kahve dükkânı: katalog, alışveriş listesi, yönetim paneli).
+Web, mobil ya da ikisini birden içeren projeler için başlangıç şablonu: .NET 10 API, React Router 8 + Hono web uygulamaları (site ve backoffice), Expo mobil uygulama ve [mari-ui](https://github.com/tfcs-istanbul/mari-ui) tasarım sistemi. Örnek senaryo: **Akı Kahve** (kahve dükkânı: katalog, alışveriş listesi, yönetim paneli).
 
 ## Yeni proje
 
